@@ -34,32 +34,32 @@ class QuestionController extends Controller
      * Store a newly created resource in storage.
      */
    public function store(Request $request, Activity $activity)
-{
-    $data = $request->all();
+    {
+        $data = $request->all();
 
-    $validator = Validator::make($data, [
-        'questions' => 'required|array|min:1',
-        'questions.*.question' => 'required|string',
-        'questions.*.type' => 'required|in:multiple_choice,true_false,essay',
-        'questions.*.options' => 'nullable|array',
-        'questions.*.answer_key' => 'nullable|string',
-    ]);
-
-    $validator->validate();
-
-    foreach ($data['questions'] as $q) {
-         \Log::info('Question data:', $q);
-        Question::create([
-            'activity_id' => $activity->id,
-            'question' => $q['question'],
-            'type' => $q['type'],
-            'options' => $q['type'] === 'multiple_choice' ? json_encode($q['options']) : null,
-            'answer_key' => $q['answer_key'],
+        $validator = Validator::make($data, [
+            'questions' => 'required|array|min:1',
+            'questions.*.question' => 'required|string',
+            'questions.*.type' => 'required|in:multiple_choice,true_false,essay',
+            'questions.*.options' => 'nullable|array',
+            'questions.*.answer_key' => 'nullable|string',
         ]);
-    }
 
-    return redirect()->route('activities.index')->with('success', 'Questions added.');
-}
+        $validator->validate();
+
+        foreach ($data['questions'] as $q) {
+            \Log::info('Question data:', $q);
+            Question::create([
+                'activity_id' => $activity->id,
+                'question' => $q['question'],
+                'type' => $q['type'],
+                'options' => $q['type'] === 'multiple_choice' ? json_encode($q['options']) : null,
+                'answer_key' => $q['answer_key'],
+            ]);
+        }
+
+        return redirect()->route('activities.index')->with('success', 'Questions added.');
+    }
 
 
     /**

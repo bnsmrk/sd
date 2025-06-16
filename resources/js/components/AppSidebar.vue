@@ -1,63 +1,72 @@
 <script setup lang="ts">
-import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Briefcase, LayoutGrid, Users } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Year Level',
-        href: '/year-levels',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Sections',
-        href: '/sections',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Subject',
-        href: '/subjects',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Enroll Student',
-        href: '/enroll',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Upload Materials',
-        href: '/materials',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Activities',
-        href: '/activities',
-        icon: LayoutGrid,
-    },
-];
+const { auth } = usePage().props;
+const role = (auth.user as any)?.role || '';
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
-];
+const groupedNavItems: Record<string, NavItem[]> = {
+    common: [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+            icon: LayoutGrid,
+        },
+    ],
+    admin: [
+        {
+            title: 'Year Levels',
+            href: '/year-levels',
+            icon: BookOpen,
+        },
+        {
+            title: 'Sections',
+            href: '/sections',
+            icon: LayoutGrid,
+        },
+        {
+            title: 'Subjects',
+            href: '/subjects',
+            icon: BookOpen,
+        },
+        {
+            title: 'Enroll Students',
+            href: '/enroll',
+            icon: Users,
+        },
+    ],
+    teacher: [
+        {
+            title: 'Upload Materials',
+            href: '/materials',
+            icon: Briefcase,
+        },
+        {
+            title: 'Activities',
+            href: '/activities',
+            icon: Briefcase,
+        },
+    ],
+    student: [
+        {
+            title: 'My Subjects',
+            href: '/my-subjects',
+            icon: BookOpen,
+        },
+        {
+            title: 'My Activities',
+            href: '/my-activities',
+            icon: Briefcase,
+        },
+    ],
+};
+
+const mainNavItems: NavItem[] = [...groupedNavItems.common, ...(role && groupedNavItems[role] ? groupedNavItems[role] : [])];
 </script>
 
 <template>
@@ -79,9 +88,9 @@ const footerNavItems: NavItem[] = [
         </SidebarContent>
 
         <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
             <NavUser />
         </SidebarFooter>
     </Sidebar>
+
     <slot />
 </template>
