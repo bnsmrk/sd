@@ -48,6 +48,15 @@ defineProps<{
                         <td class="space-x-2 p-2">
                             <a :href="`/storage/${m.file_path}`" target="_blank" class="text-blue-600">View</a>
                             <Link :href="`/materials/${m.id}/edit`" class="text-green-600">Edit</Link>
+                            <Link
+                                :href="`/materials/${m.id}`"
+                                method="delete"
+                                as="button"
+                                class="text-red-600"
+                                onclick="return confirm('Are you sure you want to delete this material?')"
+                            >
+                                Delete
+                            </Link>
                         </td>
                     </tr>
                 </tbody>
