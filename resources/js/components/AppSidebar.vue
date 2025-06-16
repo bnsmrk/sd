@@ -29,6 +29,11 @@ const mainNavItems: NavItem[] = [
         href: '/subjects',
         icon: LayoutGrid,
     },
+    {
+        title: 'Enroll Student',
+        href: '/enroll',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
