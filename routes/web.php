@@ -2,6 +2,8 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\YearLevelController;
 
 Route::get('/', function () {
@@ -13,6 +15,10 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::resource('year-levels', YearLevelController::class);
+Route::resource('sections', SectionController::class);
+// routes/web.php
+
+Route::resource('subjects', SubjectController::class);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

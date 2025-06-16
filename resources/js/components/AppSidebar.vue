@@ -19,6 +19,16 @@ const mainNavItems: NavItem[] = [
         href: '/year-levels',
         icon: LayoutGrid,
     },
+    {
+        title: 'Sections',
+        href: '/sections',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Subject',
+        href: '/subjects',
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
