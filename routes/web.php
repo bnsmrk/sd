@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ActivityController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\YearLevelController;
 use App\Http\Controllers\EnrollStudentController;
+use App\Http\Controllers\StudentSubjectController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -32,8 +34,7 @@ Route::middleware('role:teacher')->group(function () {
     Route::prefix('activities/{activity}')->group(function () {
     Route::get('questions/create', [QuestionController::class, 'create'])->name('questions.create');
     Route::post('questions', [QuestionController::class, 'store'])->name('questions.store');
-
-});
+    });
 
 });
 
@@ -42,6 +43,16 @@ Route::middleware('role:admin')->group(function () {
     Route::resource('sections', SectionController::class);
     Route::resource('subjects', SubjectController::class);
     Route::resource('enroll', EnrollStudentController::class);
+
+});
+
+Route::middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/my-subjects', [StudentSubjectController::class, 'index'])->name('student.subjects');
+    Route::get('/quizzes/{id}/take', [QuizController::class, 'show'])->name('quizzes.take');
+    Route::get('/student/quiz/{id}', [QuizController::class, 'show'])->name('student.quiz.show');
+    Route::post('/quizzes/submit', [QuizController::class, 'submit']);
+Route::get('/quiz-result/{id}', [QuizController::class, 'result'])->name('student.quiz.result');
+
 
 });
 require __DIR__.'/settings.php';
