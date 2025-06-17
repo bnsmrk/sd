@@ -44,9 +44,9 @@ class QuestionController extends Controller
         'questions' => 'required|array|min:1',
         'questions.*.id' => 'nullable|integer|exists:questions,id',
         'questions.*.question' => 'required|string',
-        'questions.*.type' => 'required|in:multiple_choice,true_false,essay',
+        'questions.*.type' => 'required|in:multiple_choice,checkboxes,true_false,essay,fill_in_blank',
         'questions.*.options' => 'nullable|array',
-        'questions.*.answer_key' => 'nullable|string',
+        'questions.*.answer_key' => 'nullable',
     ]);
 
     $validator->validate();
@@ -55,36 +55,35 @@ class QuestionController extends Controller
     $submittedIds = [];
 
     foreach ($data['questions'] as $q) {
+        $answerKey = is_array($q['answer_key']) ? json_encode($q['answer_key']) : $q['answer_key'];
+        $options = isset($q['options']) ? json_encode($q['options']) : null;
+
         if (isset($q['id'])) {
-            // Update existing question
             $submittedIds[] = $q['id'];
             $question = Question::find($q['id']);
             $question->update([
                 'question' => $q['question'],
                 'type' => $q['type'],
-                'options' => $q['type'] === 'multiple_choice' ? json_encode($q['options']) : null,
-                'answer_key' => $q['answer_key'],
+                'options' => $options,
+                'answer_key' => $answerKey,
             ]);
         } else {
-            // Create new question
             $new = Question::create([
                 'activity_id' => $activity->id,
                 'question' => $q['question'],
                 'type' => $q['type'],
-                'options' => $q['type'] === 'multiple_choice' ? json_encode($q['options']) : null,
-                'answer_key' => $q['answer_key'],
+                'options' => $options,
+                'answer_key' => $answerKey,
             ]);
             $submittedIds[] = $new->id;
         }
     }
 
-    // Delete removed questions
     $toDelete = array_diff($existingIds, $submittedIds);
     Question::destroy($toDelete);
 
     return redirect()->route('activities.index')->with('success', 'Questions updated successfully.');
 }
-
 
 
 
