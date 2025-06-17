@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Module;
 use App\Models\Section;
 use App\Models\Activity;
 use App\Models\YearLevel;
@@ -22,5 +23,10 @@ class Subject extends Model
     public function activities()
 {
     return $this->hasMany(Activity::class);
+}
+
+public function modules()
+{
+    return $this->hasMany(Module::class);
 }
 }

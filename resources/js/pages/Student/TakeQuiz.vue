@@ -13,14 +13,14 @@ const props = defineProps<{
             id: number;
             question: string;
             type: string;
-            options?: string;
+            options?: string; // JSON array for multiple_choice and checkbox
             answer_key?: string;
         }>;
     };
 }>();
 
-// Hold answers as { questionId: answer }
-const answers = reactive<Record<number, string>>({});
+// answers format: { [questionId]: string | string[] }
+const answers = reactive<Record<number, string | string[]>>({});
 
 function submitAnswers() {
     router.post('/quizzes/submit', {
@@ -55,7 +55,28 @@ function submitAnswers() {
                         </div>
                     </div>
 
-                    <!-- True/False -->
+                    <!-- Checkbox (Multiple Answers) -->
+                    <div v-else-if="q.type === 'checkbox'" class="space-y-2">
+                        <div v-for="(option, index) in JSON.parse(q.options || '[]')" :key="index" class="flex items-center space-x-2">
+                            <input
+                                type="checkbox"
+                                :id="`q-${q.id}-check-${index}`"
+                                :value="option"
+                                class="accent-blue-600"
+                                v-model="answers[q.id]"
+                                @change="
+                                    () => {
+                                        if (!Array.isArray(answers[q.id])) {
+                                            answers[q.id] = [];
+                                        }
+                                    }
+                                "
+                            />
+                            <label :for="`q-${q.id}-check-${index}`" class="text-sm">{{ option }}</label>
+                        </div>
+                    </div>
+
+                    <!-- True / False -->
                     <div v-else-if="q.type === 'true_false'" class="flex space-x-6">
                         <label class="flex items-center space-x-2">
                             <input type="radio" :name="'q-' + q.id" value="true" class="accent-green-600" v-model="answers[q.id]" />
@@ -75,6 +96,11 @@ function submitAnswers() {
                             v-model="answers[q.id]"
                             placeholder="Write your answer here..."
                         ></textarea>
+                    </div>
+
+                    <!-- Fill in the Blank -->
+                    <div v-else-if="q.type === 'fill_in_the_blank'">
+                        <input type="text" class="w-full rounded border px-3 py-2" placeholder="Type your answer..." v-model="answers[q.id]" />
                     </div>
                 </div>
 
