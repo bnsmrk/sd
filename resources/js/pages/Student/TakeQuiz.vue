@@ -76,18 +76,23 @@ function submitAnswers() {
                                 :checked="Array.isArray(answers[q.id]) && answers[q.id].includes(option)"
                                 @change="
                                     (e) => {
-                                        const target = e.target as HTMLInputElement;
+                                        const isChecked = (e.target as HTMLInputElement).checked;
+
                                         if (!Array.isArray(answers[q.id])) {
                                             answers[q.id] = [];
                                         }
-                                        if (target.checked) {
-                                            (answers[q.id] as string[]).push(option);
+
+                                        const current = answers[q.id] as string[];
+
+                                        if (isChecked) {
+                                            if (!current.includes(option)) current.push(option);
                                         } else {
-                                            answers[q.id] = (answers[q.id] as string[]).filter((o) => o !== option);
+                                            answers[q.id] = current.filter((o) => o !== option);
                                         }
                                     }
                                 "
                             />
+
                             <label :for="`q-${q.id}-check-${index}`" class="text-sm">{{ option }}</label>
                         </div>
                     </div>
