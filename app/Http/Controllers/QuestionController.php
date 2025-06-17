@@ -25,41 +25,67 @@ class QuestionController extends Controller
      */
     public function create(Activity $activity)
     {
-        return Inertia::render('Questions/Create', [
-            'activity' => $activity,
-        ]);
+       $questions = $activity->questions()->get();
+
+    return Inertia::render('Questions/Create', [
+        'activity' => $activity,
+        'existingQuestions' => $questions,
+    ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request, Activity $activity)
-    {
-        $data = $request->all();
+ public function store(Request $request, Activity $activity)
+{
+    $data = $request->all();
 
-        $validator = Validator::make($data, [
-            'questions' => 'required|array|min:1',
-            'questions.*.question' => 'required|string',
-            'questions.*.type' => 'required|in:multiple_choice,true_false,essay',
-            'questions.*.options' => 'nullable|array',
-            'questions.*.answer_key' => 'nullable|string',
-        ]);
+    $validator = Validator::make($data, [
+        'questions' => 'required|array|min:1',
+        'questions.*.id' => 'nullable|integer|exists:questions,id',
+        'questions.*.question' => 'required|string',
+        'questions.*.type' => 'required|in:multiple_choice,true_false,essay',
+        'questions.*.options' => 'nullable|array',
+        'questions.*.answer_key' => 'nullable|string',
+    ]);
 
-        $validator->validate();
+    $validator->validate();
 
-        foreach ($data['questions'] as $q) {
-            \Log::info('Question data:', $q);
-            Question::create([
+    $existingIds = $activity->questions()->pluck('id')->toArray();
+    $submittedIds = [];
+
+    foreach ($data['questions'] as $q) {
+        if (isset($q['id'])) {
+            // Update existing question
+            $submittedIds[] = $q['id'];
+            $question = Question::find($q['id']);
+            $question->update([
+                'question' => $q['question'],
+                'type' => $q['type'],
+                'options' => $q['type'] === 'multiple_choice' ? json_encode($q['options']) : null,
+                'answer_key' => $q['answer_key'],
+            ]);
+        } else {
+            // Create new question
+            $new = Question::create([
                 'activity_id' => $activity->id,
                 'question' => $q['question'],
                 'type' => $q['type'],
                 'options' => $q['type'] === 'multiple_choice' ? json_encode($q['options']) : null,
                 'answer_key' => $q['answer_key'],
             ]);
+            $submittedIds[] = $new->id;
         }
-
-        return redirect()->route('activities.index')->with('success', 'Questions added.');
     }
+
+    // Delete removed questions
+    $toDelete = array_diff($existingIds, $submittedIds);
+    Question::destroy($toDelete);
+
+    return redirect()->route('activities.index')->with('success', 'Questions updated successfully.');
+}
+
+
 
 
     /**

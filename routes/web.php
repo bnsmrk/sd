@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ActivityController;
@@ -35,6 +36,7 @@ Route::middleware('role:teacher')->group(function () {
     Route::get('questions/create', [QuestionController::class, 'create'])->name('questions.create');
     Route::post('questions', [QuestionController::class, 'store'])->name('questions.store');
     });
+    Route::resource('modules', ModuleController::class);
 
 });
 

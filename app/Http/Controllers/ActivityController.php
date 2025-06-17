@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
-use App\Models\YearLevel;
-use App\Models\Section;
-use App\Models\Subject;
+use App\Models\Module;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,17 +10,7 @@ class ActivityController extends Controller
 {
     public function index()
     {
-        $activities = Activity::with(['yearLevel', 'section', 'subject'])->get()->map(function ($a) {
-            return [
-                'id' => $a->id,
-                'title' => $a->title,
-                'type' => $a->type,
-                'scheduled_at' => $a->scheduled_at,
-                'year_level' => $a->yearLevel->name ?? '',
-                'section' => $a->section->name ?? '',
-                'subject' => $a->subject->name ?? '',
-            ];
-        });
+        $activities = Activity::with('module.yearLevel', 'module.section', 'module.subject')->get();
 
         return Inertia::render('Activities/Index', [
             'activities' => $activities,
@@ -32,59 +19,56 @@ class ActivityController extends Controller
 
     public function create()
     {
-        return Inertia::render('Activities/Create', [
-            'yearLevels' => YearLevel::all(['id', 'name']),
-            'sections' => Section::all(['id', 'name', 'year_level_id']),
-            'subjects' => Subject::all(['id', 'name', 'year_level_id', 'section_id']),
-        ]);
+       $modules = Module::with('yearLevel', 'section', 'subject')->get();
+
+    return Inertia::render('Activities/Create', [
+        'modules' => $modules,
+    ]);
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:quiz,exam',
-           'scheduled_at' => 'required|date',
-            'year_level_id' => 'required|exists:year_levels,id',
-            'section_id' => 'required|exists:sections,id',
-            'subject_id' => 'required|exists:subjects,id',
-        ]);
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'module_id' => 'required|exists:modules,id',
+        'scheduled_at' => 'required|date',
+    ]);
 
-       Activity::create($request->only([
-    'title', 'type', 'scheduled_at', 'year_level_id', 'section_id', 'subject_id'
-]));
-        return redirect()->route('activities.index')->with('success', 'Activity created.');
-    }
+    Activity::create($validated);
+
+    return redirect()->route('activities.index')->with('success', 'Activity created successfully.');
+}
+
 
     public function edit(Activity $activity)
     {
-        return Inertia::render('Activities/Edit', [
-            'activity' => $activity,
-            'yearLevels' => YearLevel::all(['id', 'name']),
-            'sections' => Section::all(['id', 'name', 'year_level_id']),
-            'subjects' => Subject::all(['id', 'name', 'year_level_id', 'section_id']),
-        ]);
+       $modules = Module::with('yearLevel', 'section', 'subject')->get();
+
+    $activity->load('module.yearLevel', 'module.section', 'module.subject');
+
+    return Inertia::render('Activities/Edit', [
+        'activity' => $activity,
+        'modules' => $modules,
+    ]);
     }
 
     public function update(Request $request, Activity $activity)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:quiz,exam',
-           'scheduled_at' => 'required|date',
-            'year_level_id' => 'required|exists:year_levels,id',
-            'section_id' => 'required|exists:sections,id',
-            'subject_id' => 'required|exists:subjects,id',
-        ]);
+        'title' => 'required|string|max:255',
+        'module_id' => 'required|exists:modules,id',
+        'scheduled_at' => 'required|date',
+    ]);
 
-        $activity->update($validated);
+    $activity->update($validated);
 
-        return redirect()->route('activities.index')->with('success', 'Activity updated.');
+    return redirect()->route('activities.index')->with('success', 'Activity updated.');
     }
 
     public function destroy(Activity $activity)
     {
         $activity->delete();
+
         return redirect()->route('activities.index')->with('success', 'Activity deleted.');
     }
 }
