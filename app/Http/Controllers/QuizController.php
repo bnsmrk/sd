@@ -7,7 +7,6 @@ use App\Models\Question;
 use App\Models\StudentAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class QuizController extends Controller
@@ -30,52 +29,54 @@ class QuizController extends Controller
     }
 
     public function submit(Request $request)
-{
-    $user = Auth::user();
-    $quizId = $request->quiz_id;
+    {
+        $user = Auth::user();
+        $quizId = $request->input('quiz_id');
+        $answers = $request->input('answers', []);
 
-    // Check if already taken
-    $alreadyTaken = \App\Models\StudentAnswer::where('user_id', $user->id)
-        ->where('activity_id', $quizId)
-        ->exists();
+        // Prevent double submission
+        $alreadySubmitted = StudentAnswer::where('user_id', $user->id)
+            ->where('activity_id', $quizId)
+            ->exists();
 
-    if ($alreadyTaken) {
-        return redirect()->route('student.subjects')->with('error', 'You already took this quiz.');
-    }
-
-    $score = 0;
-    $total = 0;
-
-    foreach ($request->answers as $questionId => $answer) {
-        $question = \App\Models\Question::find($questionId);
-
-        if (!$question) continue;
-
-        $isCorrect = null;
-
-        if ($question->type === 'checkbox') {
-            // JSON encode for checkboxes
-            $isCorrect = json_encode(array_map('strtolower', $answer)) === json_encode(array_map('strtolower', json_decode($question->answer_key, true)));
-        } elseif ($question->type !== 'essay') {
-            $isCorrect = strtolower(trim($question->answer_key)) === strtolower(trim($answer));
+        if ($alreadySubmitted) {
+            return redirect()->route('student.subjects')->with('error', 'You have already submitted this quiz.');
         }
 
-        if ($isCorrect === true) {
-            $score++;
+        foreach ($answers as $questionId => $answer) {
+            $question = Question::find($questionId);
+            if (!$question) continue;
+
+            $isCorrect = null;
+
+            if ($question->type !== 'essay') {
+                $correctAnswer = $question->answer_key;
+
+                if ($question->type === 'checkbox') {
+                    $userAnswer = is_array($answer) ? $answer : json_decode($answer, true);
+                    $correct = json_decode($correctAnswer, true);
+
+                    $userAnswer = array_map(fn($v) => strtolower(trim($v)), $userAnswer);
+                    $correct = array_map(fn($v) => strtolower(trim($v)), $correct);
+
+                    sort($userAnswer);
+                    sort($correct);
+
+                    $isCorrect = $userAnswer === $correct;
+                } else {
+                    $isCorrect = strtolower(trim($correctAnswer)) === strtolower(trim(is_array($answer) ? '' : $answer));
+                }
+            }
+
+            StudentAnswer::create([
+                'user_id' => $user->id,
+                'activity_id' => $quizId,
+                'question_id' => $questionId,
+                'answer' => is_array($answer) ? json_encode($answer) : $answer,
+                'is_correct' => $isCorrect,
+            ]);
         }
 
-        $total++;
-
-        \App\Models\StudentAnswer::create([
-            'user_id' => $user->id,
-            'activity_id' => $quizId, // ✅ FIXED: include activity_id
-            'question_id' => $questionId,
-            'answer' => is_array($answer) ? json_encode($answer) : $answer,
-            'is_correct' => $isCorrect,
-        ]);
+        return redirect()->route('student.subjects')->with('success', 'Quiz submitted successfully!');
     }
-
-    return redirect()->route('student.subjects')->with('success', "Quiz submitted successfully! Score: $score / $total");
-}
-
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
-import { reactive } from 'vue';
+import { reactive, watchEffect } from 'vue';
 
 const props = defineProps<{
     quiz: {
@@ -21,6 +21,15 @@ const props = defineProps<{
 
 // answers format: { [questionId]: string | string[] }
 const answers = reactive<Record<number, string | string[]>>({});
+
+// Ensure checkbox questions are initialized as arrays
+watchEffect(() => {
+    props.quiz.questions.forEach((q) => {
+        if (q.type === 'checkbox' && !Array.isArray(answers[q.id])) {
+            answers[q.id] = [];
+        }
+    });
+});
 
 function submitAnswers() {
     router.post('/quizzes/submit', {
@@ -55,19 +64,26 @@ function submitAnswers() {
                         </div>
                     </div>
 
+                    <!-- Checkbox (Multiple Correct) -->
                     <!-- Checkbox (Multiple Answers) -->
-                    <div v-else-if="q.type === 'checkbox'" class="space-y-2">
+                    <div v-else-if="q.type === 'checkboxes'" class="space-y-2">
                         <div v-for="(option, index) in JSON.parse(q.options || '[]')" :key="index" class="flex items-center space-x-2">
                             <input
                                 type="checkbox"
                                 :id="`q-${q.id}-check-${index}`"
                                 :value="option"
                                 class="accent-blue-600"
-                                v-model="answers[q.id]"
+                                :checked="Array.isArray(answers[q.id]) && answers[q.id].includes(option)"
                                 @change="
-                                    () => {
+                                    (e) => {
+                                        const target = e.target as HTMLInputElement;
                                         if (!Array.isArray(answers[q.id])) {
                                             answers[q.id] = [];
+                                        }
+                                        if (target.checked) {
+                                            (answers[q.id] as string[]).push(option);
+                                        } else {
+                                            answers[q.id] = (answers[q.id] as string[]).filter((o) => o !== option);
                                         }
                                     }
                                 "
@@ -76,7 +92,7 @@ function submitAnswers() {
                         </div>
                     </div>
 
-                    <!-- True / False -->
+                    <!-- True/False -->
                     <div v-else-if="q.type === 'true_false'" class="flex space-x-6">
                         <label class="flex items-center space-x-2">
                             <input type="radio" :name="'q-' + q.id" value="true" class="accent-green-600" v-model="answers[q.id]" />
@@ -102,6 +118,9 @@ function submitAnswers() {
                     <div v-else-if="q.type === 'fill_in_the_blank'">
                         <input type="text" class="w-full rounded border px-3 py-2" placeholder="Type your answer..." v-model="answers[q.id]" />
                     </div>
+
+                    <!-- Unknown Type Fallback -->
+                    <div v-else class="text-sm text-red-600">Unknown question type: {{ q.type }}</div>
                 </div>
 
                 <div class="mt-6 text-right">
