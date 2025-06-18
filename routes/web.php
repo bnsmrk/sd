@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
@@ -45,6 +46,8 @@ Route::middleware('role:admin')->group(function () {
     Route::resource('sections', SectionController::class);
     Route::resource('subjects', SubjectController::class);
     Route::resource('enroll', EnrollStudentController::class);
+    Route::resource('users', UserController::class);
+
 
 });
 

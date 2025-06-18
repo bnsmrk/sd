@@ -39,6 +39,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/enroll',
             icon: Users,
         },
+        {
+            title: 'Register User',
+            href: '/users',
+            icon: Users,
+        },
     ],
     teacher: [
         {

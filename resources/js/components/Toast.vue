@@ -4,7 +4,6 @@ const emit = defineEmits(['close']);
 
 onMounted(() => {
     setTimeout(() => {
-        // emit close after 5 seconds
         emit('close');
     }, 5000);
 });
