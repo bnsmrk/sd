@@ -53,12 +53,17 @@ Route::middleware('role:admin')->group(function () {
 
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/my-subjects', [StudentSubjectController::class, 'index'])->name('student.subjects');
+    Route::get('/subjects/{subject}', [StudentSubjectController::class, 'show'])->name('student.subject.show');
+
+
+    Route::get('/my-subjects', [StudentSubjectController::class, 'index'])->name('student.subjects');
+    Route::get('/student/subjects/{id}', [StudentSubjectController::class, 'show'])->name('student.subjects.show');
+
     Route::get('/quizzes/{id}/take', [QuizController::class, 'show'])->name('quizzes.take');
     Route::get('/student/quiz/{id}', [QuizController::class, 'show'])->name('student.quiz.show');
     Route::post('/quizzes/submit', [QuizController::class, 'submit']);
-Route::get('/quiz-result/{id}', [QuizController::class, 'result'])->name('student.quiz.result');
-
-
+    Route::get('/quiz-result/{id}', [QuizController::class, 'result'])->name('student.quiz.result');
 });
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -1,56 +1,40 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 
-const { subjects } = defineProps<{
-    subjects: Array<{
+defineProps<{
+    subject: { id: number; name: string };
+    modules: Array<{
         id: number;
-        name: string;
+        title: string;
         activities: Array<{
             id: number;
             title: string;
             type: string;
-            date: string;
+            scheduled_at: string;
         }>;
     }>;
 }>();
 
-const selectedSubjectId = ref<number | null>(null);
+const goTo = (activity: { id: number; type: string }) => {
+    if (activity.type === 'quiz') {
+        router.get(`/student/quiz/${activity.id}`);
+    }
+    // add more if needed for exams, tasks, etc.
+};
 </script>
 
 <template>
     <AppLayout>
-        <div class="space-y-4 p-6">
-            <h1 class="text-2xl font-bold">My Enrolled Subjects</h1>
+        <div class="space-y-6 p-6">
+            <h1 class="text-2xl font-bold">{{ subject.name }}</h1>
 
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div
-                    v-for="subject in subjects"
-                    :key="subject.id"
-                    class="relative aspect-video cursor-pointer overflow-hidden rounded-xl border border-sidebar-border/70 p-4 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    @click="selectedSubjectId = subject.id"
-                >
-                    <h2 class="text-center text-lg font-semibold">{{ subject.name }}</h2>
-                </div>
-            </div>
+            <div v-for="mod in modules" :key="mod.id" class="space-y-2 rounded-xl border p-4">
+                <h2 class="text-lg font-semibold text-blue-700">{{ mod.title }}</h2>
 
-            <div v-if="selectedSubjectId" class="mt-8 rounded-xl border border-sidebar-border/70 p-4">
-                <h2 class="mb-4 text-xl font-bold">
-                    Activities for
-                    {{ subjects.find((s) => s.id === selectedSubjectId)?.name }}
-                </h2>
-
-                <ul class="space-y-2">
-                    <li
-                        v-for="act in subjects.find((s) => s.id === selectedSubjectId)?.activities"
-                        :key="act.id"
-                        class="rounded-lg border p-3 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    >
-                        <Link :href="`/student/quiz/${act.id}`" class="block">
-                            <div class="font-medium">{{ act.title }}</div>
-                            <div class="text-sm text-gray-500">{{ act.type }} – {{ act.date }}</div>
-                        </Link>
+                <ul class="space-y-1">
+                    <li v-for="act in mod.activities" :key="act.id" class="cursor-pointer hover:underline" @click="goTo(act)">
+                        {{ act.type.toUpperCase() }} – {{ act.title }} ({{ act.scheduled_at }})
                     </li>
                 </ul>
             </div>
