@@ -1,7 +1,21 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+// import { ref, watch } from 'vue';
+// const page = usePage();
+// const success = ref<string | null>(null);
+// const danger = ref<string | null>(null);
+// const warning = ref<string | null>(null);
 
+// watch(
+//     () => page.props.flash as Record<string, string>,
+//     (flash) => {
+//         success.value = flash.success || null;
+//         danger.value = flash.danger || null;
+//         warning.value = flash.warning || null;
+//     },
+//     // { immediate: true }
+// );
 defineProps<{ yearLevels: Array<{ id: number; name: string }> }>();
 
 const breadcrumbs = [{ title: 'Year Levels', href: '/yearlevel' }];

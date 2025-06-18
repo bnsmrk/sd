@@ -30,6 +30,7 @@ class YearLevelController extends Controller
         YearLevel::create($validated);
 
         return redirect()->route('year-levels.index')->with('success', 'Year Level added successfully.');
+
     }
 
     public function edit(YearLevel $yearLevel)
@@ -53,6 +54,6 @@ class YearLevelController extends Controller
     public function destroy(YearLevel $yearLevel)
     {
         $yearLevel->delete();
-        return redirect()->back()->with('success', 'Year Level deleted.');
+        return redirect()->back()->with('danger', 'Year Level deleted.');
     }
 }

@@ -48,8 +48,14 @@ class HandleInertiaRequests extends Middleware
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
                 'role' => $request->user()->role, // ✅ shared here
-            ] : null,
-        ],
+                ] : null,
+            ],
+                'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'danger' => fn () => $request->session()->get('danger'),
+                'warning' => fn () => $request->session()->get('warning'),
+            ],
+
             'ziggy' => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
