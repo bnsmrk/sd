@@ -59,7 +59,7 @@ function deleteModule(id: number) {
                         <tr>
                             <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Year</th>
-                            <th scope="col" class="px-6 py-3">Section</th>
+
                             <th scope="col" class="px-6 py-3">Subject</th>
                             <th scope="col" class="px-6 py-3 text-center">Actions</th>
                         </tr>
@@ -72,7 +72,7 @@ function deleteModule(id: number) {
                         >
                             <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ m.name }}</td>
                             <td class="px-6 py-4">{{ m.year_level.name }}</td>
-                            <td class="px-6 py-4">{{ m.section.name }}</td>
+
                             <td class="px-6 py-4">{{ m.subject.name }}</td>
                             <td class="flex items-center justify-center space-x-3 px-6 py-4">
                                 <Link :href="`/modules/${m.id}/edit`" class="font-medium text-blue-600 hover:underline dark:text-blue-500">Edit</Link>

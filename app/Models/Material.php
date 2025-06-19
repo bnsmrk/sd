@@ -14,7 +14,7 @@ class Material extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'file_path', 'year_level_id', 'section_id', 'subject_id', 'user_id'
+        'title', 'file_path',   'type', 'year_level_id', 'section_id', 'subject_id', 'user_id'
     ];
 
     public function yearLevel() {

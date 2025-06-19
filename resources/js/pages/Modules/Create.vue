@@ -5,22 +5,16 @@ import { computed } from 'vue';
 
 const props = defineProps<{
     yearLevels: Array<{ id: number; name: string }>;
-    sections: Array<{ id: number; name: string; year_level_id: number }>;
-    subjects: Array<{ id: number; name: string; year_level_id: number; section_id: number }>;
+    subjects: Array<{ id: number; name: string; year_level_id: number }>;
 }>();
 
 const form = useForm({
     name: '',
     year_level_id: '',
-    section_id: '',
     subject_id: '',
 });
 
-const filteredSections = computed(() => props.sections.filter((section) => section.year_level_id === Number(form.year_level_id)));
-
-const filteredSubjects = computed(() =>
-    props.subjects.filter((subject) => subject.year_level_id === Number(form.year_level_id) && subject.section_id === Number(form.section_id)),
-);
+const filteredSubjects = computed(() => props.subjects.filter((subject) => subject.year_level_id === Number(form.year_level_id)));
 </script>
 
 <template>
@@ -45,16 +39,6 @@ const filteredSubjects = computed(() =>
                         <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
                     </select>
                     <div v-if="form.errors.year_level_id" class="text-sm text-red-600">{{ form.errors.year_level_id }}</div>
-                </div>
-
-                <!-- Section -->
-                <div>
-                    <label class="block font-medium">Section</label>
-                    <select v-model="form.section_id" class="w-full rounded border px-3 py-2" required>
-                        <option value="">Select Section</option>
-                        <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
-                    </select>
-                    <div v-if="form.errors.section_id" class="text-sm text-red-600">{{ form.errors.section_id }}</div>
                 </div>
 
                 <!-- Subject -->
