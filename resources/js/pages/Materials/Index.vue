@@ -1,71 +1,70 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 
 defineProps<{
     materials: Array<{
         id: number;
         title: string;
-        file_path: string;
         type: string;
+        file_path: string;
         year_level: { name: string };
-        section: { name: string } | null;
         subject: { name: string };
         user: { name: string };
     }>;
 }>();
+
+function createMaterial() {
+    router.get('/materials/create');
+}
+
+function editMaterial(id: number) {
+    router.get(`/materials/${id}/edit`);
+}
+
+function deleteMaterial(id: number) {
+    if (confirm('Are you sure you want to delete this material?')) {
+        router.delete(`/materials/${id}`);
+    }
+}
 </script>
 
 <template>
-    <Head title="Learning Materials" />
+    <Head title="My Materials" />
     <AppLayout>
-        <div class="p-6">
-            <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-2xl font-bold">Learning Materials</h2>
-                <Link href="/materials/create" class="rounded bg-blue-600 px-4 py-2 text-white">Upload</Link>
+        <div class="space-y-4 p-6">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold">My Uploaded Materials</h1>
+                <button @click="createMaterial" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">+ Upload Material</button>
             </div>
 
-            <div class="overflow-x-auto rounded bg-white shadow">
-                <table class="min-w-full text-sm text-gray-700">
-                    <thead class="bg-gray-100 text-xs uppercase">
-                        <tr>
-                            <th class="px-4 py-2">Title</th>
-                            <th class="px-4 py-2">Type</th>
-                            <th class="px-4 py-2">Year Level</th>
-
-                            <th class="px-4 py-2">Subject</th>
-                            <th class="px-4 py-2">Uploaded By</th>
-                            <th class="px-4 py-2 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="m in materials" :key="m.id" class="border-b hover:bg-gray-50">
-                            <td class="px-4 py-2">{{ m.title }}</td>
-                            <td class="px-4 py-2 capitalize">{{ m.type.replace('_', ' ') }}</td>
-                            <td class="px-4 py-2">{{ m.year_level.name }}</td>
-
-                            <td class="px-4 py-2">{{ m.subject.name }}</td>
-                            <td class="px-4 py-2">{{ m.user.name }}</td>
-                            <td class="px-4 py-2 text-center">
-                                <a :href="`/storage/${m.file_path}`" target="_blank" class="text-blue-600 hover:underline"> View </a>
-                                <Link :href="`/materials/${m.id}/edit`" class="ml-2 text-green-600 hover:underline"> Edit </Link>
-                                <Link
-                                    :href="`/materials/${m.id}`"
-                                    method="delete"
-                                    as="button"
-                                    class="ml-2 text-red-600 hover:underline"
-                                    onclick="return confirm('Are you sure you want to delete this material?')"
-                                >
-                                    Delete
-                                </Link>
-                            </td>
-                        </tr>
-                        <tr v-if="materials.length === 0">
-                            <td colspan="7" class="px-4 py-6 text-center text-gray-500">No materials found.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <table class="w-full table-auto border">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="p-2">Title</th>
+                        <th>Type</th>
+                        <th>Year Level</th>
+                        <th>Subject</th>
+                        <th>File</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="material in materials" :key="material.id" class="border-t">
+                        <td class="p-2">{{ material.title }}</td>
+                        <td>{{ material.type }}</td>
+                        <td>{{ material.year_level.name }}</td>
+                        <td>{{ material.subject.name }}</td>
+                        <td>
+                            <a :href="`/storage/${material.file_path}`" target="_blank" class="text-blue-600 underline"> View </a>
+                        </td>
+                        <td>
+                            <button class="mr-2 text-blue-600" @click="editMaterial(material.id)">Edit</button>
+                            <button class="text-red-600" @click="deleteMaterial(material.id)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </AppLayout>
 </template>

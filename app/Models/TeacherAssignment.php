@@ -21,6 +21,10 @@ class TeacherAssignment extends Model
     public function yearLevel() {
         return $this->belongsTo(YearLevel::class);
     }
+public function section()
+{
+    return $this->belongsTo(Section::class);
+}
 
 
 

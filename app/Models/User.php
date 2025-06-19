@@ -3,9 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\TeacherAssignment;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -24,7 +25,10 @@ class User extends Authenticatable
         'role',
 
     ];
-
+public function teacherAssignments()
+{
+    return $this->hasMany(TeacherAssignment::class, 'user_id');
+}
     /**
      * The attributes that should be hidden for serialization.
      *

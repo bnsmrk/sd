@@ -34,7 +34,6 @@ const selectedYearLevelId = ref<number | null>(null);
 const selectedSubjectId = ref<number | null>(null);
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
-const selectedSubject = computed(() => props.subjects.find((s) => s.id === selectedSubjectId.value));
 const filteredSubjects = computed(() => props.subjects.filter((s) => s.year_level_id === selectedYearLevelId.value));
 
 const form = useForm({
@@ -77,7 +76,6 @@ function submitForm() {
         <div class="mx-auto max-w-xl space-y-6 p-6">
             <h2 class="text-xl font-bold">Upload {{ selectedType === 'material' ? 'Material' : 'Lesson Plan' }}</h2>
 
-            <!-- Type -->
             <div>
                 <label class="block font-medium">Type</label>
                 <select v-model="selectedType" class="w-full rounded border p-2">
@@ -86,64 +84,47 @@ function submitForm() {
                 </select>
             </div>
 
-            <!-- Module -->
             <div v-if="selectedType === 'material'">
                 <label class="block font-medium">Module</label>
                 <select v-model="selectedModuleId" class="w-full rounded border p-2">
                     <option :value="null" disabled>Select Module</option>
-                    <option v-for="m in props.modules" :key="m.id" :value="m.id">
-                        {{ m.name }}
-                    </option>
+                    <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
                 </select>
-
                 <div v-if="selectedModule" class="mt-2 text-sm text-gray-600">
                     <p>Year Level: {{ selectedModule.year_level.name }}</p>
                     <p>Subject: {{ selectedModule.subject.name }}</p>
                 </div>
             </div>
 
-            <!-- Year Level + Subject -->
             <div v-else>
                 <label class="block font-medium">Year Level</label>
                 <select v-model="selectedYearLevelId" class="w-full rounded border p-2">
                     <option :value="null" disabled>Select Year Level</option>
-                    <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">
-                        {{ yl.name }}
-                    </option>
+                    <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
                 </select>
 
                 <label class="mt-4 block font-medium">Subject</label>
                 <select v-model="selectedSubjectId" class="w-full rounded border p-2">
                     <option :value="null" disabled>Select Subject</option>
-                    <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">
-                        {{ s.name }}
-                    </option>
+                    <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
                 </select>
-
-                <div v-if="selectedSubject" class="mt-2 text-sm text-gray-600">
-                    <p>Selected Subject: {{ selectedSubject.name }}</p>
-                    <p>Year Level: {{ selectedSubject.year_level.name }}</p>
-                </div>
             </div>
 
-            <!-- Title -->
             <div>
                 <label class="block font-medium">Title</label>
                 <input v-model="form.title" type="text" class="w-full rounded border p-2" />
             </div>
 
-            <!-- File -->
             <div>
                 <label class="block font-medium">Upload File</label>
                 <input
                     type="file"
-                    class="w-full"
                     accept=".pdf,.doc,.docx,.ppt,.pptx"
                     @change="(e) => (form.file = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
+                    class="w-full"
                 />
             </div>
 
-            <!-- Submit -->
             <button @click="submitForm" class="w-full rounded bg-blue-600 py-2 text-white">Submit</button>
         </div>
     </AppLayout>

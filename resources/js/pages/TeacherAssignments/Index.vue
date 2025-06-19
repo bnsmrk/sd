@@ -5,7 +5,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 defineProps<{
     assignments: Array<{
         id: number;
-        user: { id: number; name: string };
+        teacher: { id: number; name: string };
         year_level: { name: string };
         subject: { name: string };
     }>;

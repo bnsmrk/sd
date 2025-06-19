@@ -1,39 +1,61 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
-use App\Models\Module;
-use App\Models\Section;
-use App\Models\Subject;
 use App\Models\Material;
+use App\Models\Module;
+use App\Models\Subject;
 use App\Models\YearLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class MaterialController extends Controller
 {
+    private function getTeacherAssignments()
+    {
+        return Auth::user()
+            ->teacherAssignments()
+            ->with(['yearLevel', 'section', 'subject'])
+            ->get();
+    }
+
     public function index()
     {
-        $materials = Material::with(['yearLevel', 'section', 'subject', 'user'])->latest()->get();
+        $assignments = $this->getTeacherAssignments();
+
+        $materials = Material::with(['yearLevel', 'section', 'subject', 'user'])
+            ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
+            ->whereIn('subject_id', $assignments->pluck('subject_id'))
+            ->latest()
+            ->get();
+
         return Inertia::render('Materials/Index', [
             'materials' => $materials,
         ]);
     }
 
     public function create()
-{
-    return Inertia::render('Materials/Create', [
-        'modules' => Module::with(['yearLevel', 'subject'])->get(),
-        'subjects' => Subject::with(['yearLevel'])->get(),
-        'yearLevels' => YearLevel::all(),
-    ]);
-}
-
-
-  public function store(Request $request)
     {
-        \Log::info('Material Store Request:', $request->all());
+        $assignments = $this->getTeacherAssignments();
 
+        $subjects = $assignments->pluck('subject')->unique('id')->values();
+        $yearLevels = $assignments->pluck('yearLevel')->unique('id')->values();
+
+        $modules = Module::whereIn('year_level_id', $assignments->pluck('year_level_id'))
+            ->whereIn('subject_id', $assignments->pluck('subject_id'))
+            ->with(['yearLevel', 'subject'])
+            ->get();
+
+        return Inertia::render('Materials/Create', [
+            'modules' => $modules,
+            'subjects' => $subjects,
+            'yearLevels' => $yearLevels,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
         $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:material,lesson_plan',
@@ -42,78 +64,131 @@ class MaterialController extends Controller
             'subject_id' => 'nullable|exists:subjects,id',
         ]);
 
-        $path = $request->file('file')->store('materials', 'public');
-
-        // Initialize
+        $user = Auth::user();
         $year_level_id = null;
         $section_id = null;
         $subject_id = null;
 
         if ($request->type === 'material') {
             $module = Module::findOrFail($request->module_id);
+
+            $authorized = $user->teacherAssignments()
+                ->where('year_level_id', $module->year_level_id)
+                ->where('subject_id', $module->subject_id)
+                ->exists();
+
+            if (!$authorized) {
+                abort(403, 'Unauthorized to upload material for this module.');
+            }
+
             $year_level_id = $module->year_level_id;
             $section_id = $module->section_id;
             $subject_id = $module->subject_id;
         } else {
-            $subject = Subject::with(['yearLevel', 'section'])->findOrFail($request->subject_id);
+            $subject = Subject::findOrFail($request->subject_id);
+
+            $authorized = $user->teacherAssignments()
+                ->where('year_level_id', $subject->year_level_id)
+                ->where('subject_id', $subject->id)
+                ->exists();
+
+            if (!$authorized) {
+                abort(403, 'Unauthorized to upload lesson plan for this subject.');
+            }
+
             $year_level_id = $subject->year_level_id;
             $section_id = $subject->section_id;
             $subject_id = $subject->id;
         }
 
+        $path = $request->file('file')->store('materials', 'public');
+
         Material::create([
             'title' => $request->title,
-            'type' => $request->type, // ✅ use what was submitted
+            'type' => $request->type,
             'file_path' => $path,
             'year_level_id' => $year_level_id,
             'section_id' => $section_id,
             'subject_id' => $subject_id,
-            'user_id' => auth()->id(),
+            'user_id' => $user->id,
         ]);
 
         return redirect()->route('materials.index')->with('success', 'Material uploaded successfully.');
     }
 
-
-//
-
     public function edit(Material $material)
-    {
-         return Inertia::render('Materials/Edit', [
-        'material' => $material,
-        'modules' => Module::with(['yearLevel', 'section', 'subject'])->get(),
-        'subjects' => Subject::with(['yearLevel', 'section'])->get(),
-        'yearLevels' => YearLevel::all(),
-    ]);
-    }
-
-    public function update(Request $request, Material $material)
 {
-    \Log::info('Update request', $request->all());
+    $user = auth()->user();
 
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'type' => 'required|in:material,lesson_plan',
-        'year_level_id' => 'required|exists:year_levels,id',
-        'subject_id' => 'required|exists:subjects,id',
+    $modules = Module::with(['yearLevel', 'subject'])
+        ->whereIn('subject_id', $user->teacherAssignments->pluck('subject_id'))
+        ->get();
+
+    $subjects = Subject::with(['yearLevel'])
+        ->whereIn('id', $user->teacherAssignments->pluck('subject_id'))
+        ->get();
+
+    $yearLevels = YearLevel::whereIn('id', $user->teacherAssignments->pluck('year_level_id'))->get();
+
+    return Inertia::render('Materials/Edit', [
+        'material' => $material,
+        'modules' => $modules,
+        'subjects' => $subjects,
+        'yearLevels' => $yearLevels,
     ]);
-
-    $material->update($validated);
-
-    if ($request->hasFile('file')) {
-        $path = $request->file('file')->store('materials', 'public');
-        $material->update(['file_path' => $path]);
-    }
-
-    return redirect()->route('materials.index')->with('success', 'Material updated.');
 }
 
 
+    public function update(Request $request, Material $material)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:material,lesson_plan',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
 
+        $user = Auth::user();
+
+        $authorized = $user->teacherAssignments()
+            ->where('year_level_id', $request->year_level_id)
+            ->where('subject_id', $request->subject_id)
+            ->exists();
+
+        if (!$authorized) {
+            abort(403, 'Unauthorized to update this material.');
+        }
+
+        $material->update([
+            'title' => $request->title,
+            'type' => $request->type,
+            'year_level_id' => $request->year_level_id,
+            'subject_id' => $request->subject_id,
+        ]);
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('materials', 'public');
+            $material->update(['file_path' => $path]);
+        }
+
+        return redirect()->route('materials.index')->with('success', 'Material updated.');
+    }
 
     public function destroy(Material $material)
     {
+        $user = Auth::user();
+
+        $authorized = $user->teacherAssignments()
+            ->where('year_level_id', $material->year_level_id)
+            ->where('subject_id', $material->subject_id)
+            ->exists();
+
+        if (!$authorized) {
+            abort(403, 'Unauthorized to delete this material.');
+        }
+
         $material->delete();
+
         return redirect()->route('materials.index')->with('success', 'Material deleted.');
     }
 }

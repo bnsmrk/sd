@@ -14,7 +14,7 @@ const form = useForm({
     subject_id: '',
 });
 
-const filteredSubjects = computed(() => props.subjects.filter((subject) => subject.year_level_id === Number(form.year_level_id)));
+const filteredSubjects = computed(() => props.subjects.filter((s) => s.year_level_id === Number(form.year_level_id)));
 </script>
 
 <template>
@@ -24,38 +24,32 @@ const filteredSubjects = computed(() => props.subjects.filter((subject) => subje
             <h1 class="text-xl font-bold">Create Module</h1>
 
             <form @submit.prevent="form.post('/modules')">
-                <!-- Module Name -->
                 <div>
                     <label class="block font-medium">Module Name</label>
-                    <input v-model="form.name" class="w-full rounded border px-3 py-2" placeholder="e.g., Introduction to Algebra" required />
+                    <input v-model="form.name" class="w-full rounded border p-2" required />
                     <div v-if="form.errors.name" class="text-sm text-red-600">{{ form.errors.name }}</div>
                 </div>
 
-                <!-- Year Level -->
                 <div>
                     <label class="block font-medium">Year Level</label>
-                    <select v-model="form.year_level_id" class="w-full rounded border px-3 py-2" required>
+                    <select v-model="form.year_level_id" class="w-full rounded border p-2" required>
                         <option value="">Select Year Level</option>
-                        <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
+                        <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
                     </select>
                     <div v-if="form.errors.year_level_id" class="text-sm text-red-600">{{ form.errors.year_level_id }}</div>
                 </div>
 
-                <!-- Subject -->
                 <div>
                     <label class="block font-medium">Subject</label>
-                    <select v-model="form.subject_id" class="w-full rounded border px-3 py-2" required>
+                    <select v-model="form.subject_id" class="w-full rounded border p-2" required>
                         <option value="">Select Subject</option>
                         <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
                     </select>
                     <div v-if="form.errors.subject_id" class="text-sm text-red-600">{{ form.errors.subject_id }}</div>
                 </div>
 
-                <!-- Submit -->
                 <div>
-                    <button type="submit" class="mt-4 w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700" :disabled="form.processing">
-                        Save
-                    </button>
+                    <button class="mt-4 w-full rounded bg-blue-600 py-2 text-white" :disabled="form.processing">Save</button>
                 </div>
             </form>
         </div>

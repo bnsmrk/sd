@@ -30,7 +30,7 @@ const props = defineProps<{
         year_level_id: number;
         subject_id: number;
         module_id?: number | null;
-        file_path?: string | null; // ✅ Add this line
+        file_path?: string | null;
     };
     modules: Module[];
     subjects: Subject[];
@@ -49,7 +49,6 @@ const filteredSubjects = computed(() => props.subjects.filter((s) => s.year_leve
 const form = useForm({
     title: props.material.title,
     file: null as File | null,
-    existingFilePath: props.material.file_path ?? '',
 });
 
 watch(selectedType, () => {
@@ -59,12 +58,6 @@ watch(selectedType, () => {
 });
 
 function submitForm() {
-    console.log('Selected Type:', selectedType.value);
-    console.log('Selected Module:', selectedModule.value);
-    console.log('Selected Subject:', selectedSubject.value);
-    console.log('Year Level ID:', selectedYearLevelId.value);
-    console.log('Subject ID:', selectedSubjectId.value);
-
     const data = new FormData();
     data.append('_method', 'put');
     data.append('title', form.title);
@@ -74,7 +67,6 @@ function submitForm() {
         data.append('file', form.file);
     }
 
-    // Include the correct relationships
     if (selectedType.value === 'material' && selectedModule.value) {
         data.append('module_id', selectedModule.value.id.toString());
         data.append('year_level_id', selectedModule.value.year_level.id.toString());
@@ -86,12 +78,8 @@ function submitForm() {
         data.append('subject_id', selectedSubjectId.value!.toString());
     }
 
-    // ✅ Important: force Inertia to send it as FormData
     router.post(`/materials/${props.material.id}`, data, {
         forceFormData: true,
-        onError: (errors) => {
-            console.error('Validation failed:', errors);
-        },
     });
 }
 </script>
@@ -111,7 +99,7 @@ function submitForm() {
                 </select>
             </div>
 
-            <!-- Module selection for materials -->
+            <!-- Module -->
             <div v-if="selectedType === 'material'">
                 <label class="block font-medium">Module</label>
                 <select v-model="selectedModuleId" class="w-full rounded border p-2">
@@ -124,7 +112,7 @@ function submitForm() {
                 </div>
             </div>
 
-            <!-- Year Level and Subject selection for lesson plans -->
+            <!-- Year Level + Subject -->
             <div v-else>
                 <label class="block font-medium">Year Level</label>
                 <select v-model="selectedYearLevelId" class="w-full rounded border p-2">
@@ -150,8 +138,7 @@ function submitForm() {
                 <input v-model="form.title" type="text" class="w-full rounded border p-2" />
             </div>
 
-            <!-- File upload -->
-            <!-- File upload -->
+            <!-- File -->
             <div>
                 <label class="block font-medium">Upload File (optional)</label>
                 <input
@@ -160,16 +147,15 @@ function submitForm() {
                     accept=".pdf,.doc,.docx,.ppt,.pptx"
                     @change="(e) => (form.file = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
                 />
-
-                <!-- 👇 Show the existing file if present -->
                 <div v-if="props.material.file_path" class="mt-2 text-sm text-gray-700">
                     <p>Current File:</p>
-                    <a :href="`/storage/${props.material.file_path}`" class="text-blue-600 underline" target="_blank" rel="noopener">
-                        View Uploaded File
-                    </a>
+                    <a :href="`/storage/${props.material.file_path}`" target="_blank" rel="noopener" class="text-blue-600 underline"
+                        >View Uploaded File</a
+                    >
                 </div>
             </div>
 
+            <!-- Submit -->
             <button @click="submitForm" class="w-full rounded bg-blue-600 py-2 text-white">Update</button>
         </div>
     </AppLayout>
