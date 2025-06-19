@@ -7,6 +7,7 @@ use App\Models\Activity;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Models\StudentAnswer;
+use App\Models\StudentQuizResult;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,55 +36,52 @@ class QuizController extends Controller
     $quizId = $request->input('quiz_id');
     $answers = $request->input('answers', []);
 
-    $alreadySubmitted = StudentAnswer::where('user_id', $user->id)
+    // ❌ Prevent double submission
+    $alreadySubmitted = StudentQuizResult::where('user_id', $user->id)
         ->where('activity_id', $quizId)
         ->exists();
 
     if ($alreadySubmitted) {
-        return redirect()->route('student.subjects')->with('error', 'You have already submitted this quiz.');
+        return redirect()->route('student.subjects')->with('error', 'You already submitted this quiz.');
     }
+
+    $quiz = Activity::with(['questions', 'module'])->findOrFail($quizId);
+
+    $score = 0;
+    $total = 0;
 
     foreach ($answers as $questionId => $answer) {
         $question = Question::find($questionId);
         if (!$question) continue;
 
+        $points = 1;
         $isCorrect = null;
+        $earned = 0;
 
         if ($question->type !== 'essay') {
             $correctAnswer = $question->answer_key;
 
             if ($question->type === 'checkboxes') {
-                // Parse both correct and user answers
                 $userAnswer = is_array($answer) ? $answer : json_decode($answer, true);
                 $correct = is_array($correctAnswer) ? $correctAnswer : json_decode($correctAnswer, true);
 
-                if (!is_array($userAnswer) || !is_array($correct)) {
-                    \Log::error('❌ Checkbox answer not in array format', [
-                        'question_id' => $questionId,
-                        'user_answer' => $userAnswer,
-                        'correct_answer' => $correct,
-                    ]);
-                    $isCorrect = false;
-                } else {
-                    // Normalize (lowercase & trim)
-                    $userAnswer = array_map(fn($v) => strtolower(trim($v)), $userAnswer);
-                    $correct = array_map(fn($v) => strtolower(trim($v)), $correct);
+                $userAnswer = array_map(fn($v) => strtolower(trim($v)), $userAnswer ?? []);
+                $correct = array_map(fn($v) => strtolower(trim($v)), $correct ?? []);
 
-                    sort($userAnswer);
-                    sort($correct);
+                sort($userAnswer);
+                sort($correct);
 
-                    $isCorrect = $userAnswer === $correct;
-
-                    \Log::info('✅ Checkbox comparison', [
-                        'question_id' => $questionId,
-                        'user_answer' => $userAnswer,
-                        'correct_answer' => $correct,
-                        'is_correct' => $isCorrect,
-                    ]);
-                }
+                $isCorrect = $userAnswer === $correct;
             } else {
                 $isCorrect = strtolower(trim($correctAnswer)) === strtolower(trim(is_array($answer) ? '' : $answer));
             }
+
+            if ($isCorrect) {
+                $earned = $points;
+                $score += $earned;
+            }
+
+            $total += $points;
         }
 
         StudentAnswer::create([
@@ -92,10 +90,20 @@ class QuizController extends Controller
             'question_id' => $questionId,
             'answer' => is_array($answer) ? json_encode($answer) : $answer,
             'is_correct' => $isCorrect,
+            'score' => $earned,
         ]);
     }
 
-    return redirect()->route('student.subjects')->with('success', 'Quiz submitted successfully!');
+    // ✅ Save total score in DB
+    StudentQuizResult::create([
+        'user_id' => $user->id,
+        'activity_id' => $quizId,
+        'score' => $score,
+        'total_points' => $total,
+    ]);
+
+    return redirect()->route('student.subjects.show', ['id' => $quiz->module->subject_id])
+        ->with('success', 'Quiz submitted and score recorded!');
 }
 
 

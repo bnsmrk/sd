@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\Activity;
 use Illuminate\Database\Eloquent\Model;
 
 class StudentQuizResult extends Model
@@ -12,4 +14,13 @@ class StudentQuizResult extends Model
         'score',
         'total_points',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function activity()
+    {
+        return $this->belongsTo(Activity::class);
+    }
 }
