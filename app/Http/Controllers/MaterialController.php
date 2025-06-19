@@ -1,13 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\Material;
-use App\Models\YearLevel;
+use Inertia\Inertia;
+use App\Models\Module;
 use App\Models\Section;
 use App\Models\Subject;
+use App\Models\Material;
+use App\Models\YearLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 class MaterialController extends Controller
 {
@@ -22,40 +23,36 @@ class MaterialController extends Controller
     public function create()
     {
         return Inertia::render('Materials/Create', [
-            'yearLevels' => YearLevel::all(),
-            'sections' => Section::all(),
-            'subjects' => Subject::all(),
-        ]);
+        'modules' => Module::with(['yearLevel', 'section', 'subject'])->get(),
+    ]);
     }
 
-   public function store(Request $request)
+  public function store(Request $request)
 {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx|max:10240',
-        'year_level' => 'required|exists:year_levels,name',
-        'section' => 'required|exists:sections,name',
-        'subject' => 'required|exists:subjects,name',
+        'module_id' => 'required|exists:modules,id',
+        'type' => 'required|in:material,lesson_plan',
     ]);
 
-    // Get IDs based on names
-    $yearLevelId = YearLevel::where('name', $request->year_level)->value('id');
-    $sectionId = Section::where('name', $request->section)->value('id');
-    $subjectId = Subject::where('name', $request->subject)->value('id');
+    $module = Module::findOrFail($validated['module_id']);
 
     $path = $request->file('file')->store('materials', 'public');
 
     Material::create([
         'title' => $validated['title'],
         'file_path' => $path,
-        'year_level_id' => $yearLevelId,
-        'section_id' => $sectionId,
-        'subject_id' => $subjectId,
+        'year_level_id' => $module->year_level_id,
+        'section_id' => $module->section_id,
+        'subject_id' => $module->subject_id,
         'user_id' => auth()->id(),
+        'type' => $validated['type'],
     ]);
 
-     return redirect()->route('materials.index')->with('success', 'Material uploaded successfully.');
+    return redirect()->route('materials.index')->with('success', 'Material uploaded successfully.');
 }
+
 
     public function edit(Material $material)
     {

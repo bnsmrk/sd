@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
-             $table->string('title');
-        $table->string('file_path');
-        $table->foreignId('year_level_id')->constrained()->cascadeOnDelete();
-        $table->foreignId('section_id')->constrained()->cascadeOnDelete();
-        $table->foreignId('subject_id')->constrained()->cascadeOnDelete();
-        $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // uploader
+            $table->string('title');
+            $table->string('type')->default('material');
+            $table->string('file_path');
+            $table->foreignId('year_level_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('section_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('subject_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // uploader
             $table->timestamps();
         });
     }

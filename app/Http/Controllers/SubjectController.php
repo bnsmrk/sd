@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Subject;
@@ -12,6 +13,7 @@ class SubjectController extends Controller
     public function index()
     {
         $subjects = Subject::with(['yearLevel', 'section'])->get();
+
         return Inertia::render('Subject/Index', [
             'subjects' => $subjects
         ]);
@@ -19,50 +21,111 @@ class SubjectController extends Controller
 
     public function create()
     {
-        $yearLevels = YearLevel::all();
-        $sections = Section::all();
-
         return Inertia::render('Subject/Create', [
-             'yearLevels' => YearLevel::all(),
-        'sections' => Section::all()
+            'yearLevels' => YearLevel::all(),
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
             'year_level_id' => 'required|exists:year_levels,id',
-            'section_id' => 'required|exists:sections,id',
+            'general_subject' => 'nullable|string|max:255',
+            'shared_subjects' => 'nullable|array',
+            'shared_subjects.*' => 'nullable|string|max:255',
+            'strand_subjects' => 'nullable|array',
+            'strand_subjects.ICT' => 'nullable|array',
+            'strand_subjects.ICT.*' => 'nullable|string|max:255',
+            'strand_subjects.NailCare' => 'nullable|array',
+            'strand_subjects.NailCare.*' => 'nullable|string|max:255',
         ]);
 
-        Subject::create($request->only('name', 'year_level_id', 'section_id'));
+        $yearLevel = YearLevel::findOrFail($request->year_level_id);
+        $isSHS = in_array($yearLevel->name, ['Grade 11', 'Grade 12']);
 
-        return redirect()->route('subjects.index')->with('success', 'Subject created.');
+        if (!$isSHS) {
+            if (!$request->general_subject) {
+                return back()->withErrors(['general_subject' => 'Subject is required.']);
+            }
+
+            $exists = Subject::where('year_level_id', $yearLevel->id)
+                ->whereNull('section_id')
+                ->where('name', $request->general_subject)
+                ->exists();
+
+            if ($exists) {
+                return back()->withErrors(['general_subject' => 'Subject already exists for this year level.']);
+            }
+
+            Subject::create([
+                'name' => $request->general_subject,
+                'year_level_id' => $yearLevel->id,
+                'section_id' => null,
+            ]);
+        } else {
+            foreach (array_filter($request->shared_subjects ?? []) as $name) {
+                Subject::create([
+                    'name' => $name,
+                    'year_level_id' => $yearLevel->id,
+                    'section_id' => null,
+                ]);
+            }
+
+            foreach (array_filter($request->input('strand_subjects.ICT') ?? []) as $name) {
+                Subject::create([
+                    'name' => $name,
+                    'year_level_id' => $yearLevel->id,
+                    'section_id' => null,
+                ]);
+            }
+
+            foreach (array_filter($request->input('strand_subjects.NailCare') ?? []) as $name) {
+                Subject::create([
+                    'name' => $name,
+                    'year_level_id' => $yearLevel->id,
+                    'section_id' => null,
+                ]);
+            }
+        }
+
+        return redirect()->route('subjects.index')->with('success', 'Subjects created.');
     }
 
     public function edit(Subject $subject)
-{
-    $yearLevels = YearLevel::all();
-    $sections = Section::all();
-
-    return Inertia::render('Subject/Edit', [
-        'subject' => $subject,
-        'yearLevels' => $yearLevels,
-        'sections' => $sections,
-    ]);
-}
-
+    {
+        return Inertia::render('Subject/Edit', [
+            'subject' => $subject,
+            'yearLevels' => YearLevel::all(),
+        ]);
+    }
 
     public function update(Request $request, Subject $subject)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'year_level_id' => 'required|exists:year_levels,id',
-            'section_id' => 'required|exists:sections,id',
         ]);
 
-        $subject->update($request->only('name', 'year_level_id', 'section_id'));
+        $yearLevel = YearLevel::findOrFail($request->year_level_id);
+        $isSHS = in_array($yearLevel->name, ['Grade 11', 'Grade 12']);
+
+        // Prevent duplicates for Grade 7–10
+        if (!$isSHS) {
+            $exists = Subject::where('year_level_id', $request->year_level_id)
+                ->whereNull('section_id')
+                ->where('name', $request->name)
+                ->where('id', '!=', $subject->id)
+                ->exists();
+
+            if ($exists) {
+                return back()->withErrors(['name' => 'Subject already exists for this year level.']);
+            }
+        }
+
+        $subject->update([
+            'name' => $request->name,
+            'year_level_id' => $request->year_level_id,
+        ]);
 
         return redirect()->route('subjects.index')->with('success', 'Subject updated.');
     }
