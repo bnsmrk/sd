@@ -13,6 +13,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\YearLevelController;
 use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\StudentSubjectController;
+use App\Http\Controllers\TeacherAssignmentController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -47,6 +48,8 @@ Route::middleware('role:admin')->group(function () {
     Route::resource('subjects', SubjectController::class);
     Route::resource('enroll', EnrollStudentController::class);
     Route::resource('users', UserController::class);
+
+Route::resource('teacher-assignments', TeacherAssignmentController::class);
 
 
 });

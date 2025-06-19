@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\Subject;
+use App\Models\YearLevel;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\TeacherAssignment;
+
+class TeacherAssignmentController extends Controller
+{
+    public function index()
+    {
+        $assignments = TeacherAssignment::with([
+            'teacher:id,name',
+            'yearLevel:id,name',
+            'subject:id,name'
+        ])->get();
+
+        return Inertia::render('TeacherAssignments/Index', [
+            'assignments' => $assignments,
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('TeacherAssignments/Create', [
+            'teachers' => User::where('role', 'teacher')->select('id', 'name')->get(),
+            'yearLevels' => YearLevel::select('id', 'name')->get(),
+            'subjects' => Subject::select('id', 'name', 'year_level_id')->get(),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
+
+        TeacherAssignment::create([
+            'user_id' => $request->user_id,
+            'year_level_id' => $request->year_level_id,
+            'subject_id' => $request->subject_id,
+        ]);
+
+        return redirect()->route('teacher-assignments.index')->with('success', 'Teacher assigned successfully.');
+    }
+
+    public function edit(TeacherAssignment $teacherAssignment)
+    {
+        return Inertia::render('TeacherAssignments/Edit', [
+            'assignment' => $teacherAssignment->only(['id', 'user_id', 'year_level_id', 'subject_id']),
+            'teachers' => User::where('role', 'teacher')->select('id', 'name')->get(),
+            'yearLevels' => YearLevel::select('id', 'name')->get(),
+            'subjects' => Subject::select('id', 'name', 'year_level_id')->get(),
+        ]);
+    }
+
+    public function update(Request $request, TeacherAssignment $teacherAssignment)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
+
+        $teacherAssignment->update([
+            'user_id' => $request->user_id,
+            'year_level_id' => $request->year_level_id,
+            'subject_id' => $request->subject_id,
+        ]);
+
+        return redirect()->route('teacher-assignments.index')->with('success', 'Assignment updated.');
+    }
+
+    public function destroy(TeacherAssignment $teacherAssignment)
+    {
+        $teacherAssignment->delete();
+
+        return back()->with('success', 'Assignment deleted.');
+    }
+}

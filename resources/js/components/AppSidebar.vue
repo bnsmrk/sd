@@ -44,6 +44,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/users',
             icon: Users,
         },
+        {
+            title: 'Teacher Assign',
+            href: '/teacher-assignments',
+            icon: Users,
+        },
     ],
     teacher: [
         {
