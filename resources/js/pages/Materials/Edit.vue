@@ -14,9 +14,6 @@ interface Subject {
     id: number;
     name: string;
     year_level_id: number;
-    year_level: { id: number; name: string };
-    section_id: number;
-    section: { id: number; name: string };
 }
 
 interface YearLevel {
@@ -37,33 +34,39 @@ const props = defineProps<{
         type: 'material' | 'lesson_plan';
         year_level_id: number;
         subject_id: number;
-        module_id?: number | null;
         section_id?: number | null;
+        module_id?: number | null;
         file_path?: string | null;
     };
     modules: Module[];
     subjects: Subject[];
     yearLevels: YearLevel[];
     sections: Section[];
+    subjectSectionMap: { section_id: number; subject_id: number }[];
 }>();
 
 const selectedType = ref(props.material.type);
 const selectedModuleId = ref<number | null>(props.material.module_id ?? null);
-const selectedYearLevelId = ref<number | null>(props.material.year_level_id);
-const selectedSubjectId = ref<number | null>(props.material.subject_id);
+const selectedYearLevelId = ref<number | null>(props.material.year_level_id ?? null);
+const selectedSubjectId = ref<number | null>(props.material.subject_id ?? null);
 const selectedSectionId = ref<number | null>(props.material.section_id ?? null);
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
-const selectedSubject = computed(() => props.subjects.find((s) => s.id === selectedSubjectId.value));
-const filteredSubjects = computed(() => props.subjects.filter((s) => s.year_level_id === selectedYearLevelId.value));
 const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevelId.value));
+const filteredSubjects = computed(() => {
+    if (!selectedSectionId.value) return [];
+    const validSubjectIds = props.subjectSectionMap.filter((entry) => entry.section_id === selectedSectionId.value).map((entry) => entry.subject_id);
+    return props.subjects.filter((subject) => validSubjectIds.includes(subject.id));
+});
 
 const form = useForm({
     title: props.material.title,
+    type: props.material.type,
     file: null as File | null,
 });
 
-watch(selectedType, () => {
+watch(selectedType, (newType) => {
+    form.type = newType;
     selectedModuleId.value = null;
     selectedYearLevelId.value = null;
     selectedSubjectId.value = null;
@@ -71,27 +74,26 @@ watch(selectedType, () => {
 });
 
 function submitForm() {
+    if (!form.title) {
+        alert('Title is required.');
+        return;
+    }
+
     const data = new FormData();
     data.append('_method', 'put');
     data.append('title', form.title);
-    data.append('type', selectedType.value);
+    data.append('type', form.type);
 
     if (form.file) {
-        data.append('file', form.file);
+        data.append('file', form.file as Blob);
     }
 
-    if (selectedType.value === 'material' && selectedModule.value) {
-        data.append('module_id', selectedModule.value.id.toString());
-        data.append('year_level_id', selectedModule.value.year_level.id.toString());
-        data.append('subject_id', selectedModule.value.subject.id.toString());
-    }
-
-    if (selectedType.value === 'lesson_plan' && selectedSubject.value) {
-        data.append('year_level_id', selectedYearLevelId.value!.toString());
-        data.append('subject_id', selectedSubjectId.value!.toString());
-        if (selectedSectionId.value) {
-            data.append('section_id', selectedSectionId.value.toString());
-        }
+    if (form.type === 'material' && selectedModuleId.value) {
+        data.append('module_id', selectedModuleId.value.toString());
+    } else if (form.type === 'lesson_plan') {
+        if (selectedSubjectId.value) data.append('subject_id', selectedSubjectId.value.toString());
+        if (selectedSectionId.value) data.append('section_id', selectedSectionId.value.toString());
+        if (selectedYearLevelId.value) data.append('year_level_id', selectedYearLevelId.value.toString());
     }
 
     router.post(`/materials/${props.material.id}`, data, {
@@ -133,22 +135,17 @@ function submitForm() {
                     <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
                 </select>
 
-                <label class="mt-4 block font-medium">Subject</label>
-                <select v-model="selectedSubjectId" class="w-full rounded border p-2">
-                    <option :value="null" disabled>Select Subject</option>
-                    <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
-                </select>
-
                 <label class="mt-4 block font-medium">Section</label>
                 <select v-model="selectedSectionId" class="w-full rounded border p-2">
                     <option :value="null" disabled>Select Section</option>
                     <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
                 </select>
 
-                <div v-if="selectedSubject" class="mt-2 text-sm text-gray-600">
-                    <p>Subject: {{ selectedSubject.name }}</p>
-                    <p>Year Level: {{ selectedSubject.year_level.name }}</p>
-                </div>
+                <label class="mt-4 block font-medium">Subject</label>
+                <select v-model="selectedSubjectId" class="w-full rounded border p-2">
+                    <option :value="null" disabled>Select Subject</option>
+                    <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
+                </select>
             </div>
 
             <div>
@@ -157,16 +154,16 @@ function submitForm() {
             </div>
 
             <div>
-                <label class="block font-medium">Upload File (optional)</label>
+                <label class="block font-medium">Upload File</label>
                 <input
                     type="file"
-                    class="w-full"
                     accept=".pdf,.doc,.docx,.ppt,.pptx"
                     @change="(e) => (form.file = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
+                    class="w-full"
                 />
                 <div v-if="props.material.file_path" class="mt-2 text-sm text-gray-700">
                     <p>Current File:</p>
-                    <a :href="`/storage/${props.material.file_path}`" target="_blank" class="text-blue-600 underline">View Uploaded File</a>
+                    <a :href="`/storage/${props.material.file_path}`" target="_blank" class="text-blue-600 underline"> View Uploaded File </a>
                 </div>
             </div>
 

@@ -32,6 +32,7 @@ const props = defineProps<{
     subjects: Subject[];
     yearLevels: YearLevel[];
     sections: Section[];
+    subjectSectionMap: { section_id: number; subject_id: number }[];
 }>();
 
 const selectedType = ref<'material' | 'lesson_plan'>('material');
@@ -41,8 +42,16 @@ const selectedSubjectId = ref<number | null>(null);
 const selectedSectionId = ref<number | null>(null);
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
-const filteredSubjects = computed(() => props.subjects.filter((s) => s.year_level_id === selectedYearLevelId.value));
+
 const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevelId.value));
+
+const filteredSubjects = computed(() => {
+    if (!selectedSectionId.value) return [];
+
+    const validSubjectIds = props.subjectSectionMap.filter((entry) => entry.section_id === selectedSectionId.value).map((entry) => entry.subject_id);
+
+    return props.subjects.filter((subject) => validSubjectIds.includes(subject.id));
+});
 
 const form = useForm({
     title: '',
@@ -113,16 +122,16 @@ function submitForm() {
                     <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
                 </select>
 
-                <label class="mt-4 block font-medium">Subject</label>
-                <select v-model="selectedSubjectId" class="w-full rounded border p-2">
-                    <option :value="null" disabled>Select Subject</option>
-                    <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
-                </select>
-
                 <label class="mt-4 block font-medium">Section</label>
                 <select v-model="selectedSectionId" class="w-full rounded border p-2">
                     <option :value="null" disabled>Select Section</option>
                     <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
+                </select>
+
+                <label class="mt-4 block font-medium">Subject</label>
+                <select v-model="selectedSubjectId" class="w-full rounded border p-2">
+                    <option :value="null" disabled>Select Subject</option>
+                    <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
                 </select>
             </div>
 
