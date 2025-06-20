@@ -41,6 +41,7 @@ const props = defineProps<{
         module_id: number | null;
         type: string;
     };
+    resultsByActivity: GroupedResult[];
 }>();
 
 const selectedYearLevel = ref<number | null>(props.filters.year_level_id);
@@ -92,7 +93,16 @@ watch(selectedSection, () => {
 watch(selectedSubject, () => {
     selectedModule.value = null;
 });
-
+interface ResultEntry {
+    student: string;
+    score: number;
+    total: number;
+    average: number;
+}
+interface GroupedResult {
+    activity_title: string;
+    entries: ResultEntry[];
+}
 // Apply filter
 const applyFilters = () => {
     router.get('/students-proficiency', {
@@ -154,27 +164,33 @@ const applyFilters = () => {
             </div>
 
             <!-- Results Table -->
-            <table class="mt-6 min-w-full border">
-                <thead class="bg-gray-100 text-left">
-                    <tr>
-                        <th class="border px-4 py-2">Student</th>
-                        <th class="border px-4 py-2">Score</th>
-                        <th class="border px-4 py-2">Total</th>
-                        <th class="border px-4 py-2">Average (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="res in props.results" :key="res.student">
-                        <td class="border px-4 py-2">{{ res.student }}</td>
-                        <td class="border px-4 py-2">{{ res.score }}</td>
-                        <td class="border px-4 py-2">{{ res.total }}</td>
-                        <td class="border px-4 py-2">{{ res.average }}%</td>
-                    </tr>
-                    <tr v-if="props.results.length === 0">
-                        <td colspan="4" class="py-4 text-center text-gray-500 italic">No data to show</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div v-if="props.resultsByActivity.length > 0" class="mt-6 space-y-8">
+                <div v-for="group in props.resultsByActivity" :key="group.activity_title">
+                    <h2 class="text-lg font-semibold text-blue-700">
+                        {{ group.activity_title }}
+                    </h2>
+                    <table class="mt-2 min-w-full border">
+                        <thead class="bg-gray-100 text-left">
+                            <tr>
+                                <th class="border px-4 py-2">Student</th>
+                                <th class="border px-4 py-2">Score</th>
+                                <th class="border px-4 py-2">Total</th>
+                                <th class="border px-4 py-2">Average (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="entry in group.entries" :key="entry.student">
+                                <td class="border px-4 py-2">{{ entry.student }}</td>
+                                <td class="border px-4 py-2">{{ entry.score }}</td>
+                                <td class="border px-4 py-2">{{ entry.total }}</td>
+                                <td class="border px-4 py-2">{{ entry.average }}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div v-else class="mt-8 text-center text-gray-500 italic">No data to show</div>
         </div>
     </AppLayout>
 </template>
