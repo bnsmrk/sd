@@ -21,16 +21,36 @@ class ModuleController extends Controller
     }
 
     public function create()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        $assignments = $user->teacherAssignments()->with(['yearLevel', 'subject'])->get();
+    $assignments = $user->teacherAssignments()
+        ->with(['yearLevel', 'section', 'subject'])
+        ->get();
 
-        return Inertia::render('Modules/Create', [
-            'yearLevels' => $assignments->pluck('yearLevel')->unique('id')->values(),
-            'subjects' => $assignments->pluck('subject')->unique('id')->values(),
-        ]);
-    }
+    // Group assignments by year level
+    $grouped = $assignments->groupBy(fn($a) => $a->yearLevel->id)->map(function ($items, $yearLevelId) {
+        $yearLevel = $items->first()->yearLevel;
+
+        return [
+            'id' => $yearLevel->id,
+            'name' => $yearLevel->name,
+            'sections' => $items->pluck('section')->unique('id')->values()->map(fn($s) => [
+                'id' => $s->id,
+                'name' => $s->name,
+            ]),
+            'subjects' => $items->pluck('subject')->unique('id')->values()->map(fn($s) => [
+                'id' => $s->id,
+                'name' => $s->name,
+            ]),
+        ];
+    })->values();
+
+    return Inertia::render('Modules/Create', [
+        'assignments' => $grouped,
+    ]);
+}
+
 
     public function store(Request $request)
     {

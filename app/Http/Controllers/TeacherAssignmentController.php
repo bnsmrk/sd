@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Section;
 use App\Models\Subject;
 use App\Models\YearLevel;
 use Illuminate\Http\Request;
@@ -23,14 +24,27 @@ class TeacherAssignmentController extends Controller
             'assignments' => $assignments,
         ]);
     }
+public function show(TeacherAssignment $teacherAssignment)
+{
+    return Inertia::render('TeacherAssignments/View', [
+        'assignment' => [
+            'id' => $teacherAssignment->id,
+            'teacher' => $teacherAssignment->teacher()->select('id', 'name')->first(),
+            'year_level' => $teacherAssignment->yearLevel()->select('id', 'name')->first(),
+            'section' => $teacherAssignment->section()->select('id', 'name')->first(),
+            'subject' => $teacherAssignment->subject()->select('id', 'name')->first(),
+        ]
+    ]);
+}
 
     public function create()
     {
         return Inertia::render('TeacherAssignments/Create', [
-            'teachers' => User::where('role', 'teacher')->select('id', 'name')->get(),
-            'yearLevels' => YearLevel::select('id', 'name')->get(),
-            'subjects' => Subject::select('id', 'name', 'year_level_id')->get(),
-        ]);
+        'teachers' => User::where('role', 'teacher')->select('id', 'name')->get(),
+        'yearLevels' => YearLevel::select('id', 'name')->get(),
+        'sections' => Section::select('id', 'name', 'year_level_id')->get(),
+        'subjects' => Subject::select('id', 'name', 'year_level_id', 'section_id')->get(), // include section_id
+    ]);
     }
 
     public function store(Request $request)
@@ -38,39 +52,45 @@ class TeacherAssignmentController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'year_level_id' => 'required|exists:year_levels,id',
+              'section_id' => 'required|exists:sections,id',
             'subject_id' => 'required|exists:subjects,id',
         ]);
 
         TeacherAssignment::create([
             'user_id' => $request->user_id,
             'year_level_id' => $request->year_level_id,
+            'section_id' => $request->section_id,
             'subject_id' => $request->subject_id,
         ]);
 
         return redirect()->route('teacher-assignments.index')->with('success', 'Teacher assigned successfully.');
     }
 
-    public function edit(TeacherAssignment $teacherAssignment)
-    {
-        return Inertia::render('TeacherAssignments/Edit', [
-            'assignment' => $teacherAssignment->only(['id', 'user_id', 'year_level_id', 'subject_id']),
-            'teachers' => User::where('role', 'teacher')->select('id', 'name')->get(),
-            'yearLevels' => YearLevel::select('id', 'name')->get(),
-            'subjects' => Subject::select('id', 'name', 'year_level_id')->get(),
-        ]);
-    }
+   public function edit(TeacherAssignment $teacherAssignment)
+{
+     return Inertia::render('TeacherAssignments/Edit', [
+        'assignment' => $teacherAssignment->only(['id', 'user_id', 'year_level_id', 'section_id', 'subject_id']),
+        'teachers' => User::where('role', 'teacher')->select('id', 'name')->get(),
+        'yearLevels' => YearLevel::select('id', 'name')->get(),
+        'sections' => Section::select('id', 'name', 'year_level_id')->get(),
+        'subjects' => Subject::select('id', 'name', 'year_level_id', 'section_id')->get(),
+    ]);
+}
+
 
     public function update(Request $request, TeacherAssignment $teacherAssignment)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'year_level_id' => 'required|exists:year_levels,id',
+             'section_id' => 'required|exists:sections,id',
             'subject_id' => 'required|exists:subjects,id',
         ]);
 
         $teacherAssignment->update([
             'user_id' => $request->user_id,
             'year_level_id' => $request->year_level_id,
+            'section_id' => $request->section_id,
             'subject_id' => $request->subject_id,
         ]);
 

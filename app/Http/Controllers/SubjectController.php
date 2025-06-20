@@ -27,69 +27,34 @@ class SubjectController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'year_level_id' => 'required|exists:year_levels,id',
-            'general_subject' => 'nullable|string|max:255',
-            'shared_subjects' => 'nullable|array',
-            'shared_subjects.*' => 'nullable|string|max:255',
-            'strand_subjects' => 'nullable|array',
-            'strand_subjects.ICT' => 'nullable|array',
-            'strand_subjects.ICT.*' => 'nullable|string|max:255',
-            'strand_subjects.NailCare' => 'nullable|array',
-            'strand_subjects.NailCare.*' => 'nullable|string|max:255',
+{
+    $request->validate([
+        'year_level_id' => 'required|exists:year_levels,id',
+        'shared_subjects' => 'nullable|array',
+        'shared_subjects.*' => 'nullable|string|max:255',
+        'major_subjects' => 'nullable|array',
+        'major_subjects.*' => 'nullable|string|max:255',
+    ]);
+
+    foreach (array_filter($request->shared_subjects ?? []) as $name) {
+        Subject::create([
+            'name' => $name,
+            'year_level_id' => $request->year_level_id,
+            'section_id' => null,
         ]);
-
-        $yearLevel = YearLevel::findOrFail($request->year_level_id);
-        $isSHS = in_array($yearLevel->name, ['Grade 11', 'Grade 12']);
-
-        if (!$isSHS) {
-            if (!$request->general_subject) {
-                return back()->withErrors(['general_subject' => 'Subject is required.']);
-            }
-
-            $exists = Subject::where('year_level_id', $yearLevel->id)
-                ->whereNull('section_id')
-                ->where('name', $request->general_subject)
-                ->exists();
-
-            if ($exists) {
-                return back()->withErrors(['general_subject' => 'Subject already exists for this year level.']);
-            }
-
-            Subject::create([
-                'name' => $request->general_subject,
-                'year_level_id' => $yearLevel->id,
-                'section_id' => null,
-            ]);
-        } else {
-            foreach (array_filter($request->shared_subjects ?? []) as $name) {
-                Subject::create([
-                    'name' => $name,
-                    'year_level_id' => $yearLevel->id,
-                    'section_id' => null,
-                ]);
-            }
-
-            foreach (array_filter($request->input('strand_subjects.ICT') ?? []) as $name) {
-                Subject::create([
-                    'name' => $name,
-                    'year_level_id' => $yearLevel->id,
-                    'section_id' => null,
-                ]);
-            }
-
-            foreach (array_filter($request->input('strand_subjects.NailCare') ?? []) as $name) {
-                Subject::create([
-                    'name' => $name,
-                    'year_level_id' => $yearLevel->id,
-                    'section_id' => null,
-                ]);
-            }
-        }
-
-        return redirect()->route('subjects.index')->with('success', 'Subjects created.');
     }
+
+    foreach (array_filter($request->major_subjects ?? []) as $name) {
+        Subject::create([
+            'name' => $name,
+            'year_level_id' => $request->year_level_id,
+            'section_id' => null,
+        ]);
+    }
+
+    return redirect()->route('subjects.index')->with('success', 'Subjects created.');
+}
+
 
     public function edit(Subject $subject)
     {

@@ -6,16 +6,26 @@ import { computed } from 'vue';
 const props = defineProps<{
     teachers: Array<{ id: number; name: string }>;
     yearLevels: Array<{ id: number; name: string }>;
-    subjects: Array<{ id: number; name: string; year_level_id: number }>;
+    sections: Array<{ id: number; name: string; year_level_id: number }>;
+    subjects: Array<{ id: number; name: string; year_level_id: number; section_id: number | null }>;
 }>();
 
 const form = useForm({
     user_id: '',
     year_level_id: '',
+    section_id: '',
     subject_id: '',
 });
 
-const filteredSubjects = computed(() => props.subjects.filter((subject) => subject.year_level_id === Number(form.year_level_id)));
+const filteredSections = computed(() => props.sections.filter((section) => section.year_level_id === Number(form.year_level_id)));
+
+const filteredSubjects = computed(() => {
+    const ylId = Number(form.year_level_id);
+    const secId = Number(form.section_id);
+
+    // Filter shared or matched section subjects for the selected year level
+    return props.subjects.filter((subject) => subject.year_level_id === ylId && (subject.section_id === null || subject.section_id === secId));
+});
 </script>
 
 <template>
@@ -43,6 +53,16 @@ const filteredSubjects = computed(() => props.subjects.filter((subject) => subje
                         <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
                     </select>
                     <div v-if="form.errors.year_level_id" class="text-sm text-red-600">{{ form.errors.year_level_id }}</div>
+                </div>
+
+                <!-- Section -->
+                <div>
+                    <label class="block font-medium">Section</label>
+                    <select v-model="form.section_id" class="w-full rounded border px-3 py-2" required>
+                        <option value="">Select Section</option>
+                        <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
+                    </select>
+                    <div v-if="form.errors.section_id" class="text-sm text-red-600">{{ form.errors.section_id }}</div>
                 </div>
 
                 <!-- Subject -->

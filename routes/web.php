@@ -13,6 +13,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\YearLevelController;
 use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\StudentSubjectController;
+use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
 
 Route::get('/', function () {
@@ -39,6 +40,7 @@ Route::middleware('role:teacher')->group(function () {
     Route::post('questions', [QuestionController::class, 'store'])->name('questions.store');
     });
     Route::resource('modules', ModuleController::class);
+Route::resource('students-proficiency', ProficiencyReportController::class)->only(['index']);
 
 });
 
@@ -50,6 +52,7 @@ Route::middleware('role:admin')->group(function () {
     Route::resource('users', UserController::class);
 
 Route::resource('teacher-assignments', TeacherAssignmentController::class);
+
 
 
 });

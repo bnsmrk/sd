@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { Head, useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps<{
-    subject: { id: number; name: string; year_level_id: number };
-    yearLevels: { id: number; name: string }[];
+    subject: {
+        id: number;
+        name: string;
+        year_level_id: number;
+        section_id?: number | null;
+        year_level?: { id: number; name: string };
+        section?: { id: number; name: string } | null;
+    };
+    yearLevels: Array<{ id: number; name: string }>;
 }>();
 
 const form = useForm({
@@ -13,49 +20,47 @@ const form = useForm({
     year_level_id: props.subject.year_level_id,
 });
 
-const selectedYearName = ref(props.yearLevels.find((y) => y.id === props.subject.year_level_id)?.name || '');
-
-watch(
-    () => form.year_level_id,
-    (newId) => {
-        const level = props.yearLevels.find((y) => y.id === Number(newId));
-        selectedYearName.value = level?.name || '';
-    },
-    { immediate: true },
-);
+const isSHS = computed(() => {
+    const selected = props.yearLevels.find((yl) => yl.id === form.year_level_id);
+    return selected?.name === 'Grade 11' || selected?.name === 'Grade 12';
+});
 </script>
 
 <template>
     <Head title="Edit Subject" />
     <AppLayout>
-        <div class="mx-auto max-w-xl p-4">
-            <h2 class="mb-4 text-xl font-bold">Edit Subject</h2>
+        <div class="mx-auto max-w-xl space-y-6 p-4">
+            <h1 class="text-xl font-bold">Edit Subject</h1>
 
             <form @submit.prevent="form.put(`/subjects/${props.subject.id}`)">
-                <!-- Year Level -->
-                <div class="mb-4">
-                    <label class="block font-semibold">Year Level</label>
-                    <select v-model="form.year_level_id" class="w-full rounded border px-3 py-2">
-                        <option value="">Select Year Level</option>
-                        <option v-for="level in props.yearLevels" :key="level.id" :value="level.id">
-                            {{ level.name }}
-                        </option>
-                    </select>
-                    <div v-if="form.errors.year_level_id" class="text-sm text-red-500">{{ form.errors.year_level_id }}</div>
-                </div>
-
                 <!-- Subject Name -->
-                <div class="mb-4">
-                    <label class="block font-semibold">Subject Name</label>
-                    <input v-model="form.name" type="text" class="w-full rounded border px-3 py-2" :class="{ 'border-red-500': form.errors.name }" />
-                    <div v-if="form.errors.name" class="text-sm text-red-500">{{ form.errors.name }}</div>
+                <div>
+                    <label class="block font-medium">Subject Name</label>
+                    <input v-model="form.name" class="w-full rounded border p-2" required />
+                    <div v-if="form.errors.name" class="text-sm text-red-600">{{ form.errors.name }}</div>
                 </div>
 
-                <div class="flex justify-end gap-4">
-                    <Link href="/subjects" class="text-gray-600 hover:underline">Cancel</Link>
-                    <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700" :disabled="form.processing">
-                        {{ form.processing ? 'Saving...' : 'Save' }}
-                    </button>
+                <!-- Year Level -->
+                <div>
+                    <label class="block font-medium">Year Level</label>
+                    <select v-model="form.year_level_id" class="w-full rounded border p-2" required>
+                        <option value="">Select Year Level</option>
+                        <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
+                    </select>
+                    <div v-if="form.errors.year_level_id" class="text-sm text-red-600">{{ form.errors.year_level_id }}</div>
+                </div>
+
+                <!-- Section (only shown if SHS) -->
+                <div v-if="isSHS && props.subject.section">
+                    <label class="block font-medium">Section</label>
+                    <div class="rounded border bg-gray-100 px-3 py-2 text-sm text-gray-700">
+                        {{ props.subject.section.name }}
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div>
+                    <button class="mt-4 w-full rounded bg-blue-600 py-2 text-white" :disabled="form.processing">Update Subject</button>
                 </div>
             </form>
         </div>

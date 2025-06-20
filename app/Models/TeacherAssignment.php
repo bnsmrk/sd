@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class TeacherAssignment extends Model
 {
     protected $fillable = [
-        'user_id', 'year_level_id', 'subject_id',
+        'user_id', 'year_level_id', 'section_id', 'subject_id',
     ];
 
     public function teacher() {
@@ -21,13 +21,10 @@ class TeacherAssignment extends Model
     public function yearLevel() {
         return $this->belongsTo(YearLevel::class);
     }
-public function section()
-{
-    return $this->belongsTo(Section::class);
-}
-
-
-
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
     public function subject() {
         return $this->belongsTo(Subject::class);
     }

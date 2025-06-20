@@ -94,7 +94,7 @@ class QuizController extends Controller
         ]);
     }
 
-    // ✅ Save total score in DB
+
     StudentQuizResult::create([
         'user_id' => $user->id,
         'activity_id' => $quizId,
@@ -102,8 +102,13 @@ class QuizController extends Controller
         'total_points' => $total,
     ]);
 
-    return redirect()->route('student.subjects.show', ['id' => $quiz->module->subject_id])
-        ->with('success', 'Quiz submitted and score recorded!');
+    return Inertia::render('Student/QuizResult', [
+    'score' => $score,
+    'total' => $total,
+    'quizId' => $quiz->id,
+    'subjectId' => $quiz->module->subject_id,
+]);
+
 }
 
 

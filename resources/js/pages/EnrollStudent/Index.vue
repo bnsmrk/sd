@@ -74,7 +74,11 @@ const destroyItem = (id: number) => {
                             <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ enroll.user.name }}</td>
                             <td class="px-6 py-4">{{ enroll.year_level.name }}</td>
                             <td class="px-6 py-4">{{ enroll.subject.name }}</td>
+
                             <td class="flex items-center justify-center space-x-3 px-6 py-4">
+                                <Link :href="`/enroll/${enroll.id}`" class="font-medium text-green-600 hover:underline dark:text-green-400">
+                                    View
+                                </Link>
                                 <Link :href="`/enroll/${enroll.id}/edit`" class="font-medium text-blue-600 hover:underline dark:text-blue-500"
                                     >Edit</Link
                                 >
