@@ -14,7 +14,6 @@ interface Subject {
     id: number;
     name: string;
     year_level_id: number;
-    year_level: { id: number; name: string };
 }
 
 interface YearLevel {
@@ -22,19 +21,28 @@ interface YearLevel {
     name: string;
 }
 
+interface Section {
+    id: number;
+    name: string;
+    year_level_id: number;
+}
+
 const props = defineProps<{
     modules: Module[];
     subjects: Subject[];
     yearLevels: YearLevel[];
+    sections: Section[];
 }>();
 
 const selectedType = ref<'material' | 'lesson_plan'>('material');
 const selectedModuleId = ref<number | null>(null);
 const selectedYearLevelId = ref<number | null>(null);
 const selectedSubjectId = ref<number | null>(null);
+const selectedSectionId = ref<number | null>(null);
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
 const filteredSubjects = computed(() => props.subjects.filter((s) => s.year_level_id === selectedYearLevelId.value));
+const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevelId.value));
 
 const form = useForm({
     title: '',
@@ -47,6 +55,7 @@ watch(selectedType, (newType) => {
     selectedModuleId.value = null;
     selectedYearLevelId.value = null;
     selectedSubjectId.value = null;
+    selectedSectionId.value = null;
 });
 
 function submitForm() {
@@ -62,8 +71,9 @@ function submitForm() {
 
     if (form.type === 'material' && selectedModuleId.value) {
         data.append('module_id', selectedModuleId.value.toString());
-    } else if (form.type === 'lesson_plan' && selectedSubjectId.value) {
+    } else if (form.type === 'lesson_plan' && selectedSubjectId.value && selectedSectionId.value) {
         data.append('subject_id', selectedSubjectId.value.toString());
+        data.append('section_id', selectedSectionId.value.toString());
     }
 
     router.post('/materials', data);
@@ -107,6 +117,12 @@ function submitForm() {
                 <select v-model="selectedSubjectId" class="w-full rounded border p-2">
                     <option :value="null" disabled>Select Subject</option>
                     <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
+                </select>
+
+                <label class="mt-4 block font-medium">Section</label>
+                <select v-model="selectedSectionId" class="w-full rounded border p-2">
+                    <option :value="null" disabled>Select Section</option>
+                    <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
                 </select>
             </div>
 

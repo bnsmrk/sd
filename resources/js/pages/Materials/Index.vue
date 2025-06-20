@@ -9,6 +9,7 @@ defineProps<{
         type: string;
         file_path: string;
         year_level: { name: string };
+        section?: { name: string }; // ✅ section is now optional
         subject: { name: string };
         user: { name: string };
     }>;
@@ -44,6 +45,8 @@ function deleteMaterial(id: number) {
                         <th class="p-2">Title</th>
                         <th>Type</th>
                         <th>Year Level</th>
+                        <th>Section</th>
+                        <!-- ✅ New -->
                         <th>Subject</th>
                         <th>File</th>
                         <th>Actions</th>
@@ -52,11 +55,13 @@ function deleteMaterial(id: number) {
                 <tbody>
                     <tr v-for="material in materials" :key="material.id" class="border-t">
                         <td class="p-2">{{ material.title }}</td>
-                        <td>{{ material.type }}</td>
+                        <td class="capitalize">{{ material.type.replace('_', ' ') }}</td>
                         <td>{{ material.year_level.name }}</td>
+                        <td>{{ material.section?.name || '—' }}</td>
+                        <!-- ✅ New -->
                         <td>{{ material.subject.name }}</td>
                         <td>
-                            <a :href="`/storage/${material.file_path}`" target="_blank" class="text-blue-600 underline"> View </a>
+                            <a :href="`/storage/${material.file_path}`" target="_blank" class="text-blue-600 underline">View</a>
                         </td>
                         <td>
                             <button class="mr-2 text-blue-600" @click="editMaterial(material.id)">Edit</button>

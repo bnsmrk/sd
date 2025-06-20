@@ -15,11 +15,19 @@ interface Subject {
     name: string;
     year_level_id: number;
     year_level: { id: number; name: string };
+    section_id: number;
+    section: { id: number; name: string };
 }
 
 interface YearLevel {
     id: number;
     name: string;
+}
+
+interface Section {
+    id: number;
+    name: string;
+    year_level_id: number;
 }
 
 const props = defineProps<{
@@ -30,21 +38,25 @@ const props = defineProps<{
         year_level_id: number;
         subject_id: number;
         module_id?: number | null;
+        section_id?: number | null;
         file_path?: string | null;
     };
     modules: Module[];
     subjects: Subject[];
     yearLevels: YearLevel[];
+    sections: Section[];
 }>();
 
-const selectedType = ref<'material' | 'lesson_plan'>(props.material.type);
+const selectedType = ref(props.material.type);
 const selectedModuleId = ref<number | null>(props.material.module_id ?? null);
 const selectedYearLevelId = ref<number | null>(props.material.year_level_id);
 const selectedSubjectId = ref<number | null>(props.material.subject_id);
+const selectedSectionId = ref<number | null>(props.material.section_id ?? null);
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
 const selectedSubject = computed(() => props.subjects.find((s) => s.id === selectedSubjectId.value));
 const filteredSubjects = computed(() => props.subjects.filter((s) => s.year_level_id === selectedYearLevelId.value));
+const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevelId.value));
 
 const form = useForm({
     title: props.material.title,
@@ -55,6 +67,7 @@ watch(selectedType, () => {
     selectedModuleId.value = null;
     selectedYearLevelId.value = null;
     selectedSubjectId.value = null;
+    selectedSectionId.value = null;
 });
 
 function submitForm() {
@@ -76,6 +89,9 @@ function submitForm() {
     if (selectedType.value === 'lesson_plan' && selectedSubject.value) {
         data.append('year_level_id', selectedYearLevelId.value!.toString());
         data.append('subject_id', selectedSubjectId.value!.toString());
+        if (selectedSectionId.value) {
+            data.append('section_id', selectedSectionId.value.toString());
+        }
     }
 
     router.post(`/materials/${props.material.id}`, data, {
@@ -90,7 +106,6 @@ function submitForm() {
         <div class="mx-auto max-w-xl space-y-6 p-6">
             <h2 class="text-xl font-bold">Edit {{ selectedType === 'material' ? 'Material' : 'Lesson Plan' }}</h2>
 
-            <!-- Type -->
             <div>
                 <label class="block font-medium">Type</label>
                 <select v-model="selectedType" class="w-full rounded border p-2">
@@ -99,7 +114,6 @@ function submitForm() {
                 </select>
             </div>
 
-            <!-- Module -->
             <div v-if="selectedType === 'material'">
                 <label class="block font-medium">Module</label>
                 <select v-model="selectedModuleId" class="w-full rounded border p-2">
@@ -112,7 +126,6 @@ function submitForm() {
                 </div>
             </div>
 
-            <!-- Year Level + Subject -->
             <div v-else>
                 <label class="block font-medium">Year Level</label>
                 <select v-model="selectedYearLevelId" class="w-full rounded border p-2">
@@ -126,19 +139,23 @@ function submitForm() {
                     <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
                 </select>
 
+                <label class="mt-4 block font-medium">Section</label>
+                <select v-model="selectedSectionId" class="w-full rounded border p-2">
+                    <option :value="null" disabled>Select Section</option>
+                    <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
+                </select>
+
                 <div v-if="selectedSubject" class="mt-2 text-sm text-gray-600">
-                    <p>Selected Subject: {{ selectedSubject.name }}</p>
+                    <p>Subject: {{ selectedSubject.name }}</p>
                     <p>Year Level: {{ selectedSubject.year_level.name }}</p>
                 </div>
             </div>
 
-            <!-- Title -->
             <div>
                 <label class="block font-medium">Title</label>
                 <input v-model="form.title" type="text" class="w-full rounded border p-2" />
             </div>
 
-            <!-- File -->
             <div>
                 <label class="block font-medium">Upload File (optional)</label>
                 <input
@@ -149,13 +166,10 @@ function submitForm() {
                 />
                 <div v-if="props.material.file_path" class="mt-2 text-sm text-gray-700">
                     <p>Current File:</p>
-                    <a :href="`/storage/${props.material.file_path}`" target="_blank" rel="noopener" class="text-blue-600 underline"
-                        >View Uploaded File</a
-                    >
+                    <a :href="`/storage/${props.material.file_path}`" target="_blank" class="text-blue-600 underline">View Uploaded File</a>
                 </div>
             </div>
 
-            <!-- Submit -->
             <button @click="submitForm" class="w-full rounded bg-blue-600 py-2 text-white">Update</button>
         </div>
     </AppLayout>
