@@ -41,6 +41,8 @@ Route::middleware('role:teacher')->group(function () {
     });
     Route::resource('modules', ModuleController::class);
 Route::resource('students-proficiency', ProficiencyReportController::class)->only(['index']);
+Route::get('/students-proficiency/pdf', [ProficiencyReportController::class, 'exportPdf'])->name('students-proficiency.pdf');
+// Route::get('/students-proficiency/pdf', [ProficiencyReportController::class, 'exportPdf']);
 
 });
 

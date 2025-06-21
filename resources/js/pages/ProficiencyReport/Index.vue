@@ -21,11 +21,15 @@ interface Module {
     id: number;
     name: string;
 }
-interface Result {
+interface ResultEntry {
     student: string;
     score: number;
     total: number;
     average: number;
+}
+interface GroupedResult {
+    activity_title: string;
+    entries: ResultEntry[];
 }
 
 const props = defineProps<{
@@ -33,7 +37,6 @@ const props = defineProps<{
     sections: Section[];
     subjects: Subject[];
     modules: Module[];
-    results: Result[];
     filters: {
         year_level_id: number | null;
         section_id: number | null;
@@ -50,18 +53,13 @@ const selectedSubject = ref<number | null>(props.filters.subject_id);
 const selectedModule = ref<number | null>(props.filters.module_id);
 const selectedType = ref<string>(props.filters.type || 'quiz');
 
-// Filtered sections based on year level
-const filteredSections = computed(() => {
-    return props.sections.filter((s) => s.year_level_id === selectedYearLevel.value);
-});
+// Filtered dropdown lists
+const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevel.value));
+const filteredSubjects = computed(() => props.subjects.filter((s) => s.section_id === selectedSection.value));
 
-// Filtered subjects based on section
-const filteredSubjects = computed(() => {
-    return props.subjects.filter((s) => s.section_id === selectedSection.value);
-});
-
-// Watch subject change → fetch modules
+// Fetch modules when subject changes
 watch(selectedSubject, () => {
+    selectedModule.value = null; // reset module when subject changes
     if (selectedSubject.value && selectedYearLevel.value && selectedSection.value) {
         router.get(
             '/students-proficiency',
@@ -80,7 +78,7 @@ watch(selectedSubject, () => {
     }
 });
 
-// Reset dropdowns on hierarchy change
+// Reset cascade on selection change
 watch(selectedYearLevel, () => {
     selectedSection.value = null;
     selectedSubject.value = null;
@@ -90,20 +88,18 @@ watch(selectedSection, () => {
     selectedSubject.value = null;
     selectedModule.value = null;
 });
-watch(selectedSubject, () => {
-    selectedModule.value = null;
-});
-interface ResultEntry {
-    student: string;
-    score: number;
-    total: number;
-    average: number;
-}
-interface GroupedResult {
-    activity_title: string;
-    entries: ResultEntry[];
-}
-// Apply filter
+
+// Automatically select first module after fetch
+watch(
+    () => props.modules,
+    (newModules) => {
+        if (newModules.length > 0) {
+            selectedModule.value = newModules[0].id;
+        }
+    },
+);
+
+// Apply filters
 const applyFilters = () => {
     router.get('/students-proficiency', {
         year_level_id: selectedYearLevel.value,
@@ -113,6 +109,16 @@ const applyFilters = () => {
         type: selectedType.value,
     });
 };
+
+// Computed URL for PDF
+const pdfUrl = computed(() => {
+    return `/students-proficiency/pdf?year_level_id=${selectedYearLevel.value ?? ''}&section_id=${selectedSection.value ?? ''}&subject_id=${selectedSubject.value ?? ''}&module_id=${selectedModule.value ?? ''}&type=${selectedType.value ?? 'quiz'}`;
+});
+
+// Whether to show the PDF button
+const canGeneratePdf = computed(() => {
+    return !!selectedSubject.value && !!selectedModule.value;
+});
 </script>
 
 <template>
@@ -121,40 +127,33 @@ const applyFilters = () => {
             <h1 class="text-2xl font-bold">Proficiency Report</h1>
 
             <!-- Filters -->
+            <div>
+                <p><strong>Subject:</strong> {{ selectedSubject }}</p>
+                <p><strong>Module:</strong> {{ selectedModule }}</p>
+                <p><strong>Can Generate PDF?:</strong> {{ canGeneratePdf }}</p>
+            </div>
+
             <div class="flex flex-wrap gap-4">
-                <!-- Year Level -->
                 <select v-model="selectedYearLevel" class="rounded border px-3 py-2">
                     <option :value="null">Select Year Level</option>
-                    <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">
-                        {{ y.name }}
-                    </option>
+                    <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
                 </select>
 
-                <!-- Section -->
                 <select v-model="selectedSection" class="rounded border px-3 py-2">
                     <option :value="null">Select Section</option>
-                    <option v-for="s in filteredSections" :key="s.id" :value="s.id">
-                        {{ s.name }}
-                    </option>
+                    <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
                 </select>
 
-                <!-- Subject -->
                 <select v-model="selectedSubject" class="rounded border px-3 py-2">
                     <option :value="null">Select Subject</option>
-                    <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">
-                        {{ sub.name }}
-                    </option>
+                    <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
                 </select>
 
-                <!-- Module -->
                 <select v-model="selectedModule" class="rounded border px-3 py-2">
                     <option :value="null">Select Module</option>
-                    <option v-for="m in props.modules" :key="m.id" :value="m.id">
-                        {{ m.name }}
-                    </option>
+                    <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
                 </select>
 
-                <!-- Type -->
                 <select v-model="selectedType" class="rounded border px-3 py-2">
                     <option value="quiz">Quiz</option>
                     <option value="exam">Exam</option>
@@ -163,12 +162,16 @@ const applyFilters = () => {
                 <button @click="applyFilters" class="rounded bg-blue-600 px-4 py-2 text-white">Generate Report</button>
             </div>
 
+            <!-- PDF Button -->
+            <!-- PDF Button -->
+            <div v-if="props.resultsByActivity.length > 0 && canGeneratePdf" class="mt-4 flex justify-end">
+                <a :href="pdfUrl" target="_blank" class="rounded bg-red-600 px-4 py-2 text-white">Generate PDF</a>
+            </div>
+
             <!-- Results Table -->
             <div v-if="props.resultsByActivity.length > 0" class="mt-6 space-y-8">
                 <div v-for="group in props.resultsByActivity" :key="group.activity_title">
-                    <h2 class="text-lg font-semibold text-blue-700">
-                        {{ group.activity_title }}
-                    </h2>
+                    <h2 class="text-lg font-semibold text-blue-700">{{ group.activity_title }}</h2>
                     <table class="mt-2 min-w-full border">
                         <thead class="bg-gray-100 text-left">
                             <tr>
