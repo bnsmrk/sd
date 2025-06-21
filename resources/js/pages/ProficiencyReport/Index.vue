@@ -46,7 +46,7 @@ const props = defineProps<{
     };
     resultsByActivity: GroupedResult[];
 }>();
-
+const filtersApplied = ref(false);
 const selectedYearLevel = ref<number | null>(props.filters.year_level_id);
 const selectedSection = ref<number | null>(props.filters.section_id);
 const selectedSubject = ref<number | null>(props.filters.subject_id);
@@ -101,13 +101,24 @@ watch(
 
 // Apply filters
 const applyFilters = () => {
-    router.get('/students-proficiency', {
-        year_level_id: selectedYearLevel.value,
-        section_id: selectedSection.value,
-        subject_id: selectedSubject.value,
-        module_id: selectedModule.value,
-        type: selectedType.value,
-    });
+    filtersApplied.value = false; // Reset before request
+    router.get(
+        '/students-proficiency',
+        {
+            year_level_id: selectedYearLevel.value,
+            section_id: selectedSection.value,
+            subject_id: selectedSubject.value,
+            module_id: selectedModule.value,
+            type: selectedType.value,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                filtersApplied.value = true;
+            },
+        },
+    );
 };
 
 // Computed URL for PDF
@@ -117,7 +128,7 @@ const pdfUrl = computed(() => {
 
 // Whether to show the PDF button
 const canGeneratePdf = computed(() => {
-    return !!selectedSubject.value && !!selectedModule.value;
+    return filtersApplied.value && !!selectedSubject.value && !!selectedModule.value && props.resultsByActivity.length > 0;
 });
 </script>
 
