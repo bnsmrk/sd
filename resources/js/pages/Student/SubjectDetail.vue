@@ -15,6 +15,8 @@ const { subject } = defineProps<{
                 title: string;
                 type: string;
                 scheduled_at: string;
+                score: number | null;
+                total_points: number | null;
             }>;
         }>;
     };
@@ -63,15 +65,33 @@ function goToActivity(activity: { id: number; type: string }) {
                 <!-- Collapsible Body -->
                 <transition name="fade">
                     <div v-if="openModuleId === module.id" class="space-y-2 bg-white p-4 dark:bg-gray-900">
+                        <!-- Inside each activity box -->
                         <div
                             v-for="activity in module.activities"
                             :key="activity.id"
-                            class="cursor-pointer rounded border p-3 hover:bg-gray-100 dark:hover:bg-gray-800"
-                            @click="goToActivity(activity)"
+                            class="rounded border p-3"
+                            :class="{
+                                'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800': activity.score === null,
+                                'cursor-not-allowed bg-gray-100 opacity-60 dark:bg-gray-800': activity.score !== null,
+                            }"
+                            @click="activity.score === null ? goToActivity(activity) : null"
                         >
-                            <div class="font-medium">{{ activity.title }}</div>
-                            <div class="text-sm text-gray-500">{{ activity.type }} – {{ activity.scheduled_at }}</div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="font-medium">{{ activity.title }}</div>
+                                    <div class="text-sm text-gray-500">{{ activity.type }} – {{ activity.scheduled_at }}</div>
+
+                                    <div v-if="activity.score !== null && activity.total_points !== null" class="text-sm text-gray-700">
+                                        Score: <span class="font-semibold">{{ activity.score }}</span> /
+                                        <span class="font-semibold">{{ activity.total_points }}</span>
+                                    </div>
+                                    <div v-else class="text-sm text-gray-400 italic">Not taken yet</div>
+                                </div>
+
+                                <div v-if="activity.score !== null" class="text-xs font-semibold text-green-600">✔ Completed</div>
+                            </div>
                         </div>
+
                         <div v-if="module.activities.length === 0" class="text-sm text-gray-400 italic">No activities in this module.</div>
                     </div>
                 </transition>

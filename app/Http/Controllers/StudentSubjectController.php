@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Models\StudentQuizResult;
 use Illuminate\Support\Facades\Auth;
 
 class StudentSubjectController extends Controller
@@ -27,7 +28,13 @@ class StudentSubjectController extends Controller
 
 public function show($id)
 {
+    $userId = Auth::id();
+
     $subject = Subject::with('modules.activities')->findOrFail($id);
+
+    // Fetch quiz results for this user and activity
+    $quizResults = StudentQuizResult::where('user_id', $userId)->get()
+        ->keyBy('activity_id'); // so we can quickly lookup by activity_id
 
     return Inertia::render('Student/SubjectDetail', [
         'subject' => [
@@ -36,12 +43,18 @@ public function show($id)
             'modules' => $subject->modules->map(fn ($mod) => [
                 'id' => $mod->id,
                 'title' => $mod->title,
-                'activities' => $mod->activities->map(fn ($act) => [
-                    'id' => $act->id,
-                    'title' => $act->title,
-                    'type' => $act->type,
-                    'scheduled_at' => $act->scheduled_at,
-                ]),
+                'activities' => $mod->activities->map(function ($act) use ($quizResults) {
+                    $result = $quizResults->get($act->id); // check if there's a result for this activity
+
+                    return [
+                        'id' => $act->id,
+                        'title' => $act->title,
+                        'type' => $act->type,
+                        'scheduled_at' => $act->scheduled_at,
+                        'score' => $result?->score,
+                        'total_points' => $result?->total_points,
+                    ];
+                }),
             ]),
         ],
     ]);

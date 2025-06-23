@@ -28,6 +28,7 @@ function goToSubject(id: number) {
                     <h2 class="text-center text-lg font-semibold">{{ subject.name }}</h2>
                 </div>
             </div>
+
         </div>
     </AppLayout>
 </template>
