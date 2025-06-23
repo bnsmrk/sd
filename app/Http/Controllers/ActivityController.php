@@ -30,6 +30,7 @@ class ActivityController extends Controller
 {
     $validated = $request->validate([
         'title' => 'required|string|max:255',
+        'type' => 'required|in:quiz,exam',
         'module_id' => 'required|exists:modules,id',
         'scheduled_at' => 'required|date',
     ]);
@@ -53,9 +54,10 @@ class ActivityController extends Controller
     }
 
     public function update(Request $request, Activity $activity)
-    {
-        $validated = $request->validate([
+{
+    $validated = $request->validate([
         'title' => 'required|string|max:255',
+        'type' => 'required|in:quiz,exam',
         'module_id' => 'required|exists:modules,id',
         'scheduled_at' => 'required|date',
     ]);
@@ -63,7 +65,7 @@ class ActivityController extends Controller
     $activity->update($validated);
 
     return redirect()->route('activities.index')->with('success', 'Activity updated.');
-    }
+}
 
     public function destroy(Activity $activity)
     {

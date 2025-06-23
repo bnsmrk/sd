@@ -7,6 +7,7 @@ const props = defineProps<{
     activity: {
         id: number;
         title: string;
+        type: string;
         module_id: number;
         scheduled_at: string | null;
     };
@@ -21,6 +22,7 @@ const props = defineProps<{
 
 const form = useForm({
     title: props.activity.title,
+    type: props.activity.type,
     module_id: props.activity.module_id,
     scheduled_at: props.activity.scheduled_at?.substring(0, 16) ?? '',
 });
@@ -40,6 +42,14 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     <input v-model="form.title" class="w-full rounded border px-3 py-2" required />
                 </div>
 
+                <div class="mt-4">
+                    <label class="mb-1 block">Activity Type</label>
+                    <select v-model="form.type" class="w-full rounded border px-3 py-2" required>
+                        <option value="quiz">Quiz</option>
+                        <option value="exam">Exam</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="mb-1 block">Select Module</label>
                     <select v-model="form.module_id" class="w-full rounded border px-3 py-2" required>
@@ -55,6 +65,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     <div><strong>Section:</strong> {{ selectedModule.section.name }}</div>
                     <div><strong>Subject:</strong> {{ selectedModule.subject.name }}</div>
                 </div>
+
                 <div class="mt-4">
                     <label>Date & Time</label>
                     <input type="datetime-local" v-model="form.scheduled_at" class="w-full rounded border px-3 py-2" required />

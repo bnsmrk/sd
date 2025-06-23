@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Activity extends Model
 {
-    protected $fillable = ['title', 'module_id','scheduled_at'];
+    protected $fillable = ['title', 'module_id','scheduled_at' , 'type'];
 
 
     public function module()

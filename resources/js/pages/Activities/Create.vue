@@ -15,6 +15,7 @@ const props = defineProps<{
 
 const form = useForm({
     title: '',
+    type: 'quiz',
     module_id: '',
     scheduled_at: '',
 });
@@ -34,7 +35,15 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     <input v-model="form.title" class="w-full rounded border px-3 py-2" required />
                 </div>
 
-                <div>
+                <div class="mt-4">
+                    <label>Activity Type</label>
+                    <select v-model="form.type" class="w-full rounded border px-3 py-2" required>
+                        <option value="quiz">Quiz</option>
+                        <option value="exam">Exam</option>
+                    </select>
+                </div>
+
+                <div class="mt-4">
                     <label>Select Module</label>
                     <select v-model="form.module_id" class="w-full rounded border px-3 py-2" required>
                         <option value="">-- Choose Module --</option>
