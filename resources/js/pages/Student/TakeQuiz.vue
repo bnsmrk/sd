@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
-import { reactive, watchEffect } from 'vue';
+import { reactive, ref, watchEffect } from 'vue';
 
 const props = defineProps<{
     quiz: {
@@ -13,29 +13,44 @@ const props = defineProps<{
             id: number;
             question: string;
             type: string;
-            options?: string; // JSON array for multiple_choice and checkbox
+            options?: string;
             answer_key?: string;
         }>;
     };
 }>();
 
-// answers format: { [questionId]: string | string[] }
 const answers = reactive<Record<number, string | string[]>>({});
+const previewMode = ref(false);
 
-// Ensure checkbox questions are initialized as arrays
+// Initialize checkboxes
 watchEffect(() => {
     props.quiz.questions.forEach((q) => {
-        if (q.type === 'checkbox' && !Array.isArray(answers[q.id])) {
+        if (q.type === 'checkboxes' && !Array.isArray(answers[q.id])) {
             answers[q.id] = [];
         }
     });
 });
+
+function previewAnswers() {
+    previewMode.value = true;
+}
 
 function submitAnswers() {
     router.post('/quizzes/submit', {
         quiz_id: props.quiz.id,
         answers,
     });
+}
+
+// Helpers for preview display
+function getQuestionText(id: number): string {
+    const q = props.quiz.questions.find((q) => q.id === Number(id));
+    return q?.question || 'Question not found';
+}
+
+function formatAnswer(value: any): string {
+    if (Array.isArray(value)) return value.join(', ');
+    return value || 'No answer';
 }
 </script>
 
@@ -50,10 +65,9 @@ function submitAnswers() {
                 </p>
             </div>
 
-            <!-- Quiz Form -->
-            <form @submit.prevent="submitAnswers">
+            <!-- Form or Preview -->
+            <form v-if="!previewMode" @submit.prevent="previewAnswers">
                 <div v-for="q in quiz.questions" :key="q.id" class="mt-2 space-y-6 rounded-lg border bg-white p-5 shadow-md">
-                    <!-- Question Text -->
                     <p class="text-xl font-semibold text-gray-800">{{ q.question }}</p>
 
                     <!-- Multiple Choice -->
@@ -71,7 +85,7 @@ function submitAnswers() {
                         </div>
                     </div>
 
-                    <!-- Checkbox (Multiple Correct) -->
+                    <!-- Checkboxes -->
                     <div v-else-if="q.type === 'checkboxes'" class="space-y-3">
                         <div v-for="(option, index) in JSON.parse(q.options || '[]')" :key="index" class="flex items-center space-x-4">
                             <input
@@ -83,12 +97,9 @@ function submitAnswers() {
                                 @change="
                                     (e) => {
                                         const isChecked = (e.target as HTMLInputElement).checked;
-                                        if (!Array.isArray(answers[q.id])) {
-                                            answers[q.id] = [];
-                                        }
                                         const current = answers[q.id] as string[];
                                         if (isChecked) {
-                                            if (!current.includes(option)) current.push(option);
+                                            current.push(option);
                                         } else {
                                             answers[q.id] = current.filter((o) => o !== option);
                                         }
@@ -131,20 +142,33 @@ function submitAnswers() {
                         />
                     </div>
 
-                    <!-- Unknown Type Fallback -->
                     <div v-else class="text-sm text-red-600">Unknown question type: {{ q.type }}</div>
                 </div>
 
-                <!-- Submit Button -->
+                <!-- Preview Button -->
                 <div class="mt-8 text-right">
-                    <button
-                        type="submit"
-                        class="rounded-xl bg-blue-600 px-8 py-3 text-lg text-white shadow-md transition duration-300 ease-in-out hover:bg-blue-700"
-                    >
-                        Submit Quiz
+                    <button type="submit" class="rounded-xl bg-yellow-500 px-8 py-3 text-lg text-white shadow-md hover:bg-yellow-600">
+                        Preview Answers
                     </button>
                 </div>
             </form>
+
+            <!-- Preview Mode -->
+            <div v-else class="space-y-6 border-t pt-6">
+                <h2 class="text-2xl font-semibold text-gray-700">Review Your Answers</h2>
+
+                <div v-for="q in quiz.questions" :key="q.id" class="rounded border bg-gray-50 p-4 shadow-sm">
+                    <p class="mb-1 font-medium text-gray-700">Q: {{ q.question }}</p>
+                    <p class="text-gray-600">
+                        Answer: <span class="font-semibold">{{ formatAnswer(answers[q.id]) }}</span>
+                    </p>
+                </div>
+
+                <div class="mt-6 flex justify-end space-x-4">
+                    <button class="rounded bg-gray-500 px-6 py-2 text-white hover:bg-gray-600" @click="previewMode = false">Back</button>
+                    <button class="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700" @click="submitAnswers">Confirm & Submit</button>
+                </div>
+            </div>
         </div>
     </AppLayout>
 </template>

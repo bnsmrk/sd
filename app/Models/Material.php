@@ -14,7 +14,7 @@ class Material extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'file_path',   'type', 'year_level_id', 'section_id', 'subject_id', 'user_id'
+        'title', 'file_path',   'type', 'year_level_id', 'section_id', 'subject_id', 'user_id','module_id', 'description'
     ];
 
     public function yearLevel() {
@@ -32,4 +32,9 @@ class Material extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+    public function module()
+{
+    return $this->belongsTo(Module::class);
+}
+
 }

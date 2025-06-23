@@ -6,8 +6,8 @@ use Inertia\Inertia;
 use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\Request;
-use App\Models\StudentQuizResult;
 use Illuminate\Support\Facades\Auth;
+use App\Models\StudentQuizResult;
 
 class StudentSubjectController extends Controller
 {
@@ -30,11 +30,10 @@ public function show($id)
 {
     $userId = Auth::id();
 
-    $subject = Subject::with('modules.activities')->findOrFail($id);
+    $subject = Subject::with(['modules.activities', 'modules.materials.user'])->findOrFail($id);
 
-    // Fetch quiz results for this user and activity
     $quizResults = StudentQuizResult::where('user_id', $userId)->get()
-        ->keyBy('activity_id'); // so we can quickly lookup by activity_id
+        ->keyBy('activity_id');
 
     return Inertia::render('Student/SubjectDetail', [
         'subject' => [
@@ -43,8 +42,15 @@ public function show($id)
             'modules' => $subject->modules->map(fn ($mod) => [
                 'id' => $mod->id,
                 'title' => $mod->title,
+                'materials' => $mod->materials->map(fn ($mat) => [
+                    'id' => $mat->id,
+                    'title' => $mat->title,
+                    'description' => $mat->description,
+                    'file_path' => $mat->file_path,
+                    'uploaded_by' => $mat->user->name ?? 'Unknown',
+                ]),
                 'activities' => $mod->activities->map(function ($act) use ($quizResults) {
-                    $result = $quizResults->get($act->id); // check if there's a result for this activity
+                    $result = $quizResults->get($act->id);
 
                     return [
                         'id' => $act->id,
@@ -59,4 +65,5 @@ public function show($id)
         ],
     ]);
 }
+
 }

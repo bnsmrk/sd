@@ -128,6 +128,7 @@ class MaterialController extends Controller
             'year_level_id' => $year_level_id,
             'section_id' => $section_id,
             'subject_id' => $subject_id,
+            'module_id' => $request->module_id,
             'user_id' => $user->id,
         ]);
 
@@ -177,6 +178,8 @@ class MaterialController extends Controller
         'type' => 'required|in:material,lesson_plan',
         'year_level_id' => 'required|exists:year_levels,id',
         'subject_id' => 'required|exists:subjects,id',
+        'section_id' => 'nullable|exists:sections,id',
+        'module_id' => 'nullable|exists:modules,id',
     ]);
 
     $user = Auth::user();
@@ -190,15 +193,16 @@ class MaterialController extends Controller
         abort(403, 'Unauthorized to update this material.');
     }
 
+    \Log::info('Updating material', $request->all());
+
     $material->update([
         'title' => $request->title,
         'description' => $request->description,
-
         'type' => $request->type,
         'year_level_id' => $request->year_level_id,
         'subject_id' => $request->subject_id,
-        'section_id' => $request->section_id, // ✅ optional
-        'module_id' => $request->module_id,   // ✅ optional
+        'section_id' => $request->section_id,
+        'module_id' => $request->module_id,
     ]);
 
     if ($request->hasFile('file')) {

@@ -10,6 +10,13 @@ const { subject } = defineProps<{
         modules: Array<{
             id: number;
             title: string;
+            materials: Array<{
+                id: number;
+                title: string;
+                description: string | null;
+                file_path: string;
+                uploaded_by: string;
+            }>;
             activities: Array<{
                 id: number;
                 title: string;
@@ -22,7 +29,6 @@ const { subject } = defineProps<{
     };
 }>();
 
-// Track which module is open
 const openModuleId = ref<number | null>(null);
 
 function toggleModule(id: number) {
@@ -30,9 +36,8 @@ function toggleModule(id: number) {
 }
 
 function goToActivity(activity: { id: number; type: string }) {
-    if (activity.type === 'quiz') {
-        router.get(`/student/quiz/${activity.id}`);
-    }
+    // Allow both quiz and exam to use the same route
+    router.get(`/student/quiz/${activity.id}`);
 }
 </script>
 
@@ -46,7 +51,7 @@ function goToActivity(activity: { id: number; type: string }) {
                 :key="module.id"
                 class="overflow-hidden rounded border border-gray-300 shadow-sm dark:border-gray-700"
             >
-                <!-- Collapsible Header -->
+                <!-- Header -->
                 <div class="flex cursor-pointer items-center justify-between bg-gray-100 p-4 dark:bg-gray-800" @click="toggleModule(module.id)">
                     <span class="text-lg font-semibold">Module {{ index + 1 }}: {{ module.title }}</span>
                     <svg
@@ -62,10 +67,28 @@ function goToActivity(activity: { id: number; type: string }) {
                     </svg>
                 </div>
 
-                <!-- Collapsible Body -->
+                <!-- Content -->
                 <transition name="fade">
-                    <div v-if="openModuleId === module.id" class="space-y-2 bg-white p-4 dark:bg-gray-900">
-                        <!-- Inside each activity box -->
+                    <div v-if="openModuleId === module.id" class="space-y-4 bg-white p-4 dark:bg-gray-900">
+                        <!-- Materials -->
+                        <div v-if="module.materials.length" class="border-b pb-3">
+                            <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300">📄 Materials</h3>
+                            <ul class="mt-2 space-y-2">
+                                <li v-for="material in module.materials" :key="material.id" class="rounded border bg-gray-50 p-3 dark:bg-gray-800">
+                                    <div class="text-sm font-semibold text-blue-600">
+                                        <a :href="`/storage/${material.file_path}`" target="_blank" class="hover:underline">
+                                            {{ material.title }}
+                                        </a>
+                                    </div>
+                                    <div v-if="material.description" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        {{ material.description }}
+                                    </div>
+                                    <div class="mt-1 text-xs text-gray-400">Uploaded by: {{ material.uploaded_by }}</div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Activities -->
                         <div
                             v-for="activity in module.activities"
                             :key="activity.id"
@@ -82,7 +105,8 @@ function goToActivity(activity: { id: number; type: string }) {
                                     <div class="text-sm text-gray-500">{{ activity.type }} – {{ activity.scheduled_at }}</div>
 
                                     <div v-if="activity.score !== null && activity.total_points !== null" class="text-sm text-gray-700">
-                                        Score: <span class="font-semibold">{{ activity.score }}</span> /
+                                        Score:
+                                        <span class="font-semibold">{{ activity.score }}</span> /
                                         <span class="font-semibold">{{ activity.total_points }}</span>
                                     </div>
                                     <div v-else class="text-sm text-gray-400 italic">Not taken yet</div>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Section;
 use App\Models\Subject;
 use App\Models\Activity;
+use App\Models\Material;
 use App\Models\YearLevel;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,6 +22,10 @@ class Module extends Model
     {
         return $this->belongsTo(YearLevel::class);
     }
+public function materials()
+{
+    return $this->hasMany(Material::class);
+}
 
     public function section()
     {

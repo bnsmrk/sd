@@ -92,7 +92,15 @@ function submitForm() {
     }
 
     if (form.type === 'material' && selectedModuleId.value) {
-        data.append('module_id', selectedModuleId.value.toString());
+        const module = props.modules.find((m) => m.id === selectedModuleId.value);
+        if (module) {
+            data.append('module_id', selectedModuleId.value.toString());
+            data.append('year_level_id', module.year_level.id.toString());
+            data.append('subject_id', module.subject.id.toString());
+        }
+        if ((module as any).section_id) {
+            data.append('section_id', (module as any).section_id.toString());
+        }
     } else if (form.type === 'lesson_plan') {
         if (selectedSubjectId.value) data.append('subject_id', selectedSubjectId.value.toString());
         if (selectedSectionId.value) data.append('section_id', selectedSectionId.value.toString());

@@ -20,6 +20,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
     ],
     admin: [
         {
+            title: 'Dashboard',
+            href: '/dashboard',
+            icon: LayoutGrid,
+        },
+        {
             title: 'Year Levels',
             href: '/year-levels',
             icon: BookOpen,
