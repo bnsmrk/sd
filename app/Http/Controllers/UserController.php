@@ -13,12 +13,27 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return Inertia::render('Users/Index', [
-            'users' => User::whereIn('role', ['teacher', 'ict', 'head'])->get(),
-        ]);
+    // UserController.php
+public function index(Request $request)
+{
+    $query = User::query()->whereIn('role', ['teacher', 'ict', 'head']);
+
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
     }
+
+    $users = $query->latest()->paginate(10)->withQueryString();
+
+    return Inertia::render('Users/Index', [
+        'users' => $users,
+        'filters' => $request->only('search'),
+    ]);
+}
+
 
     public function create()
     {

@@ -12,11 +12,11 @@ const role = (auth.user as any)?.role || '';
 
 const groupedNavItems: Record<string, NavItem[]> = {
     common: [
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-            icon: LayoutGrid,
-        },
+        // {
+        //     title: 'Dashboard',
+        //     href: '/dashboard',
+        //     icon: LayoutGrid,
+        // },
     ],
     admin: [
         {
