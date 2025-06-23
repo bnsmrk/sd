@@ -42,20 +42,17 @@ const selectedSubjectId = ref<number | null>(null);
 const selectedSectionId = ref<number | null>(null);
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
-
 const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevelId.value));
-
 const filteredSubjects = computed(() => {
     if (!selectedSectionId.value) return [];
-
     const validSubjectIds = props.subjectSectionMap.filter((entry) => entry.section_id === selectedSectionId.value).map((entry) => entry.subject_id);
-
     return props.subjects.filter((subject) => validSubjectIds.includes(subject.id));
 });
 
 const form = useForm({
     title: '',
     type: selectedType.value,
+    description: '',
     file: null as File | null,
 });
 
@@ -76,6 +73,7 @@ function submitForm() {
     const data = new FormData();
     data.append('title', form.title);
     data.append('type', form.type);
+    data.append('description', form.description);
     data.append('file', form.file as Blob);
 
     if (form.type === 'material' && selectedModuleId.value) {
@@ -138,6 +136,11 @@ function submitForm() {
             <div>
                 <label class="block font-medium">Title</label>
                 <input v-model="form.title" type="text" class="w-full rounded border p-2" />
+            </div>
+
+            <div>
+                <label class="block font-medium">Description</label>
+                <textarea v-model="form.description" rows="3" class="w-full rounded border p-2" />
             </div>
 
             <div>

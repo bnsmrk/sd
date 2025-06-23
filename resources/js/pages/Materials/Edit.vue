@@ -32,6 +32,7 @@ const props = defineProps<{
         id: number;
         title: string;
         type: 'material' | 'lesson_plan';
+        description?: string | null;
         year_level_id: number;
         subject_id: number;
         section_id?: number | null;
@@ -62,6 +63,7 @@ const filteredSubjects = computed(() => {
 const form = useForm({
     title: props.material.title,
     type: props.material.type,
+    description: props.material.description ?? '',
     file: null as File | null,
 });
 
@@ -83,6 +85,7 @@ function submitForm() {
     data.append('_method', 'put');
     data.append('title', form.title);
     data.append('type', form.type);
+    data.append('description', form.description);
 
     if (form.file) {
         data.append('file', form.file as Blob);
@@ -151,6 +154,11 @@ function submitForm() {
             <div>
                 <label class="block font-medium">Title</label>
                 <input v-model="form.title" type="text" class="w-full rounded border p-2" />
+            </div>
+
+            <div>
+                <label class="block font-medium">Description</label>
+                <textarea v-model="form.description" rows="3" class="w-full rounded border p-2" />
             </div>
 
             <div>

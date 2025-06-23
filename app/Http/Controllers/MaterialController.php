@@ -72,6 +72,7 @@ class MaterialController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'type' => 'required|in:material,lesson_plan',
             'file' => 'required|file|mimes:pdf,doc,docx,ppt,pptx|max:10240',
             'module_id' => 'nullable|exists:modules,id',
@@ -120,6 +121,8 @@ class MaterialController extends Controller
 
         Material::create([
             'title' => $request->title,
+            'description' => $request->description,
+
             'type' => $request->type,
             'file_path' => $path,
             'year_level_id' => $year_level_id,
@@ -170,6 +173,7 @@ class MaterialController extends Controller
 {
     $request->validate([
         'title' => 'required|string|max:255',
+        'description' => 'nullable|string|max:1000',
         'type' => 'required|in:material,lesson_plan',
         'year_level_id' => 'required|exists:year_levels,id',
         'subject_id' => 'required|exists:subjects,id',
@@ -188,6 +192,8 @@ class MaterialController extends Controller
 
     $material->update([
         'title' => $request->title,
+        'description' => $request->description,
+
         'type' => $request->type,
         'year_level_id' => $request->year_level_id,
         'subject_id' => $request->subject_id,
