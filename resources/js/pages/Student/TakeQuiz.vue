@@ -42,11 +42,11 @@ function submitAnswers() {
     });
 }
 
-// Helpers for preview display
-function getQuestionText(id: number): string {
-    const q = props.quiz.questions.find((q) => q.id === Number(id));
-    return q?.question || 'Question not found';
-}
+// // Helpers for preview display
+// function getQuestionText(id: number): string {
+//     const q = props.quiz.questions.find((q) => q.id === Number(id));
+//     return q?.question || 'Question not found';
+// }
 
 function formatAnswer(value: any): string {
     if (Array.isArray(value)) return value.join(', ');
