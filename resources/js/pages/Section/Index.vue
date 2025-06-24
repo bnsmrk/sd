@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue'; // ✅ Important for modal state
 
 defineProps<{
     sections: Array<{
@@ -12,10 +13,25 @@ defineProps<{
 
 const breadcrumbs = [{ title: 'Sections', href: '/sections' }];
 
-const destroyItem = (id: number) => {
-    if (confirm('Are you sure you want to delete this section?')) {
-        router.delete(`/sections/${id}`);
+const showDeleteModal = ref(false);
+const deleteId = ref<number | null>(null);
+
+const confirmDelete = (id: number) => {
+    deleteId.value = id;
+    showDeleteModal.value = true;
+};
+
+const destroyItem = () => {
+    if (deleteId.value !== null) {
+        router.delete(`/sections/${deleteId.value}`);
+        showDeleteModal.value = false;
+        deleteId.value = null;
     }
+};
+
+const cancelDelete = () => {
+    showDeleteModal.value = false;
+    deleteId.value = null;
 };
 </script>
 
@@ -72,13 +88,29 @@ const destroyItem = (id: number) => {
                                 <Link :href="`/sections/${section.id}/edit`" class="font-medium text-blue-600 hover:underline dark:text-blue-500"
                                     >Edit</Link
                                 >
-                                <button @click="destroyItem(section.id)" class="font-medium text-red-600 hover:underline dark:text-red-500">
+                                <button @click="confirmDelete(section.id)" class="font-medium text-red-600 hover:underline dark:text-red-500">
                                     Delete
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
+                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
+                <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this section?</p>
+                <div class="flex justify-end space-x-4">
+                    <button
+                        @click="cancelDelete"
+                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                    >
+                        Cancel
+                    </button>
+                    <button @click="destroyItem" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
+                </div>
             </div>
         </div>
     </AppLayout>

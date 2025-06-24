@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue'; // ✅ Needed for modal control
 
 const props = defineProps<{
     modules: {
@@ -11,10 +12,25 @@ const props = defineProps<{
     }[];
 }>();
 
-function deleteModule(id: number) {
-    if (confirm('Are you sure you want to delete this module?')) {
-        router.delete(`/modules/${id}`);
+const showDeleteModal = ref(false);
+const deleteId = ref<number | null>(null);
+
+function confirmDelete(id: number) {
+    deleteId.value = id;
+    showDeleteModal.value = true;
+}
+
+function deleteModule() {
+    if (deleteId.value !== null) {
+        router.delete(`/modules/${deleteId.value}`);
+        showDeleteModal.value = false;
+        deleteId.value = null;
     }
+}
+
+function cancelDelete() {
+    showDeleteModal.value = false;
+    deleteId.value = null;
 }
 </script>
 
@@ -44,11 +60,27 @@ function deleteModule(id: number) {
                             <td class="px-6 py-4">{{ m.subject.name }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
                                 <Link :href="`/modules/${m.id}/edit`" class="text-blue-600 hover:underline">Edit</Link>
-                                <button @click="deleteModule(m.id)" class="text-red-600 hover:underline">Delete</button>
+                                <button @click="confirmDelete(m.id)" class="text-red-600 hover:underline">Delete</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
+                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
+                <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this module?</p>
+                <div class="flex justify-end space-x-4">
+                    <button
+                        @click="cancelDelete"
+                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                    >
+                        Cancel
+                    </button>
+                    <button @click="deleteModule" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
+                </div>
             </div>
         </div>
     </AppLayout>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
+import { ref } from 'vue'; // ✅ required
 
 defineProps<{
     materials: Array<{
@@ -9,11 +10,14 @@ defineProps<{
         type: string;
         file_path: string;
         year_level: { name: string };
-        section?: { name: string }; // ✅ section is now optional
+        section?: { name: string };
         subject: { name: string };
         user: { name: string };
     }>;
 }>();
+
+const showDeleteModal = ref(false);
+const deleteId = ref<number | null>(null);
 
 function createMaterial() {
     router.get('/materials/create');
@@ -23,10 +27,22 @@ function editMaterial(id: number) {
     router.get(`/materials/${id}/edit`);
 }
 
-function deleteMaterial(id: number) {
-    if (confirm('Are you sure you want to delete this material?')) {
-        router.delete(`/materials/${id}`);
+function confirmDelete(id: number) {
+    deleteId.value = id;
+    showDeleteModal.value = true;
+}
+
+function destroyMaterial() {
+    if (deleteId.value !== null) {
+        router.delete(`/materials/${deleteId.value}`);
+        showDeleteModal.value = false;
+        deleteId.value = null;
     }
+}
+
+function cancelDelete() {
+    showDeleteModal.value = false;
+    deleteId.value = null;
 }
 </script>
 
@@ -65,11 +81,27 @@ function deleteMaterial(id: number) {
                         </td>
                         <td>
                             <button class="mr-2 text-blue-600" @click="editMaterial(material.id)">Edit</button>
-                            <button class="text-red-600" @click="deleteMaterial(material.id)">Delete</button>
+                            <button class="text-red-600" @click="confirmDelete(material.id)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
+                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
+                <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this material?</p>
+                <div class="flex justify-end space-x-4">
+                    <button
+                        @click="cancelDelete"
+                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                    >
+                        Cancel
+                    </button>
+                    <button @click="destroyMaterial" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
+                </div>
+            </div>
         </div>
     </AppLayout>
 </template>
