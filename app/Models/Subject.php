@@ -27,7 +27,7 @@ class Subject extends Model
 }
 public function teacher()
 {
-    return $this->belongsTo(User::class, 'user_id'); // or adjust if it's a many-to-many
+    return $this->belongsTo(User::class, 'user_id');
 }
 
 public function modules()

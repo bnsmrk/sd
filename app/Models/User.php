@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Submission;
 use App\Models\TeacherAssignment;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,11 +26,15 @@ class User extends Authenticatable
         'role',
 
     ];
-public function teacherAssignments()
-{
-    return $this->hasMany(TeacherAssignment::class, 'user_id');
-}
-    /**
+    public function teacherAssignments()
+    {
+        return $this->hasMany(TeacherAssignment::class, 'user_id');
+    }
+
+    public function submissions() {
+        return $this->hasMany(Submission::class);
+    }
+        /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>

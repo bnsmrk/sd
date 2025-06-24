@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Student;
 use App\Models\Subject;
+use App\Models\Submission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\StudentQuizResult;
+use Illuminate\Support\Facades\Auth;
 
 class StudentSubjectController extends Controller
 {
@@ -42,8 +43,8 @@ public function show($id)
 
     $subject = Subject::with(['modules.activities', 'modules.materials.user'])->findOrFail($id);
 
-    $quizResults = StudentQuizResult::where('user_id', $userId)->get()
-        ->keyBy('activity_id');
+    $quizResults = StudentQuizResult::where('user_id', $userId)->get()->keyBy('activity_id');
+    $essaySubmissions = Submission::where('user_id', $userId)->get()->keyBy('activity_id');
 
     return Inertia::render('Student/SubjectDetail', [
         'subject' => [
@@ -59,21 +60,23 @@ public function show($id)
                     'file_path' => $mat->file_path,
                     'uploaded_by' => $mat->user->name ?? 'Unknown',
                 ]),
-                'activities' => $mod->activities->map(function ($act) use ($quizResults) {
+                'activities' => $mod->activities->map(function ($act) use ($quizResults, $essaySubmissions) {
                     $result = $quizResults->get($act->id);
+                    $submission = $essaySubmissions->get($act->id);
 
                     return [
                         'id' => $act->id,
                         'title' => $act->title,
                         'type' => $act->type,
-                        'scheduled_at' => $act->scheduled_at,
+                        'scheduled_at' => $act->scheduled_at?->format('Y-m-d H:i'),
                         'score' => $result?->score,
                         'total_points' => $result?->total_points,
+                        'submitted' => $submission !== null,
+                        'essay_score' => $submission?->score,
                     ];
                 }),
             ]),
         ],
     ]);
 }
-
 }

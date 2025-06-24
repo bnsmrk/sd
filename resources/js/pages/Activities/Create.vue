@@ -13,11 +13,20 @@ const props = defineProps<{
     }>;
 }>();
 
-const form = useForm({
+const form = useForm<{
+    title: string;
+    type: string;
+    module_id: string;
+    scheduled_at: string;
+    description: string;
+    file: File | null;
+}>({
     title: '',
     type: 'quiz',
     module_id: '',
     scheduled_at: '',
+    description: '',
+    file: null,
 });
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === Number(form.module_id)));
@@ -29,7 +38,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
         <div class="mx-auto max-w-xl space-y-6 p-6">
             <h1 class="text-xl font-bold">Create Activity</h1>
 
-            <form @submit.prevent="form.post('/activities')">
+            <form @submit.prevent="form.post('/activities', { forceFormData: true })">
                 <div>
                     <label>Activity Title</label>
                     <input v-model="form.title" class="w-full rounded border px-3 py-2" required />
@@ -40,6 +49,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     <select v-model="form.type" class="w-full rounded border px-3 py-2" required>
                         <option value="quiz">Quiz</option>
                         <option value="exam">Exam</option>
+                        <option value="essay">Essay</option>
                     </select>
                 </div>
 
@@ -60,6 +70,16 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                 <div class="mt-4">
                     <label>Date & Time</label>
                     <input type="datetime-local" v-model="form.scheduled_at" class="w-full rounded border px-3 py-2" required />
+                </div>
+
+                <div v-if="form.type === 'essay'" class="mt-4">
+                    <label>Description</label>
+                    <textarea v-model="form.description" class="w-full rounded border px-3 py-2" rows="4"></textarea>
+                </div>
+
+                <div v-if="form.type === 'essay'" class="mt-4">
+                    <label>Attach File (optional)</label>
+                    <input type="file" @change="(e) => (form.file = (e.target as HTMLInputElement)?.files?.[0] ?? null)" />
                 </div>
 
                 <button class="mt-4 rounded bg-blue-600 px-4 py-2 text-white">Save</button>

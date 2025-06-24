@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create('submissions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->enum('type', ['quiz', 'exam', 'essay']);
-            $table->dateTime('scheduled_at');
-             $table->foreignId('module_id')->constrained()->cascadeOnDelete();
+             $table->foreignId('activity_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // student
+            $table->text('content')->nullable(); // essay text
+            $table->string('file_path')->nullable(); // uploaded file
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('activities');
+        Schema::dropIfExists('submissions');
     }
 };

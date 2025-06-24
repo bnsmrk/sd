@@ -14,7 +14,6 @@ function goToSubject(id: number) {
     router.get(`/student/subjects/${id}`);
 }
 
-// Gradient background classes
 const gradients = [
     'from-pink-100 to-pink-200',
     'from-yellow-100 to-yellow-200',
@@ -24,10 +23,8 @@ const gradients = [
     'from-blue-200 to-yellow-100',
 ];
 
-// Border color classes to randomly pick from on hover
 const hoverBorders = ['hover:border-[#ff69b4]', 'hover:border-[#01006c]', 'hover:border-[#ffc60b]'];
 
-// Helper to get a unique class combination per card
 function getCardClasses(index: number) {
     const gradient = gradients[index % gradients.length];
     const borderHover = hoverBorders[index % hoverBorders.length];

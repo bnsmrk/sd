@@ -24,6 +24,8 @@ const { subject } = defineProps<{
                 scheduled_at: string;
                 score: number | null;
                 total_points: number | null;
+                submitted: boolean;
+                essay_score: number | null; // added from controller
             }>;
         }>;
     };
@@ -36,8 +38,11 @@ function toggleModule(id: number) {
 }
 
 function goToActivity(activity: { id: number; type: string }) {
-    // Allow both quiz and exam to use the same route
-    router.get(`/student/quiz/${activity.id}`);
+    if (activity.type === 'essay') {
+        router.get(`/activities/${activity.id}/essay`);
+    } else {
+        router.get(`/student/quiz/${activity.id}`);
+    }
 }
 </script>
 
@@ -63,7 +68,7 @@ function goToActivity(activity: { id: number; type: string }) {
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
                     >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                 </div>
 
@@ -94,25 +99,50 @@ function goToActivity(activity: { id: number; type: string }) {
                             :key="activity.id"
                             class="rounded border p-3"
                             :class="{
-                                'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800': activity.score === null,
-                                'cursor-not-allowed bg-gray-100 opacity-60 dark:bg-gray-800': activity.score !== null,
+                                'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800': !activity.score && !activity.submitted,
+                                'cursor-not-allowed bg-gray-100 opacity-60 dark:bg-gray-800': activity.score || activity.submitted,
                             }"
-                            @click="activity.score === null ? goToActivity(activity) : null"
+                            @click="!activity.score && !activity.submitted ? goToActivity(activity) : null"
                         >
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="font-medium">{{ activity.title }}</div>
                                     <div class="text-sm text-gray-500">{{ activity.type }} – {{ activity.scheduled_at }}</div>
 
-                                    <div v-if="activity.score !== null && activity.total_points !== null" class="text-sm text-gray-700">
+                                    <!-- Quiz/Exam Score -->
+                                    <div
+                                        v-if="activity.type !== 'essay' && activity.score !== null && activity.total_points !== null"
+                                        class="text-sm text-gray-700"
+                                    >
                                         Score:
                                         <span class="font-semibold">{{ activity.score }}</span> /
                                         <span class="font-semibold">{{ activity.total_points }}</span>
                                     </div>
+
+                                    <!-- Essay: Submitted but not graded -->
+                                    <div
+                                        v-else-if="activity.type === 'essay' && activity.submitted && activity.essay_score === null"
+                                        class="text-sm font-medium text-yellow-600"
+                                    >
+                                        Not Graded
+                                    </div>
+
+                                    <!-- Essay: Graded -->
+                                    <div
+                                        v-else-if="activity.type === 'essay' && activity.submitted && activity.essay_score !== null"
+                                        class="text-sm font-medium text-green-600"
+                                    >
+                                        Completed – Graded: {{ activity.essay_score }}
+                                    </div>
+
+                                    <!-- Not taken -->
                                     <div v-else class="text-sm text-gray-400 italic">Not taken yet</div>
                                 </div>
 
-                                <div v-if="activity.score !== null" class="text-xs font-semibold text-green-600">✔ Completed</div>
+                                <!-- Status badge -->
+                                <div v-if="activity.score !== null || activity.submitted" class="text-xs font-semibold text-green-600">
+                                    ✔ Completed
+                                </div>
                             </div>
                         </div>
 
