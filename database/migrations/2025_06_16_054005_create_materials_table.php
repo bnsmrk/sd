@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('type')->default('material');
             $table->string('file_path');
+            $table->foreignId('module_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('year_level_id')->constrained()->cascadeOnDelete();
             $table->foreignId('section_id')->constrained()->cascadeOnDelete();
             $table->foreignId('subject_id')->constrained()->cascadeOnDelete();

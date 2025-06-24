@@ -19,7 +19,17 @@ class StudentSubjectController extends Controller
         ->where('user_id', $userId)
         ->get()
         ->pluck('subject')
-        ->map(fn ($s) => ['id' => $s->id, 'name' => $s->name]);
+        ->map(function ($subject) {
+            $assignment = \App\Models\TeacherAssignment::with('user')
+                ->where('subject_id', $subject->id)
+                ->first();
+
+            return [
+                'id' => $subject->id,
+                'name' => $subject->name,
+                'teacher' => $assignment?->user?->name ?? 'Unknown',
+            ];
+        });
 
     return Inertia::render('Student/Subjects', [
         'subjects' => $subjects,
