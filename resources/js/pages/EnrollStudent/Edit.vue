@@ -58,7 +58,7 @@ const submitForm = () => {
                         <p class="text-sm text-red-500" v-if="form.errors.year_level_id">{{ form.errors.year_level_id }}</p>
                     </div>
 
-                    <!-- Section --> 
+                    <!-- Section -->
                     <div v-if="filteredSections.length">
                         <label class="mb-1 block font-medium text-[#ff69b4]">Section</label>
                         <select v-model="form.section_id" class="w-full rounded border-2 border-[#01006c] p-2 focus:border-[#ffc60b]">

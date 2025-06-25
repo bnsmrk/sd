@@ -54,8 +54,8 @@ function saveScore() {
             </div>
 
             <div class="mt-6 space-y-2">
-                <label class="block text-sm font-medium">Score (0–100):</label>
-                <input v-model.number="score" type="number" min="0" max="100" class="w-24 rounded border px-2 py-1" />
+                <label class="block text-sm font-medium">Score </label>
+                <input v-model.number="score" type="phone" min="0" max="100" class="block w-24 rounded border px-2 py-1" />
 
                 <button @click="saveScore" class="mt-2 rounded bg-blue-600 px-4 py-2 text-white">Save Score</button>
             </div>

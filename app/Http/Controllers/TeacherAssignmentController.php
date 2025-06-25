@@ -48,23 +48,36 @@ public function show(TeacherAssignment $teacherAssignment)
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'year_level_id' => 'required|exists:year_levels,id',
-              'section_id' => 'required|exists:sections,id',
-            'subject_id' => 'required|exists:subjects,id',
-        ]);
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'year_level_id' => 'required|exists:year_levels,id',
+        'section_id' => 'required|exists:sections,id',
+        'subject_id' => 'required|exists:subjects,id',
+    ]);
 
-        TeacherAssignment::create([
-            'user_id' => $request->user_id,
-            'year_level_id' => $request->year_level_id,
-            'section_id' => $request->section_id,
-            'subject_id' => $request->subject_id,
-        ]);
+    // Check for existing assignment
+    $exists = TeacherAssignment::where('year_level_id', $request->year_level_id)
+        ->where('section_id', $request->section_id)
+        ->where('subject_id', $request->subject_id)
+        ->exists();
 
-        return redirect()->route('teacher-assignments.index')->with('success', 'Teacher assigned successfully.');
+    if ($exists) {
+        return back()->withErrors([
+            'subject_id' => 'A teacher is already assigned to this subject in the selected year level and section.',
+        ])->withInput();
     }
+
+    TeacherAssignment::create([
+        'user_id' => $request->user_id,
+        'year_level_id' => $request->year_level_id,
+        'section_id' => $request->section_id,
+        'subject_id' => $request->subject_id,
+    ]);
+
+    return redirect()->route('teacher-assignments.index')->with('success', 'Teacher assigned successfully.');
+}
+
 
    public function edit(TeacherAssignment $teacherAssignment)
 {
@@ -79,23 +92,37 @@ public function show(TeacherAssignment $teacherAssignment)
 
 
     public function update(Request $request, TeacherAssignment $teacherAssignment)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'year_level_id' => 'required|exists:year_levels,id',
-             'section_id' => 'required|exists:sections,id',
-            'subject_id' => 'required|exists:subjects,id',
-        ]);
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'year_level_id' => 'required|exists:year_levels,id',
+        'section_id' => 'required|exists:sections,id',
+        'subject_id' => 'required|exists:subjects,id',
+    ]);
 
-        $teacherAssignment->update([
-            'user_id' => $request->user_id,
-            'year_level_id' => $request->year_level_id,
-            'section_id' => $request->section_id,
-            'subject_id' => $request->subject_id,
-        ]);
+    // Check if another assignment already exists
+    $exists = TeacherAssignment::where('year_level_id', $request->year_level_id)
+        ->where('section_id', $request->section_id)
+        ->where('subject_id', $request->subject_id)
+        ->where('id', '!=', $teacherAssignment->id)
+        ->exists();
 
-        return redirect()->route('teacher-assignments.index')->with('success', 'Assignment updated.');
+    if ($exists) {
+        return back()->withErrors([
+            'subject_id' => 'A teacher is already assigned to this subject in the selected year level and section.',
+        ])->withInput();
     }
+
+    $teacherAssignment->update([
+        'user_id' => $request->user_id,
+        'year_level_id' => $request->year_level_id,
+        'section_id' => $request->section_id,
+        'subject_id' => $request->subject_id,
+    ]);
+
+    return redirect()->route('teacher-assignments.index')->with('success', 'Assignment updated.');
+}
+
 
     public function destroy(TeacherAssignment $teacherAssignment)
     {

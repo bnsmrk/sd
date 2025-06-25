@@ -51,31 +51,44 @@ class EnrollStudentController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'year_level_id' => 'required|exists:year_levels,id',
-            'section_id' => 'required|exists:sections,id',
-        ]);
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'year_level_id' => 'required|exists:year_levels,id',
+        'section_id' => 'required|exists:sections,id',
+    ]);
 
-        $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
+    // ❌ Check if already enrolled in the same year level
+    $alreadyEnrolled = Student::where('user_id', $validated['user_id'])
+        ->where('year_level_id', $validated['year_level_id'])
+        ->exists();
 
-        if ($subjects->isEmpty()) {
-            return back()->withErrors(['year_level_id' => 'No subjects found for selected year level.']);
-        }
-
-        foreach ($subjects as $subject) {
-            Student::create([
-                'user_id' => $validated['user_id'],
-                'year_level_id' => $validated['year_level_id'],
-                'section_id' => $validated['section_id'],
-                'subject_id' => $subject->id,
-            ]);
-        }
-
-        return redirect()->route('enroll.index')->with('success', 'Student enrolled successfully.');
+    if ($alreadyEnrolled) {
+        return back()->withErrors([
+            'user_id' => 'Student is already enrolled in the selected year level.',
+        ])->withInput();
     }
+
+    // ✅ Enroll in all subjects
+    $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
+
+    if ($subjects->isEmpty()) {
+        return back()->withErrors(['year_level_id' => 'No subjects found for selected year level.']);
+    }
+
+    foreach ($subjects as $subject) {
+        Student::create([
+            'user_id' => $validated['user_id'],
+            'year_level_id' => $validated['year_level_id'],
+            'section_id' => $validated['section_id'],
+            'subject_id' => $subject->id,
+        ]);
+    }
+
+    return redirect()->route('enroll.index')->with('success', 'Student enrolled successfully.');
+}
+
 
     public function edit(Student $enroll)
     {
