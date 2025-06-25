@@ -3,13 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-interface EnrollmentDetail {
-    user: { name: string };
-    year_level: { name: string };
-    section: { name: string } | null;
-    subject: { name: string };
-}
-
 defineProps<{
     enrollments: Array<{
         id: number;
@@ -17,18 +10,12 @@ defineProps<{
         year_level: { name: string };
         section: { name: string } | null;
     }>;
-    enrollment?: EnrollmentDetail; // optional for modal data
 }>();
 
 const breadcrumbs = [{ title: 'Enrollments', href: '/enroll' }];
-
 const showDeleteModal = ref(false);
 const deleteId = ref<number | null>(null);
 
-const showViewModal = ref(false);
-const enrollmentDetail = ref<EnrollmentDetail | null>(null);
-
-// DELETE logic
 const confirmDelete = (id: number) => {
     deleteId.value = id;
     showDeleteModal.value = true;
@@ -36,40 +23,15 @@ const confirmDelete = (id: number) => {
 
 const destroyItem = () => {
     if (deleteId.value !== null) {
-        router.delete(`/enroll/${deleteId.value}`, {
-            onSuccess: () => {
-                showDeleteModal.value = false;
-                deleteId.value = null;
-            },
-        });
+        router.delete(`/enroll/${deleteId.value}`);
+        showDeleteModal.value = false;
+        deleteId.value = null;
     }
 };
 
 const cancelDelete = () => {
     showDeleteModal.value = false;
     deleteId.value = null;
-};
-
-// VIEW logic (load modal data like delete)
-const showDetails = (id: number) => {
-    router.get(
-        `/enroll/${id}`,
-        {},
-        {
-            preserveState: true,
-            preserveScroll: true,
-            only: ['enrollment'],
-            onSuccess: (page: any) => {
-                enrollmentDetail.value = page.props.enrollment as EnrollmentDetail;
-                showViewModal.value = true;
-            },
-        },
-    );
-};
-
-const closeViewModal = () => {
-    showViewModal.value = false;
-    enrollmentDetail.value = null;
 };
 </script>
 
@@ -98,7 +60,7 @@ const closeViewModal = () => {
                             <td class="px-6 py-4">{{ enroll.year_level.name }}</td>
                             <td class="px-6 py-4">{{ enroll.section?.name ?? '—' }}</td>
                             <td class="flex items-center justify-center space-x-3 px-6 py-4">
-                                <button @click="showDetails(enroll.id)" class="text-green-600 hover:underline">View</button>
+                                <!-- <Link :href="`/enroll/${enroll.id}`" class="text-green-600 hover:underline">View</Link> -->
                                 <Link :href="`/enroll/${enroll.id}/edit`" class="text-blue-600 hover:underline">Edit</Link>
                                 <button @click="confirmDelete(enroll.id)" class="text-red-600 hover:underline">Delete</button>
                             </td>
@@ -108,29 +70,18 @@ const closeViewModal = () => {
             </div>
         </div>
 
-        <!-- View Modal -->
-        <div v-if="showViewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div class="w-full max-w-lg rounded bg-white p-6 shadow-lg">
-                <h2 class="mb-4 text-xl font-semibold">Enrollment Details</h2>
-                <div v-if="enrollmentDetail" class="space-y-2">
-                    <p><strong>Student:</strong> {{ enrollmentDetail.user.name }}</p>
-                    <p><strong>Year Level:</strong> {{ enrollmentDetail.year_level.name }}</p>
-                    <p><strong>Section:</strong> {{ enrollmentDetail.section?.name ?? '—' }}</p>
-                    <p><strong>Subject:</strong> {{ enrollmentDetail.subject.name }}</p>
-                </div>
-                <div class="mt-6 text-right">
-                    <button @click="closeViewModal" class="rounded bg-gray-300 px-4 py-2 hover:bg-gray-400">Close</button>
-                </div>
-            </div>
-        </div>
-
         <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded bg-white p-6 shadow-lg">
-                <h2 class="mb-4 text-lg font-semibold">Confirm Deletion</h2>
-                <p class="mb-6 text-gray-600">Are you sure you want to delete this enrollment?</p>
+            <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
+                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
+                <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this enrollment?</p>
                 <div class="flex justify-end space-x-4">
-                    <button @click="cancelDelete" class="rounded bg-gray-300 px-4 py-2 text-sm hover:bg-gray-400">Cancel</button>
+                    <button
+                        @click="cancelDelete"
+                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                    >
+                        Cancel
+                    </button>
                     <button @click="destroyItem" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
                 </div>
             </div>
