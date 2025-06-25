@@ -8,6 +8,7 @@ use App\Models\TeacherAssignment;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Student;
 
 class User extends Authenticatable
 {
@@ -34,6 +35,10 @@ class User extends Authenticatable
     public function submissions() {
         return $this->hasMany(Submission::class);
     }
+    public function enrollments()
+{
+    return $this->hasMany(Student::class, 'user_id');
+}
         /**
      * The attributes that should be hidden for serialization.
      *
