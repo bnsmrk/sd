@@ -24,14 +24,46 @@ class QuestionController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(Activity $activity)
-    {
-       $questions = $activity->questions()->get();
+{
+    $activity->load([
+        'module.yearLevel',
+        'module.section',
+        'module.subject',
+    ]);
+
+    $questions = $activity->questions()->get();
 
     return Inertia::render('Questions/Create', [
-        'activity' => $activity,
-        'existingQuestions' => $questions,
+        'activity' => [
+            'id' => $activity->id,
+            'title' => $activity->title,
+            'type' => $activity->type,
+            'scheduled_at' => $activity->scheduled_at->format('Y-m-d H:i'),
+            'module' => [
+                'name' => $activity->module->name,
+                'year_level' => [
+                    'name' => $activity->module->yearLevel->name,
+                ],
+                'section' => [
+                    'name' => $activity->module->section->name,
+                ],
+                'subject' => [
+                    'name' => $activity->module->subject->name,
+                ],
+            ],
+        ],
+        'existingQuestions' => $questions->map(function ($q) {
+            return [
+                'id' => $q->id,
+                'question' => $q->question,
+                'type' => $q->type,
+                'options' => $q->options,
+                'answer_key' => $q->answer_key,
+            ];
+        }),
     ]);
-    }
+}
+
 
     /**
      * Store a newly created resource in storage.

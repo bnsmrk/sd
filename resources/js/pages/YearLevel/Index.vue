@@ -69,7 +69,6 @@ const cancelDelete = () => {
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <!-- Delete Confirmation Modal with Blurred Background -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">

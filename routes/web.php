@@ -36,9 +36,9 @@ Route::middleware('role:teacher')->group(function () {
     });
 
     Route::post('/activities/{activity}/essay', [SubmissionController::class, 'store'])->name('submissions.store');
-
     Route::get('/activities/{activity}/essay-submissions', [SubmissionController::class, 'showEssaySubmissions'])
     ->name('activities.essay.view');
+
     Route::post('/submissions/{submission}/score', [SubmissionController::class, 'updateScore'])->name('submissions.score');
     Route::get('/submissions/{submission}', [SubmissionController::class, 'show'])->name('submissions.show');
     Route::post('/submissions/{submission}/score', [SubmissionController::class, 'updateScore'])->name('submissions.score');
