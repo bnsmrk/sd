@@ -46,7 +46,7 @@ class EnrollStudentController extends Controller
     {
         $enroll->load(['user:id,name', 'yearLevel:id,name', 'section:id,name', 'subject:id,name']);
 
-        return Inertia::render('EnrollStudent/Show', [
+        return Inertia::render('EnrollStudent/Index', [
             'enrollment' => $enroll,
         ]);
     }
