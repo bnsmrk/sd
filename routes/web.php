@@ -21,9 +21,18 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
+
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');
+
+Route::get('teacher-dashboard', function () {
+    return Inertia::render('TeacherAssignments/TeacherDashboard');
+})->middleware(['auth', 'verified', 'role:teacher'])->name('teacher.dashboard');
+
+Route::get('student-dashboard', function () {
+    return Inertia::render('Student/StudentDashboard');
+})->middleware(['auth', 'verified', 'role:student'])->name('student.dashboard');
 
 
 Route::middleware('role:teacher')->group(function () {
