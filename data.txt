@@ -40,14 +40,3 @@ INSERT INTO sections (name, year_level_id, created_at, updated_at) VALUES
 
 
 
-
--- Step 1: Loop through each year_level_id and section_id, and insert random subjects
-INSERT INTO subjects (year_level_id, section_id, name)
-SELECT
-    year_levels.id AS year_level_id,
-    sections.id AS section_id,
-    CONCAT('Subject ', FLOOR(1 + (RAND() * 1000))) AS name
-FROM
-    year_levels
-JOIN
-    sections ON sections.year_level_id = year_levels.id;

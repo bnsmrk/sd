@@ -7,7 +7,7 @@ import { Head, Link } from '@inertiajs/vue3';
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
+    <div class="flex min-h-svh flex-col items-center justify-center gap-6 bg-gradient-to-r from-pink-400 via-blue-300 to-yellow-100 p-6 md:p-10">
         <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
             <nav class="flex items-center justify-end gap-4">
                 <Link

@@ -54,6 +54,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/teacher-assignments',
             icon: Users,
         },
+        {
+            title: 'Student Proficiency Report',
+            href: '/principal-students-proficiency',
+            icon: BookOpen,
+        },
     ],
     teacher: [
         {
@@ -81,6 +86,13 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/teacher-dashboard',
             icon: Briefcase,
         },
+    ],
+    principal: [
+        // {
+        //     title: 'Dashboard',
+        //     href: '/student-dashboard',
+        //     icon: Briefcase,
+        // },
     ],
     student: [
         {

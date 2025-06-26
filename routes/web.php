@@ -16,6 +16,7 @@ use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\StudentSubjectController;
 use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
+use App\Http\Controllers\PrincipalProficiencyReportController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -58,6 +59,12 @@ Route::middleware('role:teacher')->group(function () {
     Route::get('/students-proficiency/pdf', [ProficiencyReportController::class, 'exportPdf'])->name('students-proficiency.pdf');
 
 });
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/principal-students-proficiency', [PrincipalProficiencyReportController::class, 'index'])->name('principal.proficiency.index');
+    Route::get('/principal-students-proficiency/pdf', [PrincipalProficiencyReportController::class, 'exportPdf'])->name('principal.proficiency.pdf');
+});
+
 
 Route::middleware('role:admin')->group(function () {
     Route::resource('year-levels', YearLevelController::class);

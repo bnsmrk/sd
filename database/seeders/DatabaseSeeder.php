@@ -19,31 +19,37 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@gmail.com',
             'role' => 'admin',
-            'password' => bcrypt('password'), // Use bcrypt for password hashing
+            'password' => bcrypt('password'),
         ]);
         User::factory()->create([
             'name' => 'Student User',
             'email' => 'student@gmail.com',
             'role' => 'student',
-            'password' => bcrypt('password'), // Use bcrypt for password hashing
+            'password' => bcrypt('password'),
         ]);
         User::factory()->create([
             'name' => 'Teacher User',
             'email' => 'teacher@gmail.com',
             'role' => 'teacher',
-            'password' => bcrypt('password'), // Use bcrypt for password hashing
+            'password' => bcrypt('password'),
         ]);
         User::factory()->create([
             'name' => 'ICT User',
             'email' => 'ict@gmail.com',
             'role' => 'ict',
-            'password' => bcrypt('password'), // Use bcrypt for password hashing
+            'password' => bcrypt('password'),
         ]);
         User::factory()->create([
-            'name' => 'Head',
+            'name' => 'Year Level Head',
             'email' => 'head@gmail.com',
             'role' => 'head',
-            'password' => bcrypt('password'), // Use bcrypt for password hashing
+            'password' => bcrypt('password'),
+        ]);
+         User::factory()->create([
+            'name' => 'Principal User',
+            'email' => 'principal@gmail.com',
+            'role' => 'principal',
+            'password' => bcrypt('password'),
         ]);
     }
 }
