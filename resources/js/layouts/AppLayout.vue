@@ -2,6 +2,7 @@
 import Toast from '@/components/Toast.vue';
 import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { usePage } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 

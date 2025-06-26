@@ -14,19 +14,19 @@ defineProps<{
 
 const toastStyle = {
     success: {
-        container: 'bg-white text-green-500 dark:bg-green-800 dark:text-green-200',
-        icon: 'inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-lg dark:bg-green-700',
-        iconClass: 'fas fa-check-circle',
+        container: 'bg-gradient-to-r from-teal-100 via-teal-200 to-teal-300 border-l-4 border-teal-700 p-4 shadow-xl',
+        icon: 'inline-flex items-center justify-center w-8 h-8 bg-teal-200 text-teal-700 rounded-full',
+        iconClass: 'fas fa-check-circle text-xl',
     },
     danger: {
-        container: 'bg-white text-red-500 dark:bg-red-800 dark:text-red-200',
-        icon: 'inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-lg dark:bg-red-700',
-        iconClass: 'fas fa-exclamation-circle',
+        container: 'bg-gradient-to-r from-red-100 via-red-200 to-red-300 border-l-4 border-red-700 p-4 shadow-xl',
+        icon: 'inline-flex items-center justify-center w-8 h-8 bg-red-200 text-red-700 rounded-full',
+        iconClass: 'fas fa-times-circle text-xl',
     },
     warning: {
-        container: 'bg-white text-orange-500 dark:bg-orange-800 dark:text-orange-200',
-        icon: 'inline-flex items-center justify-center w-8 h-8 bg-orange-100 rounded-lg dark:bg-orange-700',
-        iconClass: 'fas fa-exclamation-triangle',
+        container: 'bg-gradient-to-r from-yellow-100 via-yellow-200 to-yellow-300 border-l-4 border-yellow-700 p-4 shadow-xl',
+        icon: 'inline-flex items-center justify-center w-8 h-8 bg-yellow-200 text-yellow-700 rounded-full',
+        iconClass: 'fas fa-exclamation-triangle text-xl',
     },
 };
 </script>
