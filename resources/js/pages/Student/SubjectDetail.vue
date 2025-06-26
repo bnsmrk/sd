@@ -10,6 +10,7 @@ const { subject } = defineProps<{
         modules: Array<{
             id: number;
             title: string;
+            progress: number;
             materials: Array<{
                 id: number;
                 title: string;
@@ -25,10 +26,11 @@ const { subject } = defineProps<{
                 score: number | null;
                 total_points: number | null;
                 submitted: boolean;
-                essay_score: number | null; // added from controller
+                essay_score: number | null;
             }>;
         }>;
     };
+    progress: number;
 }>();
 
 const openModuleId = ref<number | null>(null);
@@ -57,19 +59,15 @@ function goToActivity(activity: { id: number; type: string }) {
                 class="overflow-hidden rounded border border-gray-300 shadow-sm dark:border-gray-700"
             >
                 <!-- Header -->
-                <div class="flex cursor-pointer items-center justify-between bg-gray-100 p-4 dark:bg-gray-800" @click="toggleModule(module.id)">
-                    <span class="text-lg font-semibold">Module {{ index + 1 }}: {{ module.title }}</span>
-                    <svg
-                        class="h-5 w-5 transform transition-transform duration-200"
-                        :class="{ 'rotate-180': openModuleId === module.id }"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
+                <!-- Header -->
+                <div class="cursor-pointer bg-gray-100 p-4 dark:bg-gray-800" @click="toggleModule(module.id)">
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg font-semibold">Module {{ index + 1 }}: {{ module.title }}</span>
+                        <span class="text-sm font-medium text-blue-600">{{ module.progress }}%</span>
+                    </div>
+                    <div class="mt-1 h-2 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
+                        <div class="h-full bg-green-500 transition-all duration-300" :style="{ width: module.progress + '%' }"></div>
+                    </div>
                 </div>
 
                 <!-- Content -->
