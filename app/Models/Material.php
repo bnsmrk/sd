@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Section;
 use App\Models\Subject;
 use App\Models\YearLevel;
+use App\Models\LessonPlanComment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -40,4 +41,8 @@ class Material extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function comments()
+{
+    return $this->hasMany(LessonPlanComment::class);
+}
 }

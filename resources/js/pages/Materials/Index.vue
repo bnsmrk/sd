@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { ref } from 'vue'; // ✅ required
+import { ref } from 'vue';
 
 defineProps<{
     materials: Array<{
@@ -13,6 +13,11 @@ defineProps<{
         section?: { name: string };
         subject: { name: string };
         user: { name: string };
+        comments?: Array<{
+            id: number;
+            comment: string;
+            user: { name: string };
+        }>;
     }>;
 }>();
 
@@ -62,31 +67,44 @@ function cancelDelete() {
                         <th>Type</th>
                         <th>Year Level</th>
                         <th>Section</th>
-                        <!-- ✅ New -->
                         <th>Subject</th>
                         <th>File</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="material in materials" :key="material.id" class="border-t">
-                        <td class="p-2">{{ material.title }}</td>
-                        <td class="capitalize">{{ material.type.replace('_', ' ') }}</td>
-                        <td>{{ material.year_level.name }}</td>
-                        <td>{{ material.section?.name || '—' }}</td>
-                        <!-- ✅ New -->
-                        <td>{{ material.subject.name }}</td>
-                        <td>
-                            <a :href="`/storage/${material.file_path}`" target="_blank" class="text-blue-600 underline">View</a>
-                        </td>
-                        <td>
-                            <button class="mr-2 text-blue-600" @click="editMaterial(material.id)">Edit</button>
-                            <button class="text-red-600" @click="confirmDelete(material.id)">Delete</button>
-                        </td>
-                    </tr>
+                    <template v-for="material in materials" :key="material.id">
+                        <tr class="border-t">
+                            <td class="p-2 align-top">{{ material.title }}</td>
+                            <td class="align-top capitalize">{{ material.type.replace('_', ' ') }}</td>
+                            <td class="align-top">{{ material.year_level.name }}</td>
+                            <td class="align-top">{{ material.section?.name || '—' }}</td>
+                            <td class="align-top">{{ material.subject.name }}</td>
+                            <td class="align-top">
+                                <a :href="`/storage/${material.file_path}`" target="_blank" class="text-blue-600 underline">View</a>
+                            </td>
+                            <td class="align-top">
+                                <button class="mr-2 text-blue-600" @click="editMaterial(material.id)">Edit</button>
+                                <button class="text-red-600" @click="confirmDelete(material.id)">Delete</button>
+                            </td>
+                        </tr>
+
+                        <!-- ✅ Comments shown under the same material -->
+                        <tr v-if="material.comments?.length" class="bg-gray-50 text-sm">
+                            <td colspan="7" class="p-4">
+                                <p class="mb-2 font-medium text-gray-700">Comments from Principal:</p>
+                                <ul class="ml-4 list-disc space-y-1 text-gray-600">
+                                    <li v-for="comment in material.comments" :key="comment.id">
+                                        "{{ comment.comment }}" — <i>{{ comment.user.name }}</i>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
+
         <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">

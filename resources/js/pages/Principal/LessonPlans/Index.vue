@@ -24,7 +24,36 @@ interface LessonPlan {
         id: number;
         name: string;
     };
+    comments?: {
+        id: number;
+        comment: string;
+        user: {
+            id: number;
+            name: string;
+        };
+    }[];
 }
+
+const newComments = ref<Record<number, string>>({});
+
+const submitComment = (planId: number) => {
+    const comment = newComments.value[planId]?.trim();
+    if (!comment) return;
+
+    router.post(
+        '/principal-teachers-lesson-plans/comment',
+        {
+            material_id: planId,
+            comment,
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                newComments.value[planId] = '';
+            },
+        },
+    );
+};
 
 interface Filters {
     year_level_id: number | null;
@@ -105,7 +134,27 @@ const applyFilters = () => {
                             <td class="border px-4 py-2">{{ plan.year_level?.name ?? '—' }}</td>
                             <td class="border px-4 py-2">{{ plan.section?.name ?? '—' }}</td>
                             <td class="border px-4 py-2">
-                                <a :href="`/storage/${plan.file_path}`" target="_blank" class="text-blue-600 hover:underline"> View </a>
+                                <a :href="`/storage/${plan.file_path}`" target="_blank" class="text-blue-600 hover:underline">View</a>
+                                <!-- Comments Section -->
+                                <div class="mt-3 text-sm">
+                                    <div v-if="plan.comments?.length">
+                                        <p class="font-semibold text-gray-700">Comments:</p>
+                                        <ul class="ml-5 list-disc">
+                                            <li v-for="c in plan.comments" :key="c.id">
+                                                {{ c.comment }} — <i>{{ c.user.name }}</i>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <form @submit.prevent="submitComment(plan.id)" class="mt-2">
+                                        <input
+                                            v-model="newComments[plan.id]"
+                                            class="w-full rounded border px-2 py-1 text-sm"
+                                            placeholder="Add a comment"
+                                        />
+                                        <button type="submit" class="mt-1 rounded bg-green-600 px-3 py-1 text-xs text-white">Submit</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

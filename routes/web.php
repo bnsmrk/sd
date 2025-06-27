@@ -69,6 +69,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/principal-teachers-lesson-plans', [PrincipalLessonPlanController::class, 'index'])
     ->middleware(['auth', 'role:admin'])
     ->name('principal.lesson-plans');
+Route::post('/principal-teachers-lesson-plans/comment', [PrincipalLessonPlanController::class, 'storeComment'])->middleware('auth');
 
 
 Route::middleware('role:admin')->group(function () {
