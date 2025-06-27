@@ -22,10 +22,10 @@ class Module extends Model
     {
         return $this->belongsTo(YearLevel::class);
     }
-public function materials()
-{
-    return $this->hasMany(Material::class);
-}
+    public function materials()
+    {
+        return $this->hasMany(Material::class);
+    }
 
     public function section()
     {

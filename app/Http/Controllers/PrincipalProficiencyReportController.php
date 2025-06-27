@@ -15,41 +15,45 @@ class PrincipalProficiencyReportController extends Controller
 {
     public function index(Request $request)
 {
-    // Filters from query
     $yearLevelId = $request->input('year_level_id');
     $sectionId   = $request->input('section_id');
     $subjectId   = $request->input('subject_id');
     $moduleId    = $request->input('module_id');
     $type        = $request->input('type', 'quiz');
 
-    // Static lists
+    // Static dropdowns
     $yearLevels = YearLevel::select('id', 'name')->get();
     $sections   = Section::select('id', 'name', 'year_level_id')->get();
 
-    // Subject filtering based on selected year level and section
+    // Subjects based on year level and section
     $subjectQuery = Subject::select('id', 'name', 'section_id', 'year_level_id');
-
     if ($yearLevelId) {
         $subjectQuery->where('year_level_id', $yearLevelId);
     }
-
     if ($sectionId) {
         $subjectQuery->where(function ($q) use ($sectionId) {
-            $q->where('section_id', $sectionId)->orWhereNull('section_id'); // include general subjects
+            $q->where('section_id', $sectionId)
+              ->orWhereNull('section_id');
         });
     }
-
     $subjects = $subjectQuery->get();
 
-    // Modules
+    // Modules - stricter filtering
     $modules = [];
-    if ($subjectId) {
+    if ($subjectId && $type) {
         $modules = Module::where('subject_id', $subjectId)
-            ->whereHas('activities', fn ($q) => $q->where('type', $type))
+            ->when($yearLevelId, fn($q) => $q->where('year_level_id', $yearLevelId))
+            ->when($sectionId, fn($q) =>
+                $q->where(function ($sub) use ($sectionId) {
+                    $sub->where('section_id', $sectionId)
+                        ->orWhereNull('section_id');
+                })
+            )
+            ->whereHas('activities', fn($q) => $q->where('type', $type))
             ->get(['id', 'name', 'subject_id']);
     }
 
-    // Results
+    // Results by Activity
     $resultsByActivity = [];
     if ($subjectId && $moduleId && $type) {
         $activities = Activity::with(['studentQuizResults.user'])
@@ -77,28 +81,44 @@ class PrincipalProficiencyReportController extends Controller
     }
 
     return Inertia::render('Principal/Index', [
-        'yearLevels' => $yearLevels,
-        'sections'   => $sections,
-        'subjects'   => $subjects,
-        'modules'    => $modules,
+        'yearLevels'        => $yearLevels,
+        'sections'          => $sections,
+        'subjects'          => $subjects,
+        'modules'           => $modules,
         'resultsByActivity' => $resultsByActivity,
-        'filters'    => compact('yearLevelId', 'sectionId', 'subjectId', 'moduleId', 'type'),
+        'filters'           => compact('yearLevelId', 'sectionId', 'subjectId', 'moduleId', 'type'),
     ]);
 }
 
 
     public function exportPdf(Request $request)
     {
-        $subjectId = $request->input('subject_id');
-        $moduleId  = $request->input('module_id');
-        $type      = $request->input('type', 'quiz');
+        $subjectId   = $request->input('subject_id');
+        $moduleId    = $request->input('module_id');
+        $type        = $request->input('type', 'quiz');
+        $yearLevelId = $request->input('year_level_id');
+        $sectionId   = $request->input('section_id');
 
         $resultsByActivity = [];
 
         if ($subjectId && $moduleId && $type) {
-            $activities = Activity::with(['studentQuizResults.user'])
+            $activities = Activity::with(['studentQuizResults.user', 'module.subject'])
                 ->where('module_id', $moduleId)
                 ->where('type', $type)
+                ->whereHas('module.subject', function ($q) use ($subjectId, $yearLevelId, $sectionId) {
+                    $q->where('id', $subjectId);
+
+                    if ($yearLevelId) {
+                        $q->where('year_level_id', $yearLevelId);
+                    }
+
+                    if ($sectionId) {
+                        $q->where(function ($subQuery) use ($sectionId) {
+                            $subQuery->where('section_id', $sectionId)
+                                     ->orWhereNull('section_id');
+                        });
+                    }
+                })
                 ->get();
 
             $resultsByActivity = $activities->map(function ($activity) {

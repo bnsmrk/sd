@@ -32,7 +32,7 @@ watch(
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <AppLayout :breadcrumbs="breadcrumbs" class="">
         <slot />
 
         <Toast v-if="success" :message="success" variant="success" @close="success = null" />

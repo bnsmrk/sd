@@ -150,7 +150,7 @@ const pdfUrl = computed(() => {
     <AppLayout>
         <div class="space-y-6 p-6">
             <h1 class="text-2xl font-bold">Proficiency Report</h1>
-            <p>{{ props.subjects }}</p>
+
             <!-- Filters -->
             <div class="flex flex-wrap gap-4">
                 <select v-model="selectedYearLevel" class="rounded border px-3 py-2">
