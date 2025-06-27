@@ -16,6 +16,7 @@ use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\StudentSubjectController;
 use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
+use App\Http\Controllers\PrincipalLessonPlanController;
 use App\Http\Controllers\PrincipalProficiencyReportController;
 
 Route::get('/', function () {
@@ -64,6 +65,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/principal-students-proficiency', [PrincipalProficiencyReportController::class, 'index'])->name('principal.proficiency.index');
     Route::get('/principal-students-proficiency/pdf', [PrincipalProficiencyReportController::class, 'exportPdf'])->name('principal.proficiency.pdf');
 });
+
+Route::get('/principal-teachers-lesson-plans', [PrincipalLessonPlanController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('principal.lesson-plans');
 
 
 Route::middleware('role:admin')->group(function () {

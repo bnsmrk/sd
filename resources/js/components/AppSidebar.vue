@@ -59,6 +59,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/principal-students-proficiency',
             icon: BookOpen,
         },
+        {
+            title: 'Teachers Lesson Plans',
+            href: '/principal-teachers-lesson-plans',
+            icon: BookOpen,
+        },
     ],
     teacher: [
         {

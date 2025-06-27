@@ -33,8 +33,11 @@ class Material extends Model
         return $this->belongsTo(User::class);
     }
     public function module()
-{
-    return $this->belongsTo(Module::class);
-}
-
+    {
+        return $this->belongsTo(Module::class);
+    }
+    public function uploader()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
