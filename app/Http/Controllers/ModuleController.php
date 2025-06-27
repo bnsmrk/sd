@@ -13,11 +13,21 @@ class ModuleController extends Controller
 {
     public function index()
     {
-        $modules = Module::with(['yearLevel', 'subject'])->get();
+        $user = Auth::user();
 
-        return Inertia::render('Modules/Index', [
-            'modules' => $modules,
-        ]);
+    // Get all teacher assignments
+    $assignments = $user->teacherAssignments()->get();
+
+    // Filter modules the teacher is assigned to
+    $modules = Module::with(['yearLevel', 'subject', 'section'])
+        ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
+        ->whereIn('section_id', $assignments->pluck('section_id'))
+        ->whereIn('subject_id', $assignments->pluck('subject_id'))
+        ->get();
+
+    return Inertia::render('Modules/Index', [
+        'modules' => $modules,
+    ]);
     }
 
     public function create()
