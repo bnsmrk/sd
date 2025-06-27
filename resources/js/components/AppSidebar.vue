@@ -67,6 +67,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
     ],
     teacher: [
         {
+            title: 'Dashboard',
+            href: '/teacher-dashboard',
+            icon: Briefcase,
+        },
+        {
             title: 'Upload Materials',
             href: '/materials',
             icon: Briefcase,
@@ -86,11 +91,6 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/students-proficiency',
             icon: Briefcase,
         },
-        {
-            title: 'Dashboard',
-            href: '/teacher-dashboard',
-            icon: Briefcase,
-        },
     ],
     principal: [
         // {
@@ -101,14 +101,14 @@ const groupedNavItems: Record<string, NavItem[]> = {
     ],
     student: [
         {
-            title: 'My Subjects',
-            href: '/my-subjects',
-            icon: BookOpen,
-        },
-        {
             title: 'Dashboard',
             href: '/student-dashboard',
             icon: Briefcase,
+        },
+        {
+            title: 'My Subjects',
+            href: '/my-subjects',
+            icon: BookOpen,
         },
     ],
 };

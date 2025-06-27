@@ -13,6 +13,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\YearLevelController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\EnrollStudentController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StudentSubjectController;
 use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
@@ -24,9 +25,13 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');
+// Route::get('dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');
+
+Route::get('dashboard', [AdminDashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:admin'])
+    ->name('dashboard');
 
 Route::get('teacher-dashboard', function () {
     return Inertia::render('TeacherAssignments/TeacherDashboard');
