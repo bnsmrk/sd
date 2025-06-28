@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\PrincipalProficiencyReportController;
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
+Route::get('send-email', [EmailController::class, 'index']);
 
 
 // Route::get('dashboard', function () {
