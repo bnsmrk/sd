@@ -18,6 +18,7 @@ use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StudentSubjectController;
+use App\Http\Controllers\ProficiencyTestController;
 use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
 use App\Http\Controllers\PrincipalLessonPlanController;
@@ -121,6 +122,11 @@ Route::middleware('role:admin')->group(function () {
     Route::resource('teacher-assignments', TeacherAssignmentController::class);
 });
 
+
+Route::middleware('role:head')->group(function () {
+    Route::resource('proficiency-test', ProficiencyTestController::class);
+
+});
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/my-subjects', [StudentSubjectController::class, 'index'])->name('student.subjects');
     Route::get('/subjects/{subject}', [StudentSubjectController::class, 'show'])->name('student.subject.show');
