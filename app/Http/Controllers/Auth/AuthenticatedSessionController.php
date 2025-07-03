@@ -36,13 +36,17 @@ class AuthenticatedSessionController extends Controller
     $user = Auth::user();
 
     // Redirect by role
-    switch ($user->role) {
+     switch ($user->role) {
         case 'admin':
             return redirect()->route('dashboard');
         case 'teacher':
             return redirect()->route('teacher.dashboard');
         case 'student':
             return redirect()->route('student.dashboard');
+        case 'head':
+            return redirect()->route('head.dashboard');
+        case 'ict':
+            return redirect()->route('ict.dashboard');
         default:
             abort(403, 'Unauthorized role');
     }

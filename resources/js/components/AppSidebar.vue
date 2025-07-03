@@ -93,11 +93,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
         },
     ],
     principal: [
-        // {
-        //     title: 'Dashboard',
-        //     href: '/student-dashboard',
-        //     icon: Briefcase,
-        // },
+        {
+            title: 'Dashboard',
+            href: '/principal-dashboard',
+            icon: Briefcase,
+        },
     ],
     student: [
         {
@@ -109,6 +109,20 @@ const groupedNavItems: Record<string, NavItem[]> = {
             title: 'My Subjects',
             href: '/my-subjects',
             icon: BookOpen,
+        },
+    ],
+    head: [
+        {
+            title: 'Head Dashboard',
+            href: '/head-dashboard',
+            icon: Briefcase,
+        },
+    ],
+    ict: [
+        {
+            title: 'ICT Dashboard',
+            href: '/ict-dashboard',
+            icon: Briefcase,
         },
     ],
 };

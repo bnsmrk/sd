@@ -2,6 +2,8 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IctDashboard;
+use App\Http\Controllers\HeadDashboard;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmailController;
@@ -67,6 +69,13 @@ Route::get('student-dashboard', function () {
     return Inertia::render('Student/StudentDashboard');
 })->middleware(['auth', 'verified', 'role:student'])->name('student.dashboard');
 
+Route::get('/head-dashboard', [HeadDashboard::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:head'])
+    ->name('head.dashboard');
+
+Route::get('/ict-dashboard', [IctDashboard::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:ict'])
+    ->name('ict.dashboard');
 
 Route::middleware('role:teacher')->group(function () {
     Route::resource('materials', MaterialController::class);
