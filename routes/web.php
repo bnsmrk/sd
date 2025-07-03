@@ -23,7 +23,7 @@ use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
 use App\Http\Controllers\PrincipalLessonPlanController;
 use App\Http\Controllers\PrincipalProficiencyReportController;
-
+use App\Http\Controllers\ProficiencyQuestionController;
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
@@ -73,6 +73,12 @@ Route::get('student-dashboard', function () {
 Route::get('/head-dashboard', [HeadDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:head'])
     ->name('head.dashboard');
+
+
+Route::get('/proficiency-test/{proficiencyTest}/questions/create', [ProficiencyQuestionController::class, 'create'])->name('proficiency-questions.create');
+Route::post('/proficiency-test/{proficiencyTest}/questions', [ProficiencyQuestionController::class, 'store'])->name('proficiency-questions.store');
+
+
 
 Route::get('/ict-dashboard', [IctDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:ict'])

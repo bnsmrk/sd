@@ -4,11 +4,14 @@ namespace App\Models;
 
 
 use App\Models\YearLevel;
+use App\Models\ProficiencyQuestion;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProficiencyTest extends Model
-{protected $fillable = [
+{
+    protected $fillable = [
         'title',
         'type',
         'year_level_id',
@@ -19,6 +22,11 @@ class ProficiencyTest extends Model
     public function yearLevel()
     {
         return $this->belongsTo(YearLevel::class);
+    }
+
+    public function proficiencyQuestions()
+    {
+        return $this->hasMany(ProficiencyQuestion::class);
     }
 
 

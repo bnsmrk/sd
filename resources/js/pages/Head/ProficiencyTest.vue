@@ -59,6 +59,7 @@ function deleteTest(id: number) {
 
                             <td class="space-x-2 px-4 py-2">
                                 <Link :href="`/proficiency-test/${test.id}/edit`" class="text-blue-600 hover:underline"> Edit </Link>
+                                <Link :href="`/proficiency-test/${test.id}/questions/create`" class="text-indigo-600 hover:underline">Add Questions</Link>
                                 <button @click="deleteTest(test.id)" class="text-red-600 hover:underline">Delete</button>
                             </td>
                         </tr>
