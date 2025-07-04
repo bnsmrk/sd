@@ -21,7 +21,6 @@ const goTo = (activity: { id: number; type: string }) => {
     if (activity.type === 'quiz') {
         router.get(`/student/quiz/${activity.id}`);
     }
-    // add more if needed for exams, tasks, etc.
 };
 </script>
 

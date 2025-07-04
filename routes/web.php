@@ -8,6 +8,7 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\StudentDashboard;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ActivityController;
@@ -22,8 +23,8 @@ use App\Http\Controllers\ProficiencyTestController;
 use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
 use App\Http\Controllers\PrincipalLessonPlanController;
-use App\Http\Controllers\PrincipalProficiencyReportController;
 use App\Http\Controllers\ProficiencyQuestionController;
+use App\Http\Controllers\PrincipalProficiencyReportController;
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
@@ -66,9 +67,18 @@ Route::get('teacher-dashboard', function () {
     return Inertia::render('TeacherAssignments/TeacherDashboard');
 })->middleware(['auth', 'verified', 'role:teacher'])->name('teacher.dashboard');
 
-Route::get('student-dashboard', function () {
-    return Inertia::render('Student/StudentDashboard');
-})->middleware(['auth', 'verified', 'role:student'])->name('student.dashboard');
+// Route::get('student-dashboard', function () {
+//     return Inertia::render('Student/StudentDashboard');
+// })->middleware(['auth', 'verified', 'role:student'])->name('student.dashboard');
+
+
+Route::get('student-dashboard', [StudentDashboard::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:student'])
+    ->name('student.dashboard');
+
+  Route::get('/student/proficiency-test/{test}', [ProficiencyTestController::class, 'show'])->name('student.proficiency-test.take');
+    Route::post('/student/proficiency-test/{test}/submit', [ProficiencyTestController::class, 'submit'])->name('student.proficiency-test.submit');
+
 
 Route::get('/head-dashboard', [HeadDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:head'])

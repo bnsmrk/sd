@@ -7,6 +7,8 @@ use App\Models\YearLevel;
 use App\Models\ProficiencyQuestion;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\StudentProficiencyAnswer;
+use App\Models\StudentProficiencyResult;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProficiencyTest extends Model
@@ -18,9 +20,9 @@ class ProficiencyTest extends Model
         'scheduled_at',
         'description',
     ];
-protected $casts = [
-    'scheduled_at' => 'datetime',
-];
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+    ];
 
     public function yearLevel()
     {
@@ -32,5 +34,18 @@ protected $casts = [
         return $this->hasMany(ProficiencyQuestion::class);
     }
 
+    public function results()
+    {
+        return $this->hasMany(StudentProficiencyResult::class);
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(StudentProficiencyAnswer::class);
+    }
+    public function questions()
+    {
+        return $this->hasMany(ProficiencyQuestion::class);
+    }
 
 }
