@@ -20,6 +20,7 @@ use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StudentSubjectController;
 use App\Http\Controllers\ProficiencyTestController;
+use App\Http\Controllers\StudentsProficiencyResult;
 use App\Http\Controllers\ProficiencyReportController;
 use App\Http\Controllers\TeacherAssignmentController;
 use App\Http\Controllers\PrincipalLessonPlanController;
@@ -85,6 +86,8 @@ Route::get('/head-dashboard', [HeadDashboard::class, 'index'])
     ->name('head.dashboard');
 
 
+
+
 Route::get('/proficiency-test/{proficiencyTest}/questions/create', [ProficiencyQuestionController::class, 'create'])->name('proficiency-questions.create');
 Route::post('/proficiency-test/{proficiencyTest}/questions', [ProficiencyQuestionController::class, 'store'])->name('proficiency-questions.store');
 
@@ -141,7 +144,7 @@ Route::middleware('role:admin')->group(function () {
 
 Route::middleware('role:head')->group(function () {
     Route::resource('proficiency-test', ProficiencyTestController::class);
-
+    Route::resource('proficiency-result', StudentsProficiencyResult::class);
 });
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/my-subjects', [StudentSubjectController::class, 'index'])->name('student.subjects');

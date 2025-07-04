@@ -142,7 +142,7 @@ class ProficiencyTestController extends Controller
                     break;
 
                 case 'essay':
-                    $isCorrect = null; // Essay is manually graded
+                    $isCorrect = null;
                     break;
             }
 
@@ -176,22 +176,22 @@ class ProficiencyTestController extends Controller
 
 
     public function show($id)
-{
-    $userId = Auth::id();
+    {
+        $userId = Auth::id();
 
-    $alreadySubmitted = StudentProficiencyResult::where('user_id', $userId)
-        ->where('proficiency_test_id', $id)
-        ->exists();
+        $alreadySubmitted = StudentProficiencyResult::where('user_id', $userId)
+            ->where('proficiency_test_id', $id)
+            ->exists();
 
-    if ($alreadySubmitted) {
-        return redirect()->route('student.dashboard')->with('error', 'You have already taken this test.');
+        if ($alreadySubmitted) {
+            return redirect()->route('student.dashboard')->with('error', 'You have already taken this test.');
+        }
+
+        $test = ProficiencyTest::with('questions')->findOrFail($id);
+
+        return Inertia::render('Student/ProficiencyTestTake', [
+            'test' => $test,
+        ]);
     }
-
-    $test = ProficiencyTest::with('questions')->findOrFail($id);
-
-    return Inertia::render('Student/ProficiencyTestTake', [
-        'test' => $test,
-    ]);
-}
 
 }

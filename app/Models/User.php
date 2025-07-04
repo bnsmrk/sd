@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Section;
+use App\Models\Student;
 use App\Models\Submission;
 use App\Models\TeacherAssignment;
+use App\Models\StudentProficiencyResult;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Models\Student;
 
 class User extends Authenticatable
 {
@@ -40,7 +42,14 @@ class User extends Authenticatable
         return $this->hasMany(Student::class, 'user_id');
     }
 
-
+    public function proficiencyResults()
+    {
+        return $this->hasMany(StudentProficiencyResult::class);
+    }
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
             /**
      * The attributes that should be hidden for serialization.
      *

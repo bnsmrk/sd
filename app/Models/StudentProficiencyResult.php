@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use App\Models\ProficiencyTest;
 use Illuminate\Database\Eloquent\Model;
 
 class StudentProficiencyResult extends Model
@@ -21,5 +23,15 @@ class StudentProficiencyResult extends Model
     public function test()
     {
         return $this->belongsTo(ProficiencyTest::class, 'proficiency_test_id');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function proficiencyTest()
+    {
+        return $this->belongsTo(ProficiencyTest::class);
     }
 }

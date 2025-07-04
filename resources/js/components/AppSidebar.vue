@@ -122,6 +122,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/proficiency-test',
             icon: Briefcase,
         },
+        {
+            title: 'Students Test Proficiency Result',
+            href: '/proficiency-result',
+            icon: Briefcase,
+        },
     ],
     ict: [
         {

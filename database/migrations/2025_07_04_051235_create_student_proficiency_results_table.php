@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('student_proficiency_results', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-    $table->foreignId('proficiency_test_id')->constrained()->onDelete('cascade');
-    $table->integer('score');
-    $table->integer('total_points');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('proficiency_test_id')->constrained()->onDelete('cascade');
+            $table->integer('score');
+            $table->integer('total_points');
             $table->timestamps();
         });
     }
