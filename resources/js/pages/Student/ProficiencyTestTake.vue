@@ -201,7 +201,7 @@ const groupedButtons = computed(() => {
                             </div>
 
                             <!-- Fill in the Blank -->
-                            <div v-else-if="q.type === 'fill_in_the_blank'">
+                            <div v-else-if="q.type === 'fill_in_blank'">
                                 <input
                                     type="text"
                                     class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-blue-200"

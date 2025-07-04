@@ -124,7 +124,7 @@ class ProficiencyTestController extends Controller
             switch ($question->type) {
                 case 'multiple_choice':
                 case 'true_false':
-                case 'fill_in_the_blank':
+                case 'fill_in_blank':
                     $isCorrect = strtolower(trim($userAnswer)) === strtolower(trim($correctAnswer));
                     break;
 
