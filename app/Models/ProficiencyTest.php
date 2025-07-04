@@ -18,6 +18,9 @@ class ProficiencyTest extends Model
         'scheduled_at',
         'description',
     ];
+protected $casts = [
+    'scheduled_at' => 'datetime',
+];
 
     public function yearLevel()
     {

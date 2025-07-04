@@ -27,8 +27,7 @@ class ProficiencyTestController extends Controller
     {
         return Inertia::render('Head/ProficiencyTestCreate', [
             'yearLevels' => YearLevel::all(),
-            // 'sections' => Section::all(),
-            // 'subjects' => Subject::all(),
+          
         ]);
     }
 
