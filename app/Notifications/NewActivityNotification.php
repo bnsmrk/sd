@@ -46,5 +46,7 @@ class NewActivityNotification extends Notification
 
         ]);
     }
+
+
 }
 
