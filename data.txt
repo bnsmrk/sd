@@ -65,3 +65,10 @@ MAIL_ENCRYPTION=ssl
 --for linux
 crontab -l
 * * * * * cd /home/v1n5t3ch/Downloads/Codes/sd && /opt/lampp/bin/php artisan schedule:run >> /dev/null 2>&1
+
+
+send-email due date . need to reconsider sa hosting. dli pwede ang Shared hosting (e.g. Namecheap, Hostinger)	❌ Often limited	May need workarounds
+
+✅ VPS (e.g. DigitalOcean, Linode, AWS)	✅ Yes	Full control (recommended)
+
+Laravel-optimized (e.g. Laravel Forge, Ploi)	✅ Yes	Easy deployment tools

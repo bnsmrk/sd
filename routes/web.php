@@ -69,6 +69,9 @@ Route::post('/proficiency-test/{proficiencyTest}/questions', [ProficiencyQuestio
 Route::get('/ict-dashboard', [IctDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:ict'])
     ->name('ict.dashboard');
+Route::get('/students-proficiency-result/export', [StudentsProficiencyResult::class, 'exportPdf']);
+
+
 
 Route::middleware('role:teacher')->group(function () {
     Route::resource('materials', MaterialController::class);

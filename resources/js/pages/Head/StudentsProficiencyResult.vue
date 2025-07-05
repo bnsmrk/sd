@@ -42,7 +42,9 @@ const selectedYearLevel = ref<number | null>(props.filters.year_level_id);
 const selectedSection = ref<number | null>(props.filters.section_id);
 const selectedType = ref<string>(props.filters.type || '');
 
-const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevel.value));
+const filteredSections = computed(() =>
+    props.sections.filter((s) => s.year_level_id === selectedYearLevel.value)
+);
 
 const filtersApplied = ref(false);
 
@@ -64,6 +66,14 @@ const applyFilters = () => {
         },
     );
 };
+
+// For dynamic PDF URL generation
+const pdfUrl = computed(() => {
+    const year = selectedYearLevel.value ?? '';
+    const section = selectedSection.value ?? '';
+    const type = selectedType.value;
+    return `/students-proficiency-result/export?year_level_id=${year}&section_id=${section}&type=${type}`;
+});
 </script>
 
 <template>
@@ -90,6 +100,16 @@ const applyFilters = () => {
                 </select>
 
                 <button @click="applyFilters" class="rounded bg-blue-600 px-4 py-2 text-white">Generate Report</button>
+
+                <!-- ✅ Download PDF button -->
+                <a
+                    v-if="filtersApplied && props.individuals.length > 0"
+                    :href="pdfUrl"
+                    target="_blank"
+                    class="rounded bg-red-700 px-4 py-2 text-white hover:bg-red-800"
+                >
+                    Download PDF
+                </a>
             </div>
 
             <!-- Results -->
