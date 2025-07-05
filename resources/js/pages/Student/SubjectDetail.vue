@@ -2,8 +2,7 @@
 //import AppLayout from '@/layouts/AppLayout.vue';
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
 import { router } from '@inertiajs/vue3';
-import { ref } from 'vue';
-
+import { onMounted, ref } from 'vue';
 const { subject } = defineProps<{
     subject: {
         id: number;
@@ -39,7 +38,15 @@ const openModuleId = ref<number | null>(null);
 function toggleModule(id: number) {
     openModuleId.value = openModuleId.value === id ? null : id;
 }
-
+onMounted(() => {
+    const hash = window.location.hash;
+    if (hash.startsWith('#activity-')) {
+        const el = document.querySelector(hash);
+        if (el) {
+            setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 200); // allow Inertia to fully load content first
+        }
+    }
+});
 function goToActivity(activity: { id: number; type: string }) {
     if (activity.type === 'essay') {
         router.get(`/activities/${activity.id}/essay`);
@@ -98,6 +105,7 @@ function goToActivity(activity: { id: number; type: string }) {
                         <div
                             v-for="activity in module.activities"
                             :key="activity.id"
+                            :id="`activity-${activity.id}`"
                             class="rounded-xl border border-gray-200 p-4 shadow-sm transition hover:shadow-lg dark:border-gray-700"
                             :class="{
                                 'cursor-pointer bg-white hover:bg-indigo-50 dark:hover:bg-gray-800': !activity.score && !activity.submitted,

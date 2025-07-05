@@ -164,7 +164,6 @@ onMounted(fetchNotifications);
                                                 console.log('Navigating to:', n.data.url); // ✅ DEBUG
                                                 markAsRead(n.id);
                                                 router.visit(n.data.url);
-
                                             }
                                         "
                                     >

@@ -40,8 +40,12 @@ class Activity extends Model
         return $this->hasMany(StudentQuizResult::class);
     }
     public function submissions() {
-    return $this->hasMany(Submission::class);
-}
+        return $this->hasMany(Submission::class);
+    }
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
 
 }
 

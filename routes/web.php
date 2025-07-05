@@ -29,69 +29,42 @@ use App\Http\Controllers\PrincipalProficiencyReportController;
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
-// Route::get('send-email', [EmailController::class, 'index']);
-
-// Route::get('/test-email', function () {
-//     $student = \App\Models\User::first();
-//     $yearLevel = \App\Models\YearLevel::first();
-//     $section = \App\Models\Section::first();
-//     $subjects = \App\Models\Subject::where('year_level_id', $yearLevel->id)->get();
-
-//     return view('emails.testMail', compact('student', 'yearLevel', 'section', 'subjects'));
-// });
-
-
-// Route::get('dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');
-
-
 
 Route::get('dashboard', [AdminDashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:admin'])
     ->name('dashboard');
 
-
-
-Route::middleware('auth')->group(function () {
-   Route::get('/notifications', function () {
-    return response()->json(Auth::user()->notifications);
-});
+    Route::middleware('auth')->group(function () {
+    Route::get('/notifications', function () {
+        return response()->json(Auth::user()->notifications);
+    });
 
     Route::post('/notifications/mark-as-read', function () {
         Auth::user()->unreadNotifications->markAsRead();
         return response()->json(['status' => 'ok']);
+        });
     });
-});
 
-Route::get('teacher-dashboard', function () {
-    return Inertia::render('TeacherAssignments/TeacherDashboard');
-})->middleware(['auth', 'verified', 'role:teacher'])->name('teacher.dashboard');
+    Route::get('teacher-dashboard', function () {
+        return Inertia::render('TeacherAssignments/TeacherDashboard');
+    })->middleware(['auth', 'verified', 'role:teacher'])->name('teacher.dashboard');
 
-// Route::get('student-dashboard', function () {
-//     return Inertia::render('Student/StudentDashboard');
-// })->middleware(['auth', 'verified', 'role:student'])->name('student.dashboard');
 
 
 Route::get('student-dashboard', [StudentDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:student'])
     ->name('student.dashboard');
 
-  Route::get('/student/proficiency-test/{test}', [ProficiencyTestController::class, 'show'])->name('student.proficiency-test.take');
-    Route::post('/student/proficiency-test/{test}/submit', [ProficiencyTestController::class, 'submit'])->name('student.proficiency-test.submit');
+Route::get('/student/proficiency-test/{test}', [ProficiencyTestController::class, 'show'])->name('student.proficiency-test.take');
+Route::post('/student/proficiency-test/{test}/submit', [ProficiencyTestController::class, 'submit'])->name('student.proficiency-test.submit');
 
 
 Route::get('/head-dashboard', [HeadDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:head'])
     ->name('head.dashboard');
 
-
-
-
 Route::get('/proficiency-test/{proficiencyTest}/questions/create', [ProficiencyQuestionController::class, 'create'])->name('proficiency-questions.create');
 Route::post('/proficiency-test/{proficiencyTest}/questions', [ProficiencyQuestionController::class, 'store'])->name('proficiency-questions.store');
-
-
 
 Route::get('/ict-dashboard', [IctDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:ict'])
@@ -146,6 +119,7 @@ Route::middleware('role:head')->group(function () {
     Route::resource('proficiency-test', ProficiencyTestController::class);
     Route::resource('proficiency-result', StudentsProficiencyResult::class);
 });
+
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/my-subjects', [StudentSubjectController::class, 'index'])->name('student.subjects');
     Route::get('/subjects/{subject}', [StudentSubjectController::class, 'show'])->name('student.subject.show');
