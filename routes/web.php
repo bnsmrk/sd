@@ -54,9 +54,9 @@ Route::get('dashboard', [AdminDashboardController::class, 'index'])
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/notifications', function () {
-        return response()->json(Auth::user()->unreadNotifications);
-    });
+   Route::get('/notifications', function () {
+    return response()->json(Auth::user()->notifications);
+});
 
     Route::post('/notifications/mark-as-read', function () {
         Auth::user()->unreadNotifications->markAsRead();

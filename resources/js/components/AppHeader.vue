@@ -29,7 +29,6 @@ const auth = page.props.auth as any;
 const role = auth.user?.role ?? '';
 
 const isCurrentRoute = computed(() => (url: string) => page.url === url);
-
 const activeItemStyles = computed(
     () => (url: string) => (isCurrentRoute.value(url) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''),
 );
@@ -44,7 +43,7 @@ const groupedNavItems: Record<string, NavItem[]> = {
 
 const mainNavItems: NavItem[] = [...groupedNavItems.common, ...(role && groupedNavItems[role] ? groupedNavItems[role] : [])];
 
-// Notifications
+// 🔔 Notifications
 interface NotificationData {
     id: string;
     data: {
@@ -52,9 +51,11 @@ interface NotificationData {
         body: string;
         url: string;
     };
+    read_at: string | null;
 }
 
 const notifications = ref<NotificationData[]>([]);
+const unreadCount = computed(() => notifications.value.filter((n) => !n.read_at).length);
 
 const fetchNotifications = async () => {
     try {
@@ -65,12 +66,13 @@ const fetchNotifications = async () => {
     }
 };
 
-const markAsRead = async () => {
+const markAsRead = async (id: string) => {
     try {
-        await axios.post('/notifications/mark-as-read');
-        notifications.value = [];
+        await axios.post('/notifications/mark-as-read', { id });
+        const notif = notifications.value.find((n) => n.id === id);
+        if (notif) notif.read_at = new Date().toISOString(); // update locally
     } catch (err) {
-        console.error('Failed to mark notifications as read:', err);
+        console.error('Failed to mark notification as read:', err);
     }
 };
 
@@ -81,7 +83,7 @@ onMounted(fetchNotifications);
     <div>
         <div class="border-b border-sidebar-border/80">
             <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
-                <!-- Mobile Menu -->
+                <!-- Mobile -->
                 <div class="lg:hidden">
                     <Sheet>
                         <SheetTrigger :as-child="true">
@@ -107,27 +109,12 @@ onMounted(fetchNotifications);
                                         {{ item.title }}
                                     </Link>
                                 </nav>
-                                <div class="flex flex-col space-y-4">
-                                    <!-- <a
-                                        v-for="item in rightNavItems"
-                                        :key="item.title"
-                                        :href="item.href"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="flex items-center space-x-2 text-sm font-medium"
-                                    >
-                                        <component v-if="item.icon" :is="item.icon" class="h-5 w-5" />
-                                        <span>{{ item.title }}</span>
-                                    </a> -->
-                                </div>
                             </div>
                         </SheetContent>
                     </Sheet>
                 </div>
 
-                <!-- <Link :href="route('dashboard')" class="flex items-center gap-x-2">
-                    <AppLogo />
-                </Link> -->
+                <!-- Logo -->
                 <div class="flex items-center gap-x-2">
                     <AppLogo />
                 </div>
@@ -153,16 +140,15 @@ onMounted(fetchNotifications);
                     </NavigationMenu>
                 </div>
 
+                <!-- Right side: Notifications & Avatar -->
                 <div class="ml-auto flex items-center space-x-2">
+                    <!-- 🔔 Notifications -->
                     <div class="relative flex items-center space-x-1">
                         <DropdownMenu>
                             <DropdownMenuTrigger as-child>
                                 <Button variant="ghost" size="icon" class="group relative h-9 w-9 cursor-pointer">
                                     <Bell class="size-5 opacity-80 group-hover:opacity-100" />
-                                    <span
-                                        v-if="notifications.length"
-                                        class="absolute -top-0.5 -right-0.5 inline-flex h-2 w-2 rounded-full bg-red-500"
-                                    />
+                                    <span v-if="unreadCount > 0" class="absolute -top-0.5 -right-0.5 inline-flex h-2 w-2 rounded-full bg-red-500" />
                                 </Button>
                             </DropdownMenuTrigger>
 
@@ -175,12 +161,24 @@ onMounted(fetchNotifications);
                                         class="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
                                         @click="
                                             () => {
-                                                markAsRead();
+                                                console.log('Navigating to:', n.data.url); // ✅ DEBUG
+                                                markAsRead(n.id);
                                                 router.visit(n.data.url);
+
                                             }
                                         "
                                     >
-                                        <div class="font-semibold">{{ n.data.title }}</div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="font-semibold" :class="n.read_at ? 'text-gray-500' : 'text-black dark:text-white'">
+                                                {{ n.data.title }}
+                                            </div>
+                                            <span
+                                                v-if="n.read_at"
+                                                class="ml-2 rounded bg-gray-200 px-2 py-0.5 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                                            >
+                                                Read
+                                            </span>
+                                        </div>
                                         <div class="text-xs text-gray-500">{{ n.data.body }}</div>
                                     </div>
                                 </div>
@@ -189,6 +187,7 @@ onMounted(fetchNotifications);
                         </DropdownMenu>
                     </div>
 
+                    <!-- 👤 Avatar -->
                     <DropdownMenu>
                         <DropdownMenuTrigger :as-child="true">
                             <Button
@@ -212,6 +211,7 @@ onMounted(fetchNotifications);
             </div>
         </div>
 
+        <!-- Breadcrumb -->
         <div v-if="props.breadcrumbs.length > 1" class="flex w-full border-b border-sidebar-border/70">
             <div class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
                 <Breadcrumbs :breadcrumbs="breadcrumbs" />
