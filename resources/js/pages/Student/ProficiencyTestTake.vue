@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
 import { router } from '@inertiajs/vue3';
-import { computed, nextTick, reactive, ref, watchEffect } from 'vue';
+import { computed, nextTick, reactive, ref, watch, watchEffect } from 'vue';
 
 const props = defineProps<{
     test: {
@@ -63,11 +63,22 @@ function isAnswered(id: number): boolean {
     return Array.isArray(a) ? a.length > 0 : !!a;
 }
 
+// Update scroll function
 function scrollToQuestion(id: number) {
     nextTick(() => {
         const el = document.getElementById(`question-${id}`);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (el) {
+            console.log(`Scrolling to question-${id}`);
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            console.error(`Element with id 'question-${id}' not found`);
+        }
     });
+}
+
+// Calculate the page number for a specific question ID
+function getPageForQuestion(id: number): number {
+    return Math.ceil((props.test.questions.findIndex((q) => q.id === id) + 1) / questionsPerPage);
 }
 
 const totalPages = computed(() => Math.ceil(props.test.questions.length / questionsPerPage));
@@ -83,6 +94,20 @@ const groupedButtons = computed(() => {
         groups.push(group);
     }
     return groups;
+});
+
+const selectedQuestionId = ref<number | null>(null);
+
+watch(selectedQuestionId, (id) => {
+    if (id !== null) {
+        // Scroll to the selected question
+        scrollToQuestion(id);
+        // Dynamically set the page based on the question ID
+        const page = getPageForQuestion(id);
+        if (page !== currentPage.value) {
+            currentPage.value = page;
+        }
+    }
 });
 </script>
 
@@ -107,19 +132,18 @@ const groupedButtons = computed(() => {
                         <div class="overflow-x-auto md:overflow-visible">
                             <div class="space-y-3">
                                 <div v-for="(group, gIndex) in groupedButtons" :key="gIndex" class="grid grid-cols-5 justify-items-center gap-2">
-                                    <button
+                                    <label
                                         v-for="(qid, index) in group"
                                         :key="qid"
-                                        type="button"
-                                        class="h-7 w-7 rounded-full text-xs font-semibold text-white transition-colors"
+                                        class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full text-xs font-semibold text-white transition-colors"
                                         :class="{
                                             'bg-green-600 hover:bg-green-700': isAnswered(qid),
                                             'bg-red-500 hover:bg-red-600': !isAnswered(qid),
                                         }"
-                                        @click="scrollToQuestion(qid)"
                                     >
+                                        <input type="radio" v-model="selectedQuestionId" :value="qid" class="hidden" />
                                         {{ gIndex * questionsPerPage + index + 1 }}
-                                    </button>
+                                    </label>
                                 </div>
                             </div>
                         </div>
