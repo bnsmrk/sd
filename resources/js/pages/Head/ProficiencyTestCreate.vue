@@ -15,6 +15,7 @@ const form = useForm({
     section_id: '',
     subject_id: '',
     scheduled_at: '',
+    due_date: '',
     description: '',
 });
 </script>
@@ -50,6 +51,10 @@ const form = useForm({
                 <div>
                     <label class="block font-semibold text-[#ff69b4]">Scheduled At</label>
                     <input v-model="form.scheduled_at" type="datetime-local" class="floating-input" required />
+                </div>
+                <div>
+                    <label class="block font-semibold text-[#ff69b4]">Due Date</label>
+                    <input v-model="form.due_date" type="datetime-local" class="floating-input" />
                 </div>
 
                 <div>

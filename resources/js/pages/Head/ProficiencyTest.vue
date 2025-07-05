@@ -10,6 +10,8 @@ const props = defineProps<{
         title: string;
         type: string;
         scheduled_at: string;
+        due_date: string;
+
         year_level: { name: string };
     }>;
 }>();
@@ -56,6 +58,7 @@ function cancelDelete() {
                             <th class="px-4 py-2 text-left font-semibold">Title</th>
                             <th class="px-4 py-2 text-left font-semibold">Type</th>
                             <th class="px-4 py-2 text-left font-semibold">Scheduled At</th>
+                            <th class="px-4 py-2 text-left font-semibold">Due Date</th>
                             <th class="px-4 py-2 text-left font-semibold">Year Level</th>
                             <th class="px-4 py-2 text-left font-semibold">Actions</th>
                         </tr>
@@ -65,6 +68,7 @@ function cancelDelete() {
                             <td class="px-4 py-2">{{ test.title }}</td>
                             <td class="px-4 py-2 capitalize">{{ test.type }}</td>
                             <td class="px-4 py-2">{{ new Date(test.scheduled_at).toLocaleString() }}</td>
+                            <td class="px-4 py-2">{{ new Date(test.due_date).toLocaleString() }}</td>
                             <td class="px-4 py-2">{{ test.year_level.name }}</td>
                             <td class="space-x-2 px-4 py-2">
                                 <Link :href="`/proficiency-test/${test.id}/edit`" class="text-blue-600 hover:underline">Edit</Link>

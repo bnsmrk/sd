@@ -10,6 +10,7 @@ const props = defineProps<{
         title: string;
         type: string;
         scheduled_at: string;
+        due_date: string;
         year_level: string;
         section: string;
         subject: string;
@@ -55,7 +56,8 @@ function cancelDelete() {
                         <tr>
                             <th class="px-6 py-3">Title</th>
                             <th class="px-6 py-3">Type</th>
-                            <th class="px-6 py-3">Date</th>
+                            <th class="px-6 py-3">scheduled_at</th>
+                            <th class="px-6 py-3">due date</th>
                             <th class="px-6 py-3">Actions</th>
                         </tr>
                     </thead>
@@ -68,6 +70,8 @@ function cancelDelete() {
                             <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ a.title }}</td>
                             <td class="px-6 py-4 capitalize">{{ a.type }}</td>
                             <td class="px-6 py-4">{{ a.scheduled_at }}</td>
+                            <td class="px-6 py-4">{{ a.due_date }}</td>
+
 
                             <td class="flex items-center space-x-3 px-6 py-4">
                                 <Link :href="`/activities/${a.id}/edit`" class="font-medium text-blue-600 hover:underline dark:text-blue-500">

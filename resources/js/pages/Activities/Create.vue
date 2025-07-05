@@ -18,6 +18,7 @@ const form = useForm<{
     type: string;
     module_id: string;
     scheduled_at: string;
+    due_date: string;
     description: string;
     file: File | null;
 }>({
@@ -25,6 +26,7 @@ const form = useForm<{
     type: 'quiz',
     module_id: '',
     scheduled_at: '',
+    due_date: '',
     description: '',
     file: null,
 });
@@ -70,6 +72,11 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                 <div class="mt-4">
                     <label>Date & Time</label>
                     <input type="datetime-local" v-model="form.scheduled_at" class="w-full rounded border px-3 py-2" required />
+                </div>
+
+                <div class="mt-4">
+                <label>Due Date</label>
+                <input type="datetime-local" v-model="form.due_date" class="w-full rounded border px-3 py-2" />
                 </div>
 
                 <div v-if="form.type === 'essay'" class="mt-4">

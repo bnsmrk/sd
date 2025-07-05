@@ -41,8 +41,8 @@ class ProficiencyTestController extends Controller
             'title' => 'required|string|max:255',
             'type' => 'required|in:reading,numerical',
             'year_level_id' => 'required|exists:year_levels,id',
-
             'scheduled_at' => 'required|date',
+            'due_date' => 'nullable|date|after_or_equal:scheduled_at',
             'description' => 'nullable|string',
         ]);
 
@@ -63,6 +63,8 @@ class ProficiencyTestController extends Controller
         'type' => $test->type,
         'year_level_id' => $test->year_level_id,
         'scheduled_at' => $test->scheduled_at->format('Y-m-d\TH:i'),
+        'due_date' => $test->due_date?->format('Y-m-d\TH:i'),
+
         'description' => $test->description,
     ],
     'yearLevels' => YearLevel::all(['id', 'name']),
@@ -77,8 +79,8 @@ class ProficiencyTestController extends Controller
             'title' => 'required|string|max:255',
             'type' => 'required|in:reading,numerical',
             'year_level_id' => 'required|exists:year_levels,id',
-
             'scheduled_at' => 'required|date',
+            'due_date' => 'nullable|date|after_or_equal:scheduled_at',
             'description' => 'nullable|string',
         ]);
 

@@ -39,6 +39,7 @@ class ActivityController extends Controller
             'title' => $a->title,
             'type' => $a->type,
             'scheduled_at' => \Carbon\Carbon::parse($a->scheduled_at)->format('Y-m-d H:i'),
+            'due_date' => $a->due_date ? \Carbon\Carbon::parse($a->due_date)->format('Y-m-d H:i') : null,
             'year_level' => $a->module->yearLevel->name ?? '',
             'section' => $a->module->section->name ?? '',
             'subject' => $a->module->subject->name ?? '',
@@ -73,6 +74,7 @@ class ActivityController extends Controller
             'type' => 'required|in:quiz,exam,essay',
             'module_id' => 'required|exists:modules,id',
             'scheduled_at' => 'required|date',
+            'due_date' => 'nullable|date|after_or_equal:scheduled_at',
             'description' => 'nullable|string',
             'file' => 'nullable|file|max:10240',
         ]);
@@ -142,6 +144,7 @@ class ActivityController extends Controller
         'type' => 'required|in:quiz,exam,essay',
         'module_id' => 'required|exists:modules,id',
         'scheduled_at' => 'required|date',
+        'due_date' => 'nullable|date|after_or_equal:scheduled_at',
         'description' => 'nullable|string',
         'file' => 'nullable|file|max:10240',
     ]);

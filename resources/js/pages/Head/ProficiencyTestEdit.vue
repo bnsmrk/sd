@@ -9,6 +9,7 @@ const props = defineProps<{
         type: string;
         year_level_id: number;
         scheduled_at: string;
+        due_date: string;
         description: string | null;
     };
     yearLevels: Array<{ id: number; name: string }>;
@@ -19,6 +20,7 @@ const form = useForm({
     type: props.test.type,
     year_level_id: props.test.year_level_id,
     scheduled_at: props.test.scheduled_at,
+    due_date: props.test.due_date ,
     description: props.test.description ?? '',
 });
 function cancelEdit() {
@@ -57,6 +59,11 @@ function cancelEdit() {
                 <div>
                     <label class="block font-semibold text-[#ff69b4]">Scheduled At</label>
                     <input v-model="form.scheduled_at" type="datetime-local" class="floating-input" required />
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-[#ff69b4]">Due Date</label>
+                    <input v-model="form.due_date" type="datetime-local" class="floating-input" />
                 </div>
 
                 <div>

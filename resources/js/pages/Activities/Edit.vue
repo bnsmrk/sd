@@ -10,6 +10,7 @@ const props = defineProps<{
         type: string;
         module_id: number;
         scheduled_at: string | null;
+        due_date: string | null;
         description: string | null;
         file_path: string | null;
     };
@@ -28,6 +29,7 @@ const form = useForm({
     type: props.activity.type,
     module_id: props.activity.module_id,
     scheduled_at: props.activity.scheduled_at?.substring(0, 16) ?? '',
+    due_date: props.activity.due_date?.substring(0, 16) ?? '',
     description: props.activity.description ?? '',
     file: null as File | null,
 });
@@ -75,6 +77,11 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                 <div class="mt-4">
                     <label class="mb-1 block font-medium">Date & Time</label>
                     <input type="datetime-local" v-model="form.scheduled_at" class="w-full rounded border px-3 py-2" required />
+                </div>
+
+                <div class="mt-4">
+                    <label>Due Date</label>
+                    <input type="datetime-local" v-model="form.due_date" class="w-full rounded border px-3 py-2" />
                 </div>
 
                 <div v-if="form.type === 'essay'" class="mt-4">

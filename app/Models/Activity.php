@@ -20,11 +20,13 @@ class Activity extends Model
         'description',
         'file_path',
         'scheduled_at',
+        'due_date',
         'module_id',
     ];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
+        'due_date' => 'datetime',
     ];
     public function module()
     {
