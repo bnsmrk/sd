@@ -155,13 +155,13 @@ watch(selectedQuestionId, (id) => {
                     <!-- Form Mode -->
                     <form v-if="!previewMode" @submit.prevent="previewAnswers">
                         <div
-                            v-for="q in paginatedQuestions"
+                            v-for="(q, index) in paginatedQuestions"
                             :key="q.id"
                             :id="`question-${q.id}`"
                             class="mb-6 space-y-6 rounded-lg border bg-white p-5 shadow-md"
                         >
-                            <p class="text-xl font-semibold text-gray-800">{{ q.question }}</p>
-
+                            <!-- <p class="text-xl font-semibold text-gray-800">{{ q.question }}</p> -->
+                            {{ (currentPage - 1) * questionsPerPage + index + 1 }}. {{ q.question }}
                             <!-- Multiple Choice -->
                             <div v-if="q.type === 'multiple_choice'" class="space-y-3">
                                 <div v-for="(option, index) in getOptions(q.options)" :key="index" class="flex items-center space-x-4">
