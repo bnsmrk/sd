@@ -94,7 +94,7 @@ function submit() {
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <!-- LEFT: Test Info -->
-                <div class="col-span-1 space-y-4 rounded border border-[#01006c] bg-gray-50 p-6 text-sm shadow">
+                <div class="col-span-1 space-y-4 rounded border border-[#01006c] bg-gray-50 p-6 text-sm shadow md:sticky md:top-6 h-fit">
                     <h2 class="mb-4 text-lg font-bold text-[#01006c]">Proficiency Test Details</h2>
                     <div
                         v-for="field in [
@@ -115,6 +115,8 @@ function submit() {
                     <h2 class="mb-6 text-2xl font-bold text-[#01006c]">Questions for "{{ props.proficiencyTest.title }}"</h2>
 
                     <div v-for="(q, idx) in questions" :key="q.id ?? idx" class="mb-8 rounded-lg border border-[#01006c] bg-white p-6 shadow-md">
+                        
+                         <div class="mb-2 text-lg font-semibold text-[#01006c]">Question #{{ idx + 1 }}</div>
                         <!-- QUESTION TEXT -->
                         <div class="mb-4">
                             <label class="floating-label">Question</label>
