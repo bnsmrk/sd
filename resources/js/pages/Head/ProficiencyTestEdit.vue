@@ -21,11 +21,8 @@ const form = useForm({
     scheduled_at: props.test.scheduled_at,
     description: props.test.description ?? '',
 });
-
-function deleteTest() {
-    if (confirm('Are you sure you want to delete this test?')) {
-        router.delete(`/proficiency-test/${props.test.id}`);
-    }
+function cancelEdit() {
+    router.get('/proficiency-test');
 }
 </script>
 
@@ -69,7 +66,9 @@ function deleteTest() {
 
                 <div class="mt-4 flex justify-between">
                     <button type="submit" class="rounded bg-[#01006c] px-4 py-2 text-white hover:bg-[#0d1282]">Update</button>
-                    <button @click.prevent="deleteTest" type="button" class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-800">Delete</button>
+                    <button @click.prevent="cancelEdit" type="button" class="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-700">
+                        Cancel
+                    </button>
                 </div>
             </form>
         </div>
