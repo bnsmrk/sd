@@ -1,60 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Student Proficiency Result</title>
+    <title>Student Proficiency Result Report</title>
     <style>
         body {
-            font-family: sans-serif;
-            font-size: 12px;
-            margin: 20px;
+            font-family: "Segoe UI", sans-serif;
+            font-size: 13px;
+            margin: 30px;
+            color: #333;
         }
 
-        h1,
-        h2 {
-            color: #222;
+        h1 {
+            font-size: 20px;
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+
+        .subtitle,
+        .section-heading {
+            font-size: 14px;
+            margin: 6px 0;
+        }
+
+        .section-heading {
+            margin-top: 30px;
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 4px;
+            color: #37474f;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
+            margin-top: 10px;
         }
 
         th,
         td {
-            border: 1px solid #aaa;
-            padding: 6px 10px;
+            border: 1px solid #bbb;
+            padding: 8px 10px;
             text-align: left;
         }
 
         th {
             background-color: #f1f1f1;
+            color: #111;
         }
 
-        .subtitle {
-            margin-bottom: 10px;
-            font-size: 14px;
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
-        .section-heading {
-            margin-top: 2rem;
+        .footer-summary {
+            margin-top: 20px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
+            color: #2e7d32;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Student Proficiency Result Report ({{ $type }})</h1>
+    <h1>📊 Student Proficiency Result Report ({{ ucfirst($type) }})</h1>
 
     <p class="subtitle"><strong>Year Level:</strong> {{ $yearLevelName }}</p>
     @if ($sectionName)
         <p class="subtitle"><strong>Section:</strong> {{ $sectionName }}</p>
     @endif
 
+    <div class="section-heading">Individual Scores</div>
     <table>
         <thead>
             <tr>
@@ -77,7 +95,7 @@
     </table>
 
     @if (count($sectionsAvg))
-        <p class="section-heading">Section Averages</p>
+        <div class="section-heading">Section Averages</div>
         <table>
             <thead>
                 <tr>
@@ -96,7 +114,7 @@
         </table>
     @endif
 
-    <p class="section-heading">Year Level Average: <strong>{{ $yearLevelAverage }}%</strong></p>
+    <p class="footer-summary">📘 Year Level Average: <strong>{{ $yearLevelAverage }}%</strong></p>
 
 </body>
 
