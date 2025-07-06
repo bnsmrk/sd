@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->enum('type', ['quiz', 'exam', 'essay']);
             $table->foreignId('module_id')->constrained()->cascadeOnDelete();
+            $table->text('description')->nullable();
             $table->dateTime('scheduled_at');
             $table->dateTime('due_date')->nullable();
             $table->timestamps();
