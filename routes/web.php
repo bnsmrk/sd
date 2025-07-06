@@ -15,6 +15,7 @@ use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\PrincipalDashboard;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\YearLevelController;
 use App\Http\Controllers\SubmissionController;
@@ -50,6 +51,14 @@ Route::get('dashboard', [AdminDashboardController::class, 'index'])
  Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:teacher'])
     ->name('teacher.dashboard');
+
+
+
+    Route::get('principal-dashboard', [PrincipalDashboard::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:principal'])
+    ->name('principal.dashboard');
+
+
 
 
 Route::get('student-dashboard', [StudentDashboard::class, 'index'])

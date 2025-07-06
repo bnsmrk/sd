@@ -47,6 +47,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('head.dashboard');
         case 'ict':
             return redirect()->route('ict.dashboard');
+        case 'principal':
+            return redirect()->route('principal.dashboard');
         default:
             abort(403, 'Unauthorized role');
     }

@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
         User::factory()->create([
-            'name' => 'Student User',
-            'email' => 'student@gmail.com',
+            'name' => 'Vins Mark vnsmrk',
+            'email' => 'vnsmrkdlwn@gmail.com',
             'role' => 'student',
             'password' => bcrypt('password'),
         ]);
@@ -78,20 +78,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
          User::factory()->create([
-            'name' => 'Student 2',
-            'email' => 'student2@gmail.com',
+            'name' => 'vins mark 0214',
+            'email' => 'vinsmark.adlawan0214@gmail.com',
             'role' => 'student',
             'password' => bcrypt('password'),
         ]);
         User::factory()->create([
-            'name' => 'Student 3',
-            'email' => 'student3@gmail.com',
+            'name' => 'Dimple Jess',
+            'email' => 'dmpljssdlwn@gmail.com',
             'role' => 'student',
             'password' => bcrypt('password'),
         ]);
         User::factory()->create([
-            'name' => 'Student 4',
-            'email' => 'student4@gmail.com',
+            'name' => 'Vinstoi kun',
+            'email' => 'vintoikun@gmail.com',
             'role' => 'student',
             'password' => bcrypt('password'),
         ]);

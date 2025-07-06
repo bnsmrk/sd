@@ -17,8 +17,8 @@ return new class extends Migration
             $table->enum('type', ['reading', 'numerical']);
             $table->foreignId('year_level_id')->constrained()->onDelete('cascade');
             $table->text('description')->nullable();
-
             $table->timestamp('scheduled_at');
+            $table->timestamp('due_date')->nullable();
             $table->timestamps();
         });
     }
