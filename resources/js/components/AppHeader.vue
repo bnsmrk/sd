@@ -2,7 +2,7 @@
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
-import { Bell, BookOpen, Briefcase, Menu } from 'lucide-vue-next';
+import { Bell, LayoutDashboard, ClipboardCheck, Menu } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 import AppLogo from '@/components/AppLogo.vue';
@@ -36,8 +36,8 @@ const activeItemStyles = computed(
 const groupedNavItems: Record<string, NavItem[]> = {
     common: [],
     student: [
-        { title: 'Dashboard', href: '/student-dashboard', icon: Briefcase },
-        { title: 'My Subjects', href: '/my-subjects', icon: BookOpen },
+        { title: 'Dashboard', href: '/student-dashboard', icon: LayoutDashboard },
+        { title: 'My Subjects', href: '/my-subjects', icon: ClipboardCheck },
     ],
 };
 

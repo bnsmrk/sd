@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('activity_id')->constrained()->onDelete('cascade');
             $table->foreignId('question_id')->constrained()->onDelete('cascade');
             $table->text('answer')->nullable();
-            $table->boolean('is_correct')->nullable(); // null until checked
+            $table->boolean('is_correct')->nullable(); 
             $table->integer('score')->default(0);
             $table->timestamps();
         });

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('activity_id')->constrained()->onDelete('cascade');
             $table->text('question');
-            $table->string('type'); // multiple_choice, true_false, essay
+            $table->string('type'); 
             $table->json('options')->nullable();
             $table->string('answer_key')->nullable();
             $table->timestamps();
