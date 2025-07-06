@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue'; // ✅ Needed for modal control
+import { ref } from 'vue';
+
+import { Plus, Pencil, Trash2 } from 'lucide-vue-next'; // ✅ Icons
 
 const props = defineProps<{
     modules: {
@@ -40,7 +42,12 @@ function cancelDelete() {
         <div class="space-y-4 p-4">
             <div class="flex items-center justify-between">
                 <h1 class="text-xl font-bold">Modules</h1>
-                <Link href="/modules/create" class="rounded bg-blue-600 px-4 py-2 text-white">Create Module</Link>
+                <Link
+                    href="/modules/create"
+                    class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                >
+                    <Plus class="w-4 h-4" /> Create Module
+                </Link>
             </div>
 
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -59,14 +66,25 @@ function cancelDelete() {
                             <td class="px-6 py-4">{{ m.year_level.name }}</td>
                             <td class="px-6 py-4">{{ m.subject.name }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
-                                <Link :href="`/modules/${m.id}/edit`" class="text-blue-600 hover:underline">Edit</Link>
-                                <button @click="confirmDelete(m.id)" class="text-red-600 hover:underline">Delete</button>
+                                <Link
+                                    :href="`/modules/${m.id}/edit`"
+                                    class="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                                >
+                                    <Pencil class="w-4 h-4" /> Edit
+                                </Link>
+                                <button
+                                    @click="confirmDelete(m.id)"
+                                    class="inline-flex items-center gap-1 text-red-600 hover:underline"
+                                >
+                                    <Trash2 class="w-4 h-4" /> Delete
+                                </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
         <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
@@ -79,9 +97,15 @@ function cancelDelete() {
                     >
                         Cancel
                     </button>
-                    <button @click="deleteModule" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
+                    <button
+                        @click="deleteModule"
+                        class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                    >
+                        Confirm
+                    </button>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
+

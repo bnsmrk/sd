@@ -2,6 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
+import { ArrowLeft, Layers, GraduationCap, Users, Book } from 'lucide-vue-next';
 
 const props = defineProps<{
     assignments: Array<{
@@ -49,21 +50,33 @@ watch(
 <template>
     <Head title="Create Module" />
     <AppLayout>
-        <div class="mx-auto max-w-xl space-y-4 p-4">
-            <h1 class="text-xl font-bold">Create Module</h1>
+        <div class="w-full max-w-4xl mx-auto space-y-6 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-800">Create Module</h1>
+                <Link
+                    href="/modules"
+                    class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 hover:underline"
+                >
+                    <ArrowLeft class="w-4 h-4" /> Back to Modules
+                </Link>
+            </div>
 
-            <form @submit.prevent="form.post('/modules')">
+            <form @submit.prevent="form.post('/modules')" class="space-y-6">
                 <!-- Module Name -->
                 <div>
-                    <label class="block font-medium">Module Name</label>
-                    <input v-model="form.name" class="w-full rounded border p-2" required />
+                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700">
+                        <Layers class="w-4 h-4" /> Module Name
+                    </label>
+                    <input v-model="form.name" class="w-full rounded border px-3 py-2" required />
                     <div v-if="form.errors.name" class="text-sm text-red-600">{{ form.errors.name }}</div>
                 </div>
 
                 <!-- Year Level -->
                 <div>
-                    <label class="block font-medium">Year Level</label>
-                    <select v-model="form.year_level_id" class="w-full rounded border p-2" required>
+                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700">
+                        <GraduationCap class="w-4 h-4" /> Year Level
+                    </label>
+                    <select v-model="form.year_level_id" class="w-full rounded border px-3 py-2" required>
                         <option value="">Select Year Level</option>
                         <option v-for="yl in props.assignments" :key="yl.id" :value="yl.id">
                             {{ yl.name }}
@@ -73,10 +86,11 @@ watch(
                 </div>
 
                 <!-- Section -->
-                <!-- Section Dropdown -->
                 <div v-if="availableSections.length > 0">
-                    <label class="block font-medium">Section</label>
-                    <select v-model="form.section_id" class="w-full rounded border p-2" required>
+                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700">
+                        <Users class="w-4 h-4" /> Section
+                    </label>
+                    <select v-model="form.section_id" class="w-full rounded border px-3 py-2" required>
                         <option value="">Select Section</option>
                         <option v-for="section in availableSections" :key="section.id" :value="section.id">
                             {{ section.name }}
@@ -85,10 +99,12 @@ watch(
                     <div v-if="form.errors.section_id" class="text-sm text-red-600">{{ form.errors.section_id }}</div>
                 </div>
 
-                <!-- Filtered Subject Dropdown -->
+                <!-- Subject -->
                 <div v-if="filteredSubjects.length > 0">
-                    <label class="block font-medium">Subject</label>
-                    <select v-model="form.subject_id" class="w-full rounded border p-2" required>
+                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700">
+                        <Book class="w-4 h-4" /> Subject
+                    </label>
+                    <select v-model="form.subject_id" class="w-full rounded border px-3 py-2" required>
                         <option value="">Select Subject</option>
                         <option v-for="subject in filteredSubjects" :key="subject.id" :value="subject.id">
                             {{ subject.name }}
@@ -99,7 +115,9 @@ watch(
 
                 <!-- Submit -->
                 <div>
-                    <button class="mt-4 w-full rounded bg-blue-600 py-2 text-white" :disabled="form.processing">Save</button>
+                    <button class="w-full rounded bg-blue-600 py-2 text-white hover:bg-blue-700" :disabled="form.processing">
+                        Save
+                    </button>
                 </div>
             </form>
         </div>
