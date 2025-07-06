@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
-
+import { BookOpen, ArrowRight, User2 } from 'lucide-vue-next';
 import { router } from '@inertiajs/vue3';
 
 const { subjects } = defineProps<{
@@ -35,28 +35,49 @@ function getCardClasses(index: number) {
 
 <template>
     <AppLayoutStudent>
-        <div class="space-y-4 p-6">
-            <h1 class="text-2xl font-bold text-[#01006c]">My Enrolled Subjects</h1>
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div class="space-y-6 px-6 py-8 min-h-screen bg-pink-50">
+            <h1 class="text-3xl font-bold text-[#01006c] flex items-center gap-2">
+                <BookOpen class="w-6 h-6 text-[#01006c]" /> My Enrolled Subjects
+            </h1>
+
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <div
                     v-for="(subject, index) in subjects"
                     :key="subject.id"
                     @click="goToSubject(subject.id)"
-                    class="group relative transform cursor-pointer overflow-hidden rounded-xl"
-                    :class="getCardClasses(index)"
+                    class="group relative cursor-pointer overflow-hidden rounded-xl border border-pink-200 bg-white p-5 shadow-md transition-all hover:scale-[1.02] hover:shadow-xl"
                 >
-                    <div class="rounded-xl p-5 shadow-xl">
-                        <div class="pb-3">
-                            <h2 class="text-base font-semibold text-[#01006c] group-hover:text-[#01006c]">
+                    <!-- Gradient bar for visual accent -->
+                    <div
+                        :class="[
+                            'absolute top-0 left-0 h-1 w-full',
+                            index % 3 === 0 ? 'bg-yellow-400' :
+                            index % 3 === 1 ? 'bg-pink-400' : 'bg-indigo-400'
+                        ]"
+                    ></div>
+
+                    <div class="flex flex-col justify-between h-full">
+                        <div class="pb-4">
+                            <h2 class="text-lg font-semibold text-[#01006c] group-hover:text-indigo-700">
                                 {{ subject.name }}
                             </h2>
-                            <p class="text-xs text-[#01006c] opacity-70 group-hover:text-[#01006c]">Teacher: {{ subject.teacher }}</p>
+                            <p class="mt-1 text-sm text-gray-600 group-hover:text-[#01006c]">
+                                <User2 class="w-4 h-4 text-[#01006c]" /> <span class="font-medium">{{ subject.teacher }}</span>
+                            </p>
                         </div>
-                        <div class="text-2xl font-semibold text-[#01006c] group-hover:text-[#01006c]">View</div>
-                        <p class="text-xs text-gray-600 group-hover:text-[#01006c] dark:text-gray-300">Click to see activities</p>
+
+                        <div class="pt-2">
+                            <div class="text-indigo-800 font-semibold text-sm mb-1 flex items-center gap-1">
+                                <span class="text-yellow-500">➡</span> View Activities
+                            </div>
+                            <p class="text-xs text-gray-500 group-hover:text-[#01006c]">
+                                Click to see activities and progress
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </AppLayoutStudent>
 </template>
+

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
+import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+import { Check, Eye, ArrowLeft, ArrowRight, FileText, ScrollText } from 'lucide-vue-next';
 import { computed, nextTick, reactive, ref, watch, watchEffect } from 'vue';
 
 const props = defineProps<{
@@ -230,29 +232,34 @@ watch(selectedQuestionId, (id) => {
                         </div>
 
                         <!-- Pagination -->
-                        <div class="mt-4 flex justify-between">
-                            <button
-                                v-if="currentPage > 1"
-                                class="rounded bg-gray-300 px-4 py-2 text-sm font-semibold hover:bg-gray-400"
-                                @click.prevent="currentPage--"
-                            >
-                                Previous
-                            </button>
-                            <button
-                                v-if="currentPage < totalPages"
-                                class="rounded bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600"
-                                @click.prevent="currentPage++"
-                            >
-                                Next
-                            </button>
-                        </div>
+<div class="mt-4 flex justify-between">
+    <button
+        v-if="currentPage > 1"
+        class="inline-flex items-center gap-2 rounded bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-400"
+        @click.prevent="currentPage--"
+    >
+        <ArrowLeft class="h-4 w-4" /> Previous
+    </button>
+    <button
+        v-if="currentPage < totalPages"
+        class="inline-flex items-center gap-2 rounded bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600"
+        @click.prevent="currentPage++"
+    >
+        Next <ArrowRight class="h-4 w-4" />
+    </button>
+</div>
+
 
                         <!-- Preview Button -->
                         <div class="mt-8 text-right">
-                            <button type="submit" class="rounded-xl bg-yellow-500 px-8 py-3 text-lg text-white shadow-md hover:bg-yellow-600">
-                                Preview Answers
-                            </button>
-                        </div>
+    <button
+        type="submit"
+        class="inline-flex items-center gap-2 rounded-xl bg-blue-500 px-8 py-3 text-lg text-white shadow-md hover:bg-yellow-600"
+    >
+        <Eye class="h-5 w-5" /> Preview Answers
+    </button>
+</div>
+
                     </form>
 
                     <!-- Preview Mode -->
@@ -267,11 +274,20 @@ watch(selectedQuestionId, (id) => {
                         </div>
 
                         <div class="mt-6 flex justify-end space-x-4">
-                            <button class="rounded bg-gray-500 px-6 py-2 text-white hover:bg-gray-600" @click="previewMode = false">Back</button>
-                            <button class="rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700" @click="submitAnswers">
-                                Confirm & Submit
-                            </button>
-                        </div>
+    <button
+        class="inline-flex items-center gap-2 rounded bg-gray-500 px-6 py-2 text-white hover:bg-gray-600"
+        @click="previewMode = false"
+    >
+        <ArrowLeft class="h-4 w-4" /> Back
+    </button>
+    <button
+        class="inline-flex items-center gap-2 rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
+        @click="submitAnswers"
+    >
+        <Check class="h-4 w-4" /> Confirm & Submit
+    </button>
+</div>
+
                     </div>
                 </section>
             </div>

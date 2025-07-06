@@ -3,6 +3,8 @@
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
 import { router } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
+import { BookOpen, FileText, Package, CheckCircle, Clock } from 'lucide-vue-next';
+
 const { subject } = defineProps<{
     subject: {
         id: number;
@@ -55,48 +57,72 @@ function goToActivity(activity: { id: number; type: string }) {
     }
 }
 </script>
+
 <template>
     <AppLayoutStudent>
-        <div class="space-y-6 p-6">
-            <h1 class="text-3xl font-bold text-indigo-700">📘 Subject: {{ subject.name }}</h1>
+        <div class="space-y-8 px-6 py-8 bg-gray-50 min-h-screen">
+            <h1 class="text-3xl font-bold text-indigo-800 flex items-center gap-2">
+                <BookOpen class="h-6 w-6 text-sky-600" />
+                <span>Subject: {{ subject.name }}</span>
+            </h1>
 
             <div
                 v-for="(module, index) in subject.modules"
                 :key="module.id"
-                class="overflow-hidden rounded-2xl border border-gray-200 shadow-md transition-all hover:shadow-xl dark:border-gray-700"
+                class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow hover:shadow-md"
             >
-                <!-- Header -->
-                <div class="cursor-pointer bg-gradient-to-r from-indigo-500 to-blue-600 p-5 text-white" @click="toggleModule(module.id)">
+                <!-- Module Header -->
+                <div
+                    class="cursor-pointer bg-gradient-to-r from-sky-100 to-indigo-100 px-6 py-4"
+                    @click="toggleModule(module.id)"
+                >
                     <div class="flex items-center justify-between">
-                        <span class="text-lg font-semibold"> 📦 Module {{ index + 1 }}: {{ module.title }} </span>
-                        <span class="text-sm font-medium">{{ module.progress }}%</span>
+                        <div class="flex items-center gap-2 text-gray-800 font-semibold">
+                            <Package class="h-5 w-5 text-indigo-600" />
+                            <span>Module {{ index + 1 }}: {{ module.title }}</span>
+                        </div>
+                        <span class="text-sm text-gray-600 bg-white border px-2 py-0.5 rounded">
+                            {{ module.progress }}%
+                        </span>
                     </div>
-                    <div class="bg-opacity-50 mt-2 h-2 w-full overflow-hidden rounded bg-blue-200">
-                        <div class="h-full bg-green-400 transition-all duration-300" :style="{ width: module.progress + '%' }"></div>
+                    <div class="mt-3 h-2 w-full rounded bg-gray-200">
+                        <div
+                            class="h-full rounded bg-indigo-400 transition-all duration-300"
+                            :style="{ width: module.progress + '%' }"
+                        ></div>
                     </div>
                 </div>
 
-                <!-- Content -->
+                <!-- Module Content -->
                 <transition name="fade">
-                    <div v-if="openModuleId === module.id" class="space-y-4 bg-white p-5 dark:bg-gray-900">
+                    <div v-if="openModuleId === module.id" class="space-y-6 px-6 py-5 bg-white">
                         <!-- Materials -->
-                        <div v-if="module.materials.length" class="border-b pb-4">
-                            <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300">📄 Materials</h3>
-                            <ul class="mt-2 space-y-3">
+                        <div v-if="module.materials.length" class="border-b border-gray-200 pb-4">
+                            <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                                <FileText class="h-5 w-5 text-sky-500" />
+                                Materials
+                            </h3>
+                            <ul class="mt-4 space-y-3">
                                 <li
                                     v-for="material in module.materials"
                                     :key="material.id"
-                                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm"
                                 >
-                                    <div class="text-sm font-semibold text-blue-600">
-                                        <a :href="`/storage/${material.file_path}`" target="_blank" class="hover:underline">
+                                    <div class="text-sm font-medium text-indigo-700">
+                                        <a
+                                            :href="`/storage/${material.file_path}`"
+                                            target="_blank"
+                                            class="hover:underline"
+                                        >
                                             {{ material.title }}
                                         </a>
                                     </div>
-                                    <div v-if="material.description" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    <div v-if="material.description" class="mt-1 text-xs text-gray-600">
                                         {{ material.description }}
                                     </div>
-                                    <div class="mt-1 text-xs text-gray-400">Uploaded by: {{ material.uploaded_by }}</div>
+                                    <div class="mt-1 text-xs text-gray-500">
+                                        Uploaded by: {{ material.uploaded_by }}
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -106,21 +132,29 @@ function goToActivity(activity: { id: number; type: string }) {
                             v-for="activity in module.activities"
                             :key="activity.id"
                             :id="`activity-${activity.id}`"
-                            class="rounded-xl border border-gray-200 p-4 shadow-sm transition hover:shadow-lg dark:border-gray-700"
+                            class="rounded-lg border border-gray-200 p-4 bg-white transition hover:bg-gray-50"
                             :class="{
-                                'cursor-pointer bg-white hover:bg-indigo-50 dark:hover:bg-gray-800': !activity.score && !activity.submitted,
-                                'cursor-not-allowed bg-gray-100 opacity-60 dark:bg-gray-800': activity.score || activity.submitted,
+                                'cursor-pointer': !activity.score && !activity.submitted,
+                                'cursor-not-allowed opacity-60': activity.score || activity.submitted,
                             }"
                             @click="!activity.score && !activity.submitted ? goToActivity(activity) : null"
                         >
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <div class="font-semibold text-gray-700 dark:text-white">{{ activity.title }}</div>
-                                    <div class="text-sm text-gray-500">{{ activity.type }} • {{ activity.scheduled_at }}</div>
+                                    <div class="font-semibold text-gray-800">{{ activity.title }}</div>
+                                    <div class="text-sm text-gray-500 flex items-center gap-1">
+                                        <Clock class="h-4 w-4 text-sky-500" />
+                                        <span>{{ activity.type }} • {{ activity.scheduled_at }}</span>
+                                    </div>
 
-                                    <!-- Scores -->
-                                    <div v-if="activity.type !== 'essay' && activity.score !== null" class="mt-1 text-sm">
-                                        <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700">
+                                    <!-- Score Display -->
+                                    <div
+                                        v-if="activity.type !== 'essay' && activity.score !== null"
+                                        class="mt-1 text-sm"
+                                    >
+                                        <span
+                                            class="inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700"
+                                        >
                                             Score: {{ activity.score }} / {{ activity.total_points }}
                                         </span>
                                     </div>
@@ -130,7 +164,7 @@ function goToActivity(activity: { id: number; type: string }) {
                                         v-else-if="activity.type === 'essay' && activity.submitted && activity.essay_score === null"
                                         class="mt-1 text-sm text-yellow-600"
                                     >
-                                        🕓 Not Graded
+                                        🕓 Awaiting Grade
                                     </div>
                                     <div
                                         v-else-if="activity.type === 'essay' && activity.submitted && activity.essay_score !== null"
@@ -139,17 +173,29 @@ function goToActivity(activity: { id: number; type: string }) {
                                         📝 Graded: {{ activity.essay_score }}
                                     </div>
 
-                                    <!-- Not taken -->
-                                    <div v-else class="mt-1 text-sm text-gray-400 italic">Not taken yet</div>
+                                    <!-- Not Taken -->
+                                    <div
+                                        v-else
+                                        class="mt-1 text-sm italic text-gray-400"
+                                    >
+                                        Not taken yet
+                                    </div>
                                 </div>
 
                                 <div v-if="activity.score !== null || activity.submitted">
-                                    <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700"> ✔ Completed </span>
+                                    <span
+                                        class="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700"
+                                    >
+                                        <CheckCircle class="h-4 w-4" />
+                                        Completed
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
-                        <div v-if="module.activities.length === 0" class="text-sm text-gray-400 italic">No activities in this module.</div>
+                        <div v-if="module.activities.length === 0" class="text-sm italic text-gray-500">
+                            No activities in this module.
+                        </div>
                     </div>
                 </transition>
             </div>
@@ -157,7 +203,9 @@ function goToActivity(activity: { id: number; type: string }) {
     </AppLayoutStudent>
 </template>
 
-<style scoped>
+
+
+<!-- <style scoped>
 .fade-enter-active,
 .fade-leave-active {
     transition: all 0.3s ease;
@@ -167,4 +215,4 @@ function goToActivity(activity: { id: number; type: string }) {
     opacity: 0;
     transform: translateY(-5px);
 }
-</style>
+</style> -->
