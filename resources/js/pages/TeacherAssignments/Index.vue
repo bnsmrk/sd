@@ -2,6 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { Eye, Pencil, Trash2, Plus } from 'lucide-vue-next';
 
 defineProps<{
     assignments: Array<{
@@ -41,8 +42,11 @@ function cancelDelete() {
         <div class="p-6">
             <h1 class="mb-4 text-xl font-bold">Teacher Assignments</h1>
 
-            <Link href="/teacher-assignments/create" class="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-                Assign Teacher
+            <Link
+                href="/teacher-assignments/create"
+                class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            >
+                <Plus class="w-4 h-4" /> Assign Teacher
             </Link>
 
             <table class="mt-6 w-full table-auto border border-gray-300">
@@ -59,10 +63,25 @@ function cancelDelete() {
                         <td class="border px-4 py-2">{{ a.teacher.name }}</td>
                         <td class="border px-4 py-2">{{ a.year_level.name }}</td>
                         <td class="border px-4 py-2">{{ a.subject.name }}</td>
-                        <td class="space-x-2 border px-4 py-2">
-                            <Link :href="`/teacher-assignments/${a.id}`" class="text-green-600 hover:underline"> View </Link>
-                            <Link :href="`/teacher-assignments/${a.id}/edit`" class="text-blue-600 hover:underline"> Edit </Link>
-                            <button @click="confirmDelete(a.id)" class="text-red-600 hover:underline">Delete</button>
+                        <td class="border px-4 py-2 space-x-2">
+                            <Link
+                                :href="`/teacher-assignments/${a.id}`"
+                                class="inline-flex items-center gap-1 text-green-600 hover:underline"
+                            >
+                                <Eye class="w-4 h-4" /> View
+                            </Link>
+                            <Link
+                                :href="`/teacher-assignments/${a.id}/edit`"
+                                class="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                            >
+                                <Pencil class="w-4 h-4" /> Edit
+                            </Link>
+                            <button
+                                @click="confirmDelete(a.id)"
+                                class="inline-flex items-center gap-1 text-red-600 hover:underline"
+                            >
+                                <Trash2 class="w-4 h-4" /> Delete
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -70,18 +89,28 @@ function cancelDelete() {
         </div>
 
         <!-- Delete Confirmation Modal with Blurred Background -->
-        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+        <div
+            v-if="showDeleteModal"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm"
+        >
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
-                <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this assignment?</p>
+                <p class="mb-6 text-gray-600 dark:text-gray-300">
+                    Are you sure you want to delete this assignment?
+                </p>
                 <div class="flex justify-end space-x-4">
                     <button
                         @click="cancelDelete"
-                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                        class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
                     >
-                        Cancel
+                        <Trash2 class="w-4 h-4" /> Cancel
                     </button>
-                    <button @click="deleteAssignment" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
+                    <button
+                        @click="deleteAssignment"
+                        class="inline-flex items-center gap-1 rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                    >
+                        <Trash2 class="w-4 h-4" /> Confirm
+                    </button>
                 </div>
             </div>
         </div>

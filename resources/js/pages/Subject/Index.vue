@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { computed, reactive, ref } from 'vue';
-
+import { Plus, Pencil, Trash2, Save, Check, X } from 'lucide-vue-next';
 // Props
 const props = defineProps<{
     subjects: Array<{
@@ -131,9 +131,12 @@ const destroyItem = () => {
     <Head title="Subjects" />
     <AppLayout>
         <div class="p-4">
+            <!-- Header -->
             <div class="mb-4 flex justify-between">
-                <h2 class="text-xl font-bold">Subjects</h2>
-                <button @click="openCreateModal" class="rounded bg-blue-600 px-4 py-2 text-white">Add Subject</button>
+                <h2 class="text-xl font-bold text-gray-800">📘 Subjects</h2>
+                <button @click="openCreateModal" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                    <Plus class="w-4 h-4" /> Add Subject
+                </button>
             </div>
 
             <!-- Subject Table -->
@@ -149,9 +152,13 @@ const destroyItem = () => {
                     <tr v-for="subject in subjects" :key="subject.id" class="bg-white hover:bg-gray-50">
                         <td class="px-4 py-2">{{ subject.name }}</td>
                         <td class="px-4 py-2">{{ subject.year_level?.name ?? '—' }}</td>
-                        <td class="space-x-2 px-4 py-2 text-center">
-                            <button @click="openEditModal(subject)" class="text-blue-600 hover:underline">Edit</button>
-                            <button @click="confirmDelete(subject.id)" class="text-red-600 hover:underline">Delete</button>
+                        <td class="px-4 py-2 text-center space-x-2">
+                            <button @click="openEditModal(subject)" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                                <Pencil class="w-4 h-4" /> Edit
+                            </button>
+                            <button @click="confirmDelete(subject.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
+                                <Trash2 class="w-4 h-4" /> Delete
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -161,7 +168,7 @@ const destroyItem = () => {
         <!-- Create Modal -->
         <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
             <div class="w-full max-w-xl rounded bg-white p-6 shadow">
-                <h2 class="mb-4 text-lg font-bold">Add Subject</h2>
+                <h2 class="mb-4 text-lg font-bold">➕ Add Subject</h2>
 
                 <!-- Year Level -->
                 <div class="mb-4">
@@ -178,7 +185,9 @@ const destroyItem = () => {
                     <label class="block font-semibold">Shared Subjects</label>
                     <div v-for="(subject, index) in createForm.shared_subjects" :key="index" class="mb-2 flex gap-2">
                         <input v-model="createForm.shared_subjects[index]" class="w-full rounded border p-2" />
-                        <button @click.prevent="removeFrom(createForm.shared_subjects, index)" v-if="createForm.shared_subjects.length > 1">✕</button>
+                        <button @click.prevent="removeFrom(createForm.shared_subjects, index)" v-if="createForm.shared_subjects.length > 1" class="text-red-500">
+                            <X class="w-4 h-4" />
+                        </button>
                     </div>
                     <button @click.prevent="addTo(createForm.shared_subjects)" class="text-blue-600 hover:underline">+ Add</button>
                 </div>
@@ -188,15 +197,19 @@ const destroyItem = () => {
                     <label class="block font-semibold">Major Subjects</label>
                     <div v-for="(subject, index) in createForm.major_subjects" :key="index" class="mb-2 flex gap-2">
                         <input v-model="createForm.major_subjects[index]" class="w-full rounded border p-2" />
-                        <button @click.prevent="removeFrom(createForm.major_subjects, index)" v-if="createForm.major_subjects.length > 1">✕</button>
+                        <button @click.prevent="removeFrom(createForm.major_subjects, index)" v-if="createForm.major_subjects.length > 1" class="text-red-500">
+                            <X class="w-4 h-4" />
+                        </button>
                     </div>
                     <button @click.prevent="addTo(createForm.major_subjects)" class="text-blue-600 hover:underline">+ Add</button>
                 </div>
 
                 <div class="mt-4 flex justify-end space-x-2">
-                    <button @click="showCreateModal = false" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                    <button @click="submitCreate" class="rounded bg-blue-600 px-4 py-2 text-white" :disabled="createForm.processing">
-                        {{ createForm.processing ? 'Saving...' : 'Save' }}
+                    <button @click="showCreateModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
+                        <X class="w-4 h-4" /> Cancel
+                    </button>
+                    <button @click="submitCreate" class="inline-flex items-center gap-1 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700" :disabled="createForm.processing">
+                        <Save class="w-4 h-4" /> {{ createForm.processing ? 'Saving...' : 'Save' }}
                     </button>
                 </div>
             </div>
@@ -205,7 +218,7 @@ const destroyItem = () => {
         <!-- Edit Modal -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
             <div class="w-full max-w-md rounded bg-white p-6 shadow">
-                <h2 class="mb-4 text-lg font-bold">Edit Subject</h2>
+                <h2 class="mb-4 text-lg font-bold">✏️ Edit Subject</h2>
                 <div class="mb-4">
                     <label class="block font-semibold">Subject Name</label>
                     <input v-model="editForm.name" class="w-full rounded border p-2" />
@@ -220,9 +233,11 @@ const destroyItem = () => {
                     <div class="text-sm text-red-600">{{ editForm.errors.year_level_id }}</div>
                 </div>
                 <div class="flex justify-end space-x-2">
-                    <button @click="showEditModal = false" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                    <button @click="submitEdit" class="rounded bg-green-600 px-4 py-2 text-white" :disabled="editForm.processing">
-                        {{ editForm.processing ? 'Updating...' : 'Update' }}
+                    <button @click="showEditModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
+                        <X class="w-4 h-4" /> Cancel
+                    </button>
+                    <button @click="submitEdit" class="inline-flex items-center gap-1 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700" :disabled="editForm.processing">
+                        <Check class="w-4 h-4" /> {{ editForm.processing ? 'Updating...' : 'Update' }}
                     </button>
                 </div>
             </div>
@@ -231,11 +246,15 @@ const destroyItem = () => {
         <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
             <div class="w-full max-w-sm rounded bg-white p-6 shadow">
-                <h2 class="mb-4 text-lg font-bold">Confirm Deletion</h2>
+                <h2 class="mb-4 text-lg font-bold text-red-600">🗑️ Confirm Deletion</h2>
                 <p class="mb-6 text-gray-600">Are you sure you want to delete this subject?</p>
                 <div class="flex justify-end space-x-4">
-                    <button @click="showDeleteModal = false" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                    <button @click="destroyItem" class="rounded bg-red-600 px-4 py-2 text-white">Confirm</button>
+                    <button @click="showDeleteModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
+                        <X class="w-4 h-4" /> Cancel
+                    </button>
+                    <button @click="destroyItem" class="inline-flex items-center gap-1 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+                        <Trash2 class="w-4 h-4" /> Confirm
+                    </button>
                 </div>
             </div>
         </div>

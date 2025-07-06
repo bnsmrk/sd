@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import debounce from 'lodash/debounce';
+import { Pencil, Trash2, UserPlus, Save, XCircle } from 'lucide-vue-next';
 
 const props = defineProps<{
     users: {
@@ -103,7 +104,12 @@ const destroyItem = () => {
                         placeholder="Search..."
                         class="rounded border px-3 py-2 text-sm shadow-sm"
                     />
-                    <button @click="openCreateModal" class="rounded bg-blue-600 px-4 py-2 text-white">Add User</button>
+                    <button
+                        @click="openCreateModal"
+                        class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white"
+                    >
+                        <UserPlus class="w-4 h-4" /> Add User
+                    </button>
                 </div>
             </div>
 
@@ -122,8 +128,18 @@ const destroyItem = () => {
                         <td class="px-6 py-4">{{ user.email }}</td>
                         <td class="px-6 py-4 capitalize">{{ user.role }}</td>
                         <td class="px-6 py-4 text-center space-x-2">
-                            <button @click="openEditModal(user)" class="text-blue-600 hover:underline">Edit</button>
-                            <button @click="confirmDelete(user.id)" class="text-red-600 hover:underline">Delete</button>
+                            <button
+                                @click="openEditModal(user)"
+                                class="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                            >
+                                <Pencil class="w-4 h-4" /> Edit
+                            </button>
+                            <button
+                                @click="confirmDelete(user.id)"
+                                class="inline-flex items-center gap-1 text-red-600 hover:underline"
+                            >
+                                <Trash2 class="w-4 h-4" /> Delete
+                            </button>
                         </td>
                     </tr>
                     <tr v-if="props.users.data.length === 0">
@@ -151,7 +167,10 @@ const destroyItem = () => {
             </div>
 
             <!-- Create Modal -->
-            <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
+            <div
+                v-if="showCreateModal"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur"
+            >
                 <div class="w-full max-w-md rounded bg-white p-6 shadow">
                     <h2 class="text-lg font-bold mb-4">Create User</h2>
                     <form @submit.prevent="submitCreate" class="space-y-3">
@@ -181,18 +200,36 @@ const destroyItem = () => {
                         </div>
                         <div>
                             <label>Confirm Password</label>
-                            <input v-model="createForm.password_confirmation" type="password" class="w-full rounded border p-2" />
+                            <input
+                                v-model="createForm.password_confirmation"
+                                type="password"
+                                class="w-full rounded border p-2"
+                            />
                         </div>
                         <div class="flex justify-end gap-2">
-                            <button type="button" @click="showCreateModal = false" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                            <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white">Save</button>
+                            <button
+                                type="button"
+                                @click="showCreateModal = false"
+                                class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2"
+                            >
+                                <XCircle class="w-4 h-4" /> Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                class="inline-flex items-center gap-1 rounded bg-blue-600 px-4 py-2 text-white"
+                            >
+                                <Save class="w-4 h-4" /> Save
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Edit Modal -->
-            <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
+            <div
+                v-if="showEditModal"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur"
+            >
                 <div class="w-full max-w-md rounded bg-white p-6 shadow">
                     <h2 class="text-lg font-bold mb-4">Edit User</h2>
                     <form @submit.prevent="submitEdit" class="space-y-3">
@@ -216,21 +253,45 @@ const destroyItem = () => {
                             <div class="text-red-600 text-sm">{{ editForm.errors.role }}</div>
                         </div>
                         <div class="flex justify-end gap-2">
-                            <button type="button" @click="showEditModal = false" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                            <button type="submit" class="rounded bg-green-600 px-4 py-2 text-white">Update</button>
+                            <button
+                                type="button"
+                                @click="showEditModal = false"
+                                class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2"
+                            >
+                                <XCircle class="w-4 h-4" /> Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                class="inline-flex items-center gap-1 rounded bg-green-600 px-4 py-2 text-white"
+                            >
+                                <Save class="w-4 h-4" /> Update
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Delete Modal -->
-            <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
+            <div
+                v-if="showDeleteModal"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur"
+            >
                 <div class="w-full max-w-sm rounded bg-white p-6 shadow">
                     <h2 class="text-lg font-bold mb-4">Confirm Deletion</h2>
                     <p class="mb-6">Are you sure you want to delete this user?</p>
                     <div class="flex justify-end gap-4">
-                        <button @click="showDeleteModal = false" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                        <button @click="destroyItem" class="rounded bg-red-600 px-4 py-2 text-white">Confirm</button>
+                        <button
+                            @click="showDeleteModal = false"
+                            class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2"
+                        >
+                            <XCircle class="w-4 h-4" /> Cancel
+                        </button>
+                        <button
+                            @click="destroyItem"
+                            class="inline-flex items-center gap-1 rounded bg-red-600 px-4 py-2 text-white"
+                        >
+                            <Trash2 class="w-4 h-4" /> Confirm
+                        </button>
                     </div>
                 </div>
             </div>

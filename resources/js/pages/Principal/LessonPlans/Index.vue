@@ -3,6 +3,9 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
+// Icons (change to your preferred library if needed)
+import { Filter, FileText, MessageCircle, Send, User, Layers, LayoutTemplate } from 'lucide-vue-next';
+
 interface YearLevel {
     id: number;
     name: string;
@@ -67,15 +70,14 @@ const props = defineProps<{
     filters: Filters;
 }>();
 
-// Refs for filters
 const selectedYearLevel = ref<number | null>(props.filters.year_level_id ?? null);
 const selectedSection = ref<number | null>(props.filters.section_id ?? null);
 const filtersApplied = ref(false);
 
-// Filtered section dropdown based on year level
-const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevel.value));
+const filteredSections = computed(() =>
+    props.sections.filter((s) => s.year_level_id === selectedYearLevel.value)
+);
 
-// Filter submit
 const applyFilters = () => {
     filtersApplied.value = true;
     router.get(
@@ -94,75 +96,113 @@ const applyFilters = () => {
 
 <template>
     <AppLayout>
-        <div class="space-y-6 p-6">
-            <h1 class="text-2xl font-bold text-gray-800">Teachers Lesson Plans</h1>
-
-            <!-- Filters -->
-            <div class="flex flex-wrap gap-4">
-                <!-- Year Level -->
-                <select v-model="selectedYearLevel" @change="selectedSection = null" class="rounded border px-3 py-2">
-                    <option :value="null">Select Year Level</option>
-                    <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
-                </select>
-
-                <!-- Section -->
-                <select v-model="selectedSection" class="rounded border px-3 py-2">
-                    <option :value="null">Select Section</option>
-                    <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
-                </select>
-
-                <!-- Apply Button -->
-                <button @click="applyFilters" class="rounded bg-blue-600 px-4 py-2 text-white">Apply Filters</button>
-            </div>
-
-            <!-- Lesson Plan Table -->
-            <div v-if="filtersApplied && props.lessonPlans.length > 0" class="mt-6 overflow-x-auto">
-                <table class="w-full border text-left">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="border px-4 py-2">Title</th>
-                            <th class="border px-4 py-2">Teacher</th>
-                            <th class="border px-4 py-2">Year Level</th>
-                            <th class="border px-4 py-2">Section</th>
-                            <th class="border px-4 py-2">File</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="plan in props.lessonPlans" :key="plan.id">
-                            <td class="border px-4 py-2">{{ plan.title }}</td>
-                            <td class="border px-4 py-2">{{ plan.uploader?.name ?? 'N/A' }}</td>
-                            <td class="border px-4 py-2">{{ plan.year_level?.name ?? '—' }}</td>
-                            <td class="border px-4 py-2">{{ plan.section?.name ?? '—' }}</td>
-                            <td class="border px-4 py-2">
-                                <a :href="`/storage/${plan.file_path}`" target="_blank" class="text-blue-600 hover:underline">View</a>
-                                <!-- Comments Section -->
-                                <div class="mt-3 text-sm">
-                                    <div v-if="plan.comments?.length">
-                                        <p class="font-semibold text-gray-700">Comments:</p>
-                                        <ul class="ml-5 list-disc">
-                                            <li v-for="c in plan.comments" :key="c.id">
-                                                {{ c.comment }} — <i>{{ c.user.name }}</i>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <form @submit.prevent="submitComment(plan.id)" class="mt-2">
-                                        <input
-                                            v-model="newComments[plan.id]"
-                                            class="w-full rounded border px-2 py-1 text-sm"
-                                            placeholder="Add a comment"
-                                        />
-                                        <button type="submit" class="mt-1 rounded bg-green-600 px-3 py-1 text-xs text-white">Submit</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- No Data -->
-            <div v-else-if="filtersApplied" class="mt-8 text-center text-gray-500 italic">No lesson plans found for selected filters.</div>
+      <div class="space-y-8 px-6 py-8 max-w-full mx-auto">
+        <!-- Header -->
+        <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <FileText class="w-6 h-6" /> Teachers Lesson Plans
+        </h1>
+  
+        <!-- Filters -->
+        <div class="flex flex-wrap items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <!-- Year Level -->
+          <select
+            v-model="selectedYearLevel"
+            @change="selectedSection = null"
+            class="w-56 sm:w-64 md:w-72 lg:w-80 rounded border px-3 py-2 text-sm bg-white dark:bg-gray-700 dark:text-white"
+          >
+            <option :value="null">Select Year Level</option>
+            <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
+          </select>
+  
+          <!-- Section -->
+          <select
+            v-model="selectedSection"
+            class="w-56 sm:w-64 md:w-72 lg:w-80 rounded border px-3 py-2 text-sm bg-white dark:bg-gray-700 dark:text-white"
+          >
+            <option :value="null">Select Section</option>
+            <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
+          </select>
+  
+          <!-- Apply Button -->
+          <button
+            @click="applyFilters"
+            class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          >
+            <Filter class="w-4 h-4" /> Apply Filters
+          </button>
         </div>
+  
+        <!-- Lesson Plan Table -->
+        <div v-if="filtersApplied && props.lessonPlans.length > 0" class="overflow-x-auto">
+          <table class="min-w-full border text-left text-sm">
+            <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+              <tr>
+                <th class="border px-4 py-2">Title</th>
+                <th class="border px-4 py-2">Teacher</th>
+                <th class="border px-4 py-2">Year Level</th>
+                <th class="border px-4 py-2">Section</th>
+                <th class="border px-4 py-2">File & Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="plan in props.lessonPlans"
+                :key="plan.id"
+                class="bg-white dark:bg-gray-800"
+              >
+                <td class="border px-4 py-2">{{ plan.title }}</td>
+                <td class="border px-4 py-2">{{ plan.uploader?.name ?? 'N/A' }}</td>
+                <td class="border px-4 py-2">{{ plan.year_level?.name ?? '—' }}</td>
+                <td class="border px-4 py-2">{{ plan.section?.name ?? '—' }}</td>
+                <td class="border px-4 py-2 space-y-3">
+                  <a
+                    :href="`/storage/${plan.file_path}`"
+                    target="_blank"
+                    class="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                  >
+                    <FileText class="w-4 h-4" /> View File
+                  </a>
+  
+                  <!-- Comments -->
+                  <div class="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                    <div v-if="plan.comments?.length">
+                      <p class="font-medium">Comments:</p>
+                      <ul class="ml-4 list-disc">
+                        <li v-for="c in plan.comments" :key="c.id">
+                          <span class="italic">{{ c.user.name }}:</span> {{ c.comment }}
+                        </li>
+                      </ul>
+                    </div>
+  
+                    <form @submit.prevent="submitComment(plan.id)" class="mt-2 space-y-1">
+                      <input
+                        v-model="newComments[plan.id]"
+                        class="w-full rounded border px-2 py-1 text-sm"
+                        placeholder="Add a comment"
+                      />
+                      <button
+                        type="submit"
+                        class="inline-flex items-center gap-1 rounded bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700"
+                      >
+                        <Send class="w-4 h-4" /> Submit
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  
+        <!-- No Data -->
+        <div
+          v-else-if="filtersApplied"
+          class="text-center text-gray-500 italic"
+        >
+          No lesson plans found for selected filters.
+        </div>
+      </div>
     </AppLayout>
-</template>
+  </template>
+  
+

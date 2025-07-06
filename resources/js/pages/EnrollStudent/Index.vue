@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-
+import { Plus, Pencil, Trash2, Save, Check, X } from 'lucide-vue-next';
 defineProps<{
     enrollments: Array<{
         id: number;
@@ -39,14 +39,18 @@ const cancelDelete = () => {
     <Head title="Enrollments" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
+            <!-- Header -->
             <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-xl font-bold">Enrollments</h2>
-                <Link href="/enroll/create" class="rounded bg-blue-600 px-4 py-2 text-white">Add Enrollment</Link>
+                <h2 class="text-xl font-bold text-gray-800">📋 Enrollments</h2>
+                <Link href="/enroll/create" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                    <Plus class="w-4 h-4" /> Add Enrollment
+                </Link>
             </div>
 
+            <!-- Table -->
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="min-w-full text-left text-sm text-gray-700">
-                    <thead class="bg-gray-50 text-xs text-gray-700 uppercase">
+                    <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
                         <tr>
                             <th class="px-6 py-3">Student</th>
                             <th class="px-6 py-3">Year Level</th>
@@ -59,10 +63,19 @@ const cancelDelete = () => {
                             <td class="px-6 py-4 font-medium">{{ enroll.user.name }}</td>
                             <td class="px-6 py-4">{{ enroll.year_level.name }}</td>
                             <td class="px-6 py-4">{{ enroll.section?.name ?? '—' }}</td>
-                            <td class="flex items-center justify-center space-x-3 px-6 py-4">
-                                <!-- <Link :href="`/enroll/${enroll.id}`" class="text-green-600 hover:underline">View</Link> -->
-                                <Link :href="`/enroll/${enroll.id}/edit`" class="text-blue-600 hover:underline">Edit</Link>
-                                <button @click="confirmDelete(enroll.id)" class="text-red-600 hover:underline">Delete</button>
+                            <td class="px-6 py-4 text-center space-x-3">
+                                <Link
+                                    :href="`/enroll/${enroll.id}/edit`"
+                                    class="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                                >
+                                    <Pencil class="w-4 h-4" /> Edit
+                                </Link>
+                                <button
+                                    @click="confirmDelete(enroll.id)"
+                                    class="inline-flex items-center gap-1 text-red-600 hover:underline"
+                                >
+                                    <Trash2 class="w-4 h-4" /> Delete
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -73,16 +86,21 @@ const cancelDelete = () => {
         <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
-                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
+                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">🗑️ Confirm Deletion</h2>
                 <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this enrollment?</p>
                 <div class="flex justify-end space-x-4">
                     <button
                         @click="cancelDelete"
-                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                        class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
                     >
-                        Cancel
+                        <X class="w-4 h-4" /> Cancel
                     </button>
-                    <button @click="destroyItem" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
+                    <button
+                        @click="destroyItem"
+                        class="inline-flex items-center gap-1 rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                    >
+                        <Trash2 class="w-4 h-4" /> Confirm
+                    </button>
                 </div>
             </div>
         </div>
