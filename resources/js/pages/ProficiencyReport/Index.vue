@@ -138,11 +138,11 @@ const canGeneratePdf = computed(() => {
             <h1 class="text-2xl font-bold">Proficiency Report</h1>
 
             <!-- Filters -->
-            <div>
+            <!-- <div>
                 <p><strong>Subject:</strong> {{ selectedSubject }}</p>
                 <p><strong>Module:</strong> {{ selectedModule }}</p>
                 <p><strong>Can Generate PDF?:</strong> {{ canGeneratePdf }}</p>
-            </div>
+            </div> -->
 
             <div class="flex flex-wrap gap-4">
                 <select v-model="selectedYearLevel" class="rounded border px-3 py-2">

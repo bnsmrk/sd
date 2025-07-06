@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-
+import { BookOpen, Pencil, Trash2, Eye } from 'lucide-vue-next';
 defineProps<{
     materials: Array<{
         id: number;
@@ -52,74 +52,105 @@ function cancelDelete() {
 </script>
 
 <template>
-    <Head title="My Materials" />
-    <AppLayout>
-        <div class="space-y-4 p-6">
-            <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold">My Uploaded Materials</h1>
-                <button @click="createMaterial" class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">+ Upload Material</button>
-            </div>
+  <Head title="My Materials" />
+  <AppLayout>
+    <div class="space-y-6 p-6">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <BookOpen class="w-6 h-6 text-blue-600" /> My Uploaded Materials
+        </h1>
+        <button
+          @click="createMaterial"
+          class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
+        >
+          <BookOpen class="w-4 h-4" />
+          <span>Upload Material</span>
+        </button>
+      </div>
 
-            <table class="w-full table-auto border">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="p-2">Title</th>
-                        <th>Type</th>
-                        <th>Year Level</th>
-                        <th>Section</th>
-                        <th>Subject</th>
-                        <th>File</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-for="material in materials" :key="material.id">
-                        <tr class="border-t">
-                            <td class="p-2 align-top">{{ material.title }}</td>
-                            <td class="align-top capitalize">{{ material.type.replace('_', ' ') }}</td>
-                            <td class="align-top">{{ material.year_level.name }}</td>
-                            <td class="align-top">{{ material.section?.name || '—' }}</td>
-                            <td class="align-top">{{ material.subject.name }}</td>
-                            <td class="align-top">
-                                <a :href="`/storage/${material.file_path}`" target="_blank" class="text-blue-600 underline">View</a>
-                            </td>
-                            <td class="align-top">
-                                <button class="mr-2 text-blue-600" @click="editMaterial(material.id)">Edit</button>
-                                <button class="text-red-600" @click="confirmDelete(material.id)">Delete</button>
-                            </td>
-                        </tr>
-
-                        <!-- ✅ Comments shown under the same material -->
-                        <tr v-if="material.comments?.length" class="bg-gray-50 text-sm">
-                            <td colspan="7" class="p-4">
-                                <p class="mb-2 font-medium text-gray-700">Comments from Principal:</p>
-                                <ul class="ml-4 list-disc space-y-1 text-gray-600">
-                                    <li v-for="comment in material.comments" :key="comment.id">
-                                        "{{ comment.comment }}" — <i>{{ comment.user.name }}</i>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Delete Confirmation Modal -->
-        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
-                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
-                <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this material?</p>
-                <div class="flex justify-end space-x-4">
+      <div class="overflow-x-auto rounded-lg shadow">
+        <table class="min-w-full table-auto border border-gray-200 bg-white">
+          <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+            <tr>
+              <th class="p-3">Title</th>
+              <th class="p-3">Type</th>
+              <th class="p-3">Year Level</th>
+              <th class="p-3">Section</th>
+              <th class="p-3">Subject</th>
+              <th class="p-3">File</th>
+              <th class="p-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm text-gray-700">
+            <template v-for="material in materials" :key="material.id">
+              <tr class="border-t hover:bg-gray-50">
+                <td class="p-3 align-top">{{ material.title }}</td>
+                <td class="p-3 align-top capitalize">{{ material.type.replace('_', ' ') }}</td>
+                <td class="p-3 align-top">{{ material.year_level.name }}</td>
+                <td class="p-3 align-top">{{ material.section?.name || '—' }}</td>
+                <td class="p-3 align-top">{{ material.subject.name }}</td>
+                <td class="p-3 align-top">
+                  <a
+                    :href="`/storage/${material.file_path}`"
+                    target="_blank"
+                    class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition"
+                  >
+                    <Eye class="w-4 h-4" />
+                    <span>View</span>
+                  </a>
+                </td>
+                <td class="p-3 align-top text-center">
+                  <div class="flex justify-center gap-3">
                     <button
-                        @click="cancelDelete"
-                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                      class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition"
+                      @click="editMaterial(material.id)"
                     >
-                        Cancel
+                      <Pencil class="w-4 h-4" />
+                      <span>Edit</span>
                     </button>
-                    <button @click="destroyMaterial" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
-                </div>
-            </div>
+                    <button
+                      class="inline-flex items-center gap-1 text-red-600 hover:text-red-800 font-medium transition"
+                      @click="confirmDelete(material.id)"
+                    >
+                      <Trash2 class="w-4 h-4" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Comments -->
+              <tr v-if="material.comments?.length" class="bg-gray-50 text-sm">
+                <td colspan="7" class="p-4">
+                  <p class="mb-2 font-medium text-gray-700">Comments from Principal:</p>
+                  <ul class="ml-4 list-disc space-y-1 text-gray-600">
+                    <li v-for="comment in material.comments" :key="comment.id">
+                      "{{ comment.comment }}" — <i>{{ comment.user.name }}</i>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+      <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
+        <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this material?</p>
+        <div class="flex justify-end space-x-4">
+          <button
+            @click="cancelDelete"
+            class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+          >
+            Cancel
+          </button>
+          <button @click="destroyMaterial" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
         </div>
-    </AppLayout>
+      </div>
+    </div>
+  </AppLayout>
 </template>
