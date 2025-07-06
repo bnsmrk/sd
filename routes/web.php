@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IctDashboard;
 use App\Http\Controllers\HeadDashboard;
@@ -9,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\StudentDashboard;
+use App\Http\Controllers\TeacherDashboard;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\ActivityController;
@@ -45,10 +47,9 @@ Route::get('dashboard', [AdminDashboardController::class, 'index'])
         });
     });
 
-    Route::get('teacher-dashboard', function () {
-        return Inertia::render('TeacherAssignments/TeacherDashboard');
-    })->middleware(['auth', 'verified', 'role:teacher'])->name('teacher.dashboard');
-
+ Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:teacher'])
+    ->name('teacher.dashboard');
 
 
 Route::get('student-dashboard', [StudentDashboard::class, 'index'])
