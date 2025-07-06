@@ -1,65 +1,118 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <title>Proficiency Report ({{ $type }})</title>
+    <title>Proficiency Report</title>
     <style>
-        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #000; padding: 4px; text-align: left; }
-        h2 { margin-top: 20px; margin-bottom: 10px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
 
-        /* Header and Footer Styles */
-        .header, .footer { text-align: center; }
-        .header img, .footer img { max-width: 150px; height: auto; }
-        .footer { position: fixed; bottom: 0; width: 100%; }
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+
+        .header-text {
+            line-height: 1.4;
+        }
+
+        .header-text h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #2c3e50;
+        }
+
+        .header-text p {
+            margin: 2px 0 0;
+            font-size: 16px;
+            color: #4b5563;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+            color: #1e3a8a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f3f4f6;
+        }
+
+        .no-data {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
     </style>
 </head>
+
 <body>
 
-    <!-- Header Logo -->
+    <!-- Header -->
     <div class="header">
-        <img src="asset{{ ('images/header.png') }}" alt="Header Logo">
+        <img src="{{ public_path('images/lmslogoo.png') }}" alt="School Logo" class="logo">
+        <div class="header-text">
+            <h1>Sample School Name</h1>
+            <p>Proficiency Report ({{ ucfirst($type) }})</p>
+        </div>
     </div>
 
-    <h1>Proficiency Report ({{ $type }})</h1>
 
-    @forelse ($resultsByActivity as $activity)
-        <h2>{{ $activity['activity_title'] }}</h2>
-        <p>Subject ID: {{ $subjectId ?? 'none' }}</p>
-        <p>Module ID: {{ $moduleId ?? 'none' }}</p>
-        <p>Type: {{ $type }}</p>
-
+    <!-- Report Data -->
+    @forelse ($resultsByActivity as $group)
+        <h2>{{ $group['activity_title'] }}</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Students</th>
+                    <th>Student</th>
                     <th>Score</th>
                     <th>Total</th>
                     <th>Average (%)</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($activity['entries'] as $entry)
+                @foreach ($group['entries'] as $entry)
                     <tr>
                         <td>{{ $entry['student'] }}</td>
                         <td>{{ $entry['score'] }}</td>
                         <td>{{ $entry['total'] }}</td>
                         <td>{{ $entry['average'] }}%</td>
                     </tr>
-                @empty
-                    <tr><td colspan="4">No results found for this activity.</td></tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     @empty
-        <p>No activities or results found.</p>
+        <p class="no-data">No results to display.</p>
     @endforelse
 
-    <!-- Footer Logo -->
-    <div class="footer">
-        <img src="{{ asset('images/header.png') }}" alt="Footer Logo">
-    </div>
-
 </body>
+
 </html>

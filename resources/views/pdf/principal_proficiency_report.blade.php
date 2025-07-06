@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Proficiency Report</title>
     <style>
-        body { font-family: sans-serif; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #f0f0f0; }
-        h2 { margin-top: 20px; }
+        body {
+            font-family: sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
     <h1>Proficiency Report ({{ $type }})</h1>
 
@@ -40,4 +61,5 @@
         <p>No results to display.</p>
     @endforelse
 </body>
+
 </html>
