@@ -51,24 +51,26 @@ INSERT INTO sections (name, year_level_id, created_at, updated_at) VALUES
 # MAIL_FROM_NAME="${APP_NAME}"
 # MAIL_ENCRYPTION=tls
 
-MAIL_MAILER=smtp
-MAIL_SCHEME=null
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=465
-MAIL_USERNAME=vinsmark.adlawan@dnsc.edu.ph
-MAIL_PASSWORD=ehggmwlkschdsmwe
-MAIL_FROM_ADDRESS=vinsmark.adlawan@dnsc.edu.ph
-MAIL_FROM_NAME="${APP_NAME}"
-MAIL_ENCRYPTION=ssl
 
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=465
-MAIL_USERNAME=encinares.emmalyn30@gmail.com
-MAIL_PASSWORD=ldpjldlywpopbffg
-MAIL_ENCRYPTION=ssl
-MAIL_FROM_ADDRESS=encinares.emmalyn30@gmail.com
-MAIL_FROM_NAME="PAO"
+# MAIL_MAILER=smtp
+# MAIL_SCHEME=null
+# MAIL_HOST=smtp.gmail.com
+# MAIL_PORT=465
+# MAIL_USERNAME=vinsmark.adlawan@dnsc.edu.ph
+# MAIL_PASSWORD=ehggmwlkschdsmwe
+# MAIL_FROM_ADDRESS=vinsmark.adlawan@dnsc.edu.ph
+# MAIL_FROM_NAME="${APP_NAME}"
+# MAIL_ENCRYPTION=ssl
+
+# MAIL_MAILER=smtp
+# MAIL_HOST=smtp.gmail.com
+# MAIL_PORT=465
+# MAIL_USERNAME=encinares.emmalyn30@gmail.com
+# MAIL_PASSWORD=ldpjldlywpopbffg
+# MAIL_ENCRYPTION=ssl
+# MAIL_FROM_ADDRESS=encinares.emmalyn30@gmail.com
+# MAIL_FROM_NAME="PAO"
+
 --for linux
 crontab -l
 * * * * * cd /home/v1n5t3ch/Downloads/Codes/sd && /opt/lampp/bin/php artisan schedule:run >> /dev/null 2>&1
