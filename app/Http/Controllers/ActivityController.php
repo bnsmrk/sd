@@ -15,31 +15,35 @@ use Illuminate\Support\Facades\Notification;
 
 class ActivityController extends Controller
 {
-    public function index()
-    {
-        $teacherId = Auth::id();
+    public function index(Request $request)
+{
+    $teacherId = Auth::id();
 
-    // Get assigned combinations for this teacher
     $assignments = TeacherAssignment::where('user_id', $teacherId)->get();
 
-    // Extract valid module IDs based on assignments
     $allowedModuleIds = Module::whereIn('year_level_id', $assignments->pluck('year_level_id'))
         ->whereIn('section_id', $assignments->pluck('section_id'))
         ->whereIn('subject_id', $assignments->pluck('subject_id'))
         ->pluck('id');
 
-    // Only load activities linked to allowed modules
+    $search = $request->input('search');
+
     $activities = Activity::with('module.yearLevel', 'module.section', 'module.subject')
         ->whereIn('module_id', $allowedModuleIds)
-        ->get();
+        ->when($search, function ($query) use ($search) {
+            $query->where('title', 'like', "%{$search}%");
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
 
-    $formatted = $activities->map(function ($a) {
+    $formatted = $activities->through(function ($a) {
         return [
             'id' => $a->id,
             'title' => $a->title,
             'type' => $a->type,
-            'scheduled_at' => \Carbon\Carbon::parse($a->scheduled_at)->format('Y-m-d H:i'),
-            'due_date' => $a->due_date ? \Carbon\Carbon::parse($a->due_date)->format('Y-m-d H:i') : null,
+            'scheduled_at' => optional($a->scheduled_at)->format('Y-m-d H:i'),
+            'due_date' => optional($a->due_date)->format('Y-m-d H:i'),
             'year_level' => $a->module->yearLevel->name ?? '',
             'section' => $a->module->section->name ?? '',
             'subject' => $a->module->subject->name ?? '',
@@ -48,8 +52,9 @@ class ActivityController extends Controller
 
     return Inertia::render('Activities/Index', [
         'activities' => $formatted,
+        'filters' => ['search' => $search],
     ]);
-    }
+}
 
     public function create()
     {

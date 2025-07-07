@@ -26,7 +26,7 @@ public function index(Request $request)
         });
     }
 
-    $users = $query->latest()->paginate(10)->withQueryString();
+    $users = $query->latest()->paginate(5)->withQueryString();
 
     return Inertia::render('Users/Index', [
         'users' => $users,

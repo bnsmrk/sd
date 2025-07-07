@@ -12,30 +12,40 @@ use App\Models\TeacherAssignment;
 
 class TeacherAssignmentController extends Controller
 {
-    public function index()
-    {
-        $assignments = TeacherAssignment::with([
-            'teacher:id,name',
-            'yearLevel:id,name',
-            'subject:id,name'
-        ])->get();
-
-        return Inertia::render('TeacherAssignments/Index', [
-            'assignments' => $assignments,
-        ]);
-    }
-public function show(TeacherAssignment $teacherAssignment)
+    public function index(Request $request)
 {
-    return Inertia::render('TeacherAssignments/View', [
-        'assignment' => [
-            'id' => $teacherAssignment->id,
-            'teacher' => $teacherAssignment->teacher()->select('id', 'name')->first(),
-            'year_level' => $teacherAssignment->yearLevel()->select('id', 'name')->first(),
-            'section' => $teacherAssignment->section()->select('id', 'name')->first(),
-            'subject' => $teacherAssignment->subject()->select('id', 'name')->first(),
-        ]
+    $search = $request->input('search');
+
+    $assignments = TeacherAssignment::with([
+        'teacher:id,name',
+        'yearLevel:id,name',
+        'subject:id,name'
+    ])
+    ->when($search, function ($query, $search) {
+        $query->whereHas('teacher', function ($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%');
+        });
+    })
+    ->paginate(10)
+    ->withQueryString();
+
+    return Inertia::render('TeacherAssignments/Index', [
+        'assignments' => $assignments,
+        'filters' => ['search' => $search],
     ]);
 }
+    public function show(TeacherAssignment $teacherAssignment)
+    {
+        return Inertia::render('TeacherAssignments/View', [
+            'assignment' => [
+                'id' => $teacherAssignment->id,
+                'teacher' => $teacherAssignment->teacher()->select('id', 'name')->first(),
+                'year_level' => $teacherAssignment->yearLevel()->select('id', 'name')->first(),
+                'section' => $teacherAssignment->section()->select('id', 'name')->first(),
+                'subject' => $teacherAssignment->subject()->select('id', 'name')->first(),
+            ]
+        ]);
+    }
 
     public function create()
     {

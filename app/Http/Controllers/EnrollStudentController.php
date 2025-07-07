@@ -13,25 +13,30 @@ use App\Mail\TestMail;
 use Illuminate\Support\Facades\Mail;
 class EnrollStudentController extends Controller
 {
-    public function index()
-    {
-        $enrollments = Student::with(['user:id,name', 'yearLevel:id,name', 'section:id,name'])
-            ->get()
-            ->groupBy('user_id')
-            ->map(function ($group) {
-                $first = $group->first();
-                return [
-                    'id' => $first->id,
-                    'user' => $first->user,
-                    'year_level' => $first->yearLevel,
-                    'section' => $first->section,
-                ];
-            })->values();
+   public function index(Request $request)
+{
+    $search = $request->input('search');
 
-        return Inertia::render('EnrollStudent/Index', [
-            'enrollments' => $enrollments,
-        ]);
-    }
+    // Get the first enrollment per user_id using a subquery
+    $subQuery = \App\Models\Student::selectRaw('MIN(id) as id')
+        ->groupBy('user_id');
+
+    $enrollments = \App\Models\Student::with(['user:id,name', 'yearLevel:id,name', 'section:id,name'])
+        ->whereIn('id', $subQuery)
+        ->when($search, function ($query, $search) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        })
+        ->orderByDesc('id')
+        ->paginate(10)
+        ->withQueryString();
+
+    return Inertia::render('EnrollStudent/Index', [
+        'enrollments' => $enrollments,
+        'filters' => ['search' => $search],
+    ]);
+}
 
     public function create()
     {

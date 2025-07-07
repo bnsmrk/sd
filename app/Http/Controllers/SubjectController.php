@@ -10,16 +10,23 @@ use Inertia\Inertia;
 
 class SubjectController extends Controller
 {
-    public function index()
-    {
-        $subjects = Subject::with(['yearLevel', 'section'])->get();
+    public function index(Request $request)
+{
+    $query = Subject::with(['yearLevel', 'section']);
 
-        return Inertia::render('Subject/Index', [
-            'subjects' => $subjects,
-             'yearLevels' => YearLevel::all(), 
-              'sections' => Section::all(),
-        ]);
+    if ($request->has('search') && $request->search) {
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
+
+    $subjects = $query->paginate(5)->withQueryString(); // keep search param on pagination
+
+    return Inertia::render('Subject/Index', [
+        'subjects' => $subjects,
+        'yearLevels' => YearLevel::all(),
+        'sections' => Section::all(),
+        'filters' => $request->only('search'),
+    ]);
+}
 
     public function create()
     {

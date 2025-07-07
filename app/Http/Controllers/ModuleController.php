@@ -11,24 +11,27 @@ use Inertia\Inertia;
 
 class ModuleController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
-
-    // Get all teacher assignments
+    public function index(Request $request)
+{
+    $user = Auth::user();
     $assignments = $user->teacherAssignments()->get();
 
-    // Filter modules the teacher is assigned to
-    $modules = Module::with(['yearLevel', 'subject', 'section'])
+    $query = Module::with(['yearLevel', 'subject', 'section'])
         ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
         ->whereIn('section_id', $assignments->pluck('section_id'))
-        ->whereIn('subject_id', $assignments->pluck('subject_id'))
-        ->get();
+        ->whereIn('subject_id', $assignments->pluck('subject_id'));
+
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+    }
+
+    $modules = $query->latest()->paginate(5)->withQueryString();
 
     return Inertia::render('Modules/Index', [
         'modules' => $modules,
+        'filters' => $request->only('search'),
     ]);
-    }
+}
 
     public function create()
     {

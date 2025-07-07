@@ -1,16 +1,36 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import { Plus, Pencil, Trash2, X, Save, Check } from 'lucide-vue-next';
-defineProps<{
-    sections: Array<{
-        id: number;
-        name: string;
-        year_level: { id: number; name: string };
-    }>;
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import debounce from 'lodash/debounce';
+import { Check, Pencil, Plus, Save, Trash2 } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
+const props = defineProps<{
+    sections: {
+        data: Array<{
+            id: number;
+            name: string;
+            year_level: { id: number; name: string };
+        }>;
+        links: Array<{
+            url: string | null;
+            label: string;
+            active: boolean;
+        }>;
+    };
     yearLevels: Array<{ id: number; name: string }>;
+    filters: {
+        search?: string;
+    };
 }>();
+
+// Search
+const search = ref(props.filters.search || '');
+watch(
+    search,
+    debounce((value) => {
+        router.get('/sections', { search: value }, { preserveState: true, replace: true });
+    }, 300),
+);
 
 // Modals
 const showAddModal = ref(false);
@@ -90,11 +110,14 @@ const confirmDelete = () => {
     <AppLayout>
         <div class="p-4">
             <!-- Header -->
-            <div class="mb-4 flex items-center justify-between">
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <h2 class="text-xl font-bold text-gray-800">🏫 Sections</h2>
-                <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-                    <Plus class="h-4 w-4" /> Add Section
-                </button>
+                <div class="flex items-center gap-2">
+                    <input v-model="search" type="text" placeholder="Search sections..." class="rounded border px-3 py-2 text-sm shadow-sm" />
+                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                        <Plus class="h-4 w-4" /> Add Section
+                    </button>
+                </div>
             </div>
 
             <!-- Table -->
@@ -109,11 +132,11 @@ const confirmDelete = () => {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">
-                        <tr v-for="section in sections" :key="section.id">
+                        <tr v-for="section in sections.data" :key="section.id">
                             <td class="px-6 py-4">{{ section.id }}</td>
                             <td class="px-6 py-4">{{ section.name }}</td>
                             <td class="px-6 py-4">{{ section.year_level.name }}</td>
-                            <td class="px-6 py-4 text-center space-x-4">
+                            <td class="space-x-4 px-6 py-4 text-center">
                                 <button @click="openEditModal(section)" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
                                     <Pencil class="h-4 w-4" /> Edit
                                 </button>
@@ -124,6 +147,25 @@ const confirmDelete = () => {
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center gap-2">
+                <template v-for="(link, i) in sections.links" :key="i">
+                    <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
+                    <Link
+                        v-else
+                        :href="link.url"
+                        class="inline-flex items-center justify-center rounded-md border px-3 py-1 text-sm transition"
+                        :class="{
+                            'border-blue-600 bg-blue-600 text-white': link.active,
+                            'border-gray-300 text-gray-700 hover:bg-gray-100': !link.active,
+                        }"
+                        preserve-scroll
+                        preserve-state
+                    >
+                        <span v-html="link.label" />
+                    </Link>
+                </template>
             </div>
         </div>
 
@@ -198,4 +240,3 @@ const confirmDelete = () => {
         </div>
     </AppLayout>
 </template>
-

@@ -1,17 +1,27 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
-import { Plus, Pencil, Trash2, Save, Check, X } from 'lucide-vue-next';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { Check, Pencil, Plus, Save, Trash2, X } from 'lucide-vue-next';
+import { computed, reactive, ref, watch } from 'vue';
 // Props
 const props = defineProps<{
-    subjects: Array<{
-        id: number;
-        name: string;
-        year_level?: { id: number; name: string } | null;
-        section?: { id: number; name: string } | null;
-    }>;
+    subjects: {
+        data: Array<{
+            id: number;
+            name: string;
+            year_level?: { id: number; name: string } | null;
+            section?: { id: number; name: string } | null;
+        }>;
+        links: Array<{
+            url: string | null;
+            label: string;
+            active: boolean;
+        }>;
+    };
     yearLevels: Array<{ id: number; name: string }>;
+    filters: {
+        search: string;
+    };
 }>();
 
 // === Modal State ===
@@ -82,7 +92,7 @@ const submitCreate = () => {
     });
 };
 
-const openEditModal = (subject: (typeof props.subjects)[0]) => {
+const openEditModal = (subject: (typeof props.subjects.data)[0]) => {
     editForm.id = subject.id;
     editForm.name = subject.name;
     editForm.year_level_id = subject.year_level?.id ?? '';
@@ -125,6 +135,12 @@ const destroyItem = () => {
         });
     }
 };
+
+const search = ref(props.filters.search || '');
+
+watch(search, (value) => {
+    router.get('/subjects', { search: value }, { preserveState: true, replace: true });
+});
 </script>
 
 <template>
@@ -132,11 +148,17 @@ const destroyItem = () => {
     <AppLayout>
         <div class="p-4">
             <!-- Header -->
-            <div class="mb-4 flex justify-between">
+            <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <h2 class="text-xl font-bold text-gray-800">📘 Subjects</h2>
-                <button @click="openCreateModal" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-                    <Plus class="w-4 h-4" /> Add Subject
-                </button>
+                <div class="flex items-center gap-2">
+                    <input v-model="search" type="text" placeholder="Search subject..." class="w-full rounded border p-2 text-sm md:w-64" />
+                    <button
+                        @click="openCreateModal"
+                        class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                    >
+                        <Plus class="h-4 w-4" /> Add Subject
+                    </button>
+                </div>
             </div>
 
             <!-- Subject Table -->
@@ -149,20 +171,36 @@ const destroyItem = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="subject in subjects" :key="subject.id" class="bg-white hover:bg-gray-50">
+                    <tr v-for="subject in props.subjects.data" :key="subject.id" class="bg-white hover:bg-gray-50">
                         <td class="px-4 py-2">{{ subject.name }}</td>
                         <td class="px-4 py-2">{{ subject.year_level?.name ?? '—' }}</td>
-                        <td class="px-4 py-2 text-center space-x-2">
+                        <td class="space-x-2 px-4 py-2 text-center">
                             <button @click="openEditModal(subject)" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
-                                <Pencil class="w-4 h-4" /> Edit
+                                <Pencil class="h-4 w-4" /> Edit
                             </button>
                             <button @click="confirmDelete(subject.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
-                                <Trash2 class="w-4 h-4" /> Delete
+                                <Trash2 class="h-4 w-4" /> Delete
                             </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="mt-6 flex justify-center gap-2">
+            <template v-for="(link, i) in props.subjects.links" :key="i">
+                <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
+                <Link
+                    v-else
+                    :href="link.url"
+                    class="inline-flex items-center justify-center rounded-md border px-3 py-1 text-sm transition"
+                    :class="{
+                        'border-blue-600 bg-blue-600 text-white': link.active,
+                        'border-gray-300 text-gray-700 hover:bg-gray-100': !link.active,
+                    }"
+                >
+                    <span v-html="link.label" />
+                </Link>
+            </template>
         </div>
 
         <!-- Create Modal -->
@@ -185,8 +223,12 @@ const destroyItem = () => {
                     <label class="block font-semibold">Shared Subjects</label>
                     <div v-for="(subject, index) in createForm.shared_subjects" :key="index" class="mb-2 flex gap-2">
                         <input v-model="createForm.shared_subjects[index]" class="w-full rounded border p-2" />
-                        <button @click.prevent="removeFrom(createForm.shared_subjects, index)" v-if="createForm.shared_subjects.length > 1" class="text-red-500">
-                            <X class="w-4 h-4" />
+                        <button
+                            @click.prevent="removeFrom(createForm.shared_subjects, index)"
+                            v-if="createForm.shared_subjects.length > 1"
+                            class="text-red-500"
+                        >
+                            <X class="h-4 w-4" />
                         </button>
                     </div>
                     <button @click.prevent="addTo(createForm.shared_subjects)" class="text-blue-600 hover:underline">+ Add</button>
@@ -197,8 +239,12 @@ const destroyItem = () => {
                     <label class="block font-semibold">Major Subjects</label>
                     <div v-for="(subject, index) in createForm.major_subjects" :key="index" class="mb-2 flex gap-2">
                         <input v-model="createForm.major_subjects[index]" class="w-full rounded border p-2" />
-                        <button @click.prevent="removeFrom(createForm.major_subjects, index)" v-if="createForm.major_subjects.length > 1" class="text-red-500">
-                            <X class="w-4 h-4" />
+                        <button
+                            @click.prevent="removeFrom(createForm.major_subjects, index)"
+                            v-if="createForm.major_subjects.length > 1"
+                            class="text-red-500"
+                        >
+                            <X class="h-4 w-4" />
                         </button>
                     </div>
                     <button @click.prevent="addTo(createForm.major_subjects)" class="text-blue-600 hover:underline">+ Add</button>
@@ -206,10 +252,14 @@ const destroyItem = () => {
 
                 <div class="mt-4 flex justify-end space-x-2">
                     <button @click="showCreateModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
-                        <X class="w-4 h-4" /> Cancel
+                        <X class="h-4 w-4" /> Cancel
                     </button>
-                    <button @click="submitCreate" class="inline-flex items-center gap-1 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700" :disabled="createForm.processing">
-                        <Save class="w-4 h-4" /> {{ createForm.processing ? 'Saving...' : 'Save' }}
+                    <button
+                        @click="submitCreate"
+                        class="inline-flex items-center gap-1 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                        :disabled="createForm.processing"
+                    >
+                        <Save class="h-4 w-4" /> {{ createForm.processing ? 'Saving...' : 'Save' }}
                     </button>
                 </div>
             </div>
@@ -234,10 +284,14 @@ const destroyItem = () => {
                 </div>
                 <div class="flex justify-end space-x-2">
                     <button @click="showEditModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
-                        <X class="w-4 h-4" /> Cancel
+                        <X class="h-4 w-4" /> Cancel
                     </button>
-                    <button @click="submitEdit" class="inline-flex items-center gap-1 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700" :disabled="editForm.processing">
-                        <Check class="w-4 h-4" /> {{ editForm.processing ? 'Updating...' : 'Update' }}
+                    <button
+                        @click="submitEdit"
+                        class="inline-flex items-center gap-1 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                        :disabled="editForm.processing"
+                    >
+                        <Check class="h-4 w-4" /> {{ editForm.processing ? 'Updating...' : 'Update' }}
                     </button>
                 </div>
             </div>
@@ -250,10 +304,10 @@ const destroyItem = () => {
                 <p class="mb-6 text-gray-600">Are you sure you want to delete this subject?</p>
                 <div class="flex justify-end space-x-4">
                     <button @click="showDeleteModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
-                        <X class="w-4 h-4" /> Cancel
+                        <X class="h-4 w-4" /> Cancel
                     </button>
                     <button @click="destroyItem" class="inline-flex items-center gap-1 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
-                        <Trash2 class="w-4 h-4" /> Confirm
+                        <Trash2 class="h-4 w-4" /> Confirm
                     </button>
                 </div>
             </div>

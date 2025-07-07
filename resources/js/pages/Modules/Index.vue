@@ -1,19 +1,31 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
-import { Plus, Pencil, Trash2 } from 'lucide-vue-next'; // ✅ Icons
+import debounce from 'lodash/debounce';
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next'; // ✅ Icons
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
     modules: {
-        id: number;
-        name: string;
-        year_level: { id: number; name: string };
-        subject: { id: number; name: string };
-    }[];
+        data: {
+            id: number;
+            name: string;
+            year_level: { id: number; name: string };
+            subject: { id: number; name: string };
+        }[];
+        links: { url: string | null; label: string; active: boolean }[];
+    };
+    filters: { search?: string };
 }>();
 
+const search = ref(props.filters.search || '');
+watch(
+    search,
+    debounce((value) => {
+        router.get('/modules', { search: value }, { preserveState: true, replace: true });
+    }, 300),
+);
 const showDeleteModal = ref(false);
 const deleteId = ref<number | null>(null);
 
@@ -40,14 +52,14 @@ function cancelDelete() {
     <Head title="Modules" />
     <AppLayout>
         <div class="space-y-4 p-4">
-            <div class="flex items-center justify-between">
-                <h1 class="text-xl font-bold">Modules</h1>
-                <Link
-                    href="/modules/create"
-                    class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                >
-                    <Plus class="w-4 h-4" /> Create Module
-                </Link>
+            <!-- Header -->
+            <div class="mb-4 flex flex-wrap justify-between gap-2 sm:items-center sm:justify-end">
+                <div class="flex w-full justify-end gap-2 sm:w-auto">
+                    <input v-model="search" type="text" placeholder="Search modules..." class="rounded border px-3 py-2 text-sm shadow-sm" />
+                    <Link href="/modules/create" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                        <Plus class="h-4 w-4" /> Create Module
+                    </Link>
+                </div>
             </div>
 
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -61,27 +73,38 @@ function cancelDelete() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="m in props.modules" :key="m.id" class="border-b bg-white hover:bg-gray-50">
+                        <tr v-for="m in props.modules.data" :key="m.id" class="border-b bg-white hover:bg-gray-50">
                             <td class="px-6 py-4">{{ m.name }}</td>
                             <td class="px-6 py-4">{{ m.year_level.name }}</td>
                             <td class="px-6 py-4">{{ m.subject.name }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
-                                <Link
-                                    :href="`/modules/${m.id}/edit`"
-                                    class="inline-flex items-center gap-1 text-blue-600 hover:underline"
-                                >
-                                    <Pencil class="w-4 h-4" /> Edit
+                                <Link :href="`/modules/${m.id}/edit`" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                                    <Pencil class="h-4 w-4" /> Edit
                                 </Link>
-                                <button
-                                    @click="confirmDelete(m.id)"
-                                    class="inline-flex items-center gap-1 text-red-600 hover:underline"
-                                >
-                                    <Trash2 class="w-4 h-4" /> Delete
+                                <button @click="confirmDelete(m.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
+                                    <Trash2 class="h-4 w-4" /> Delete
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center gap-2">
+                <template v-for="(link, i) in props.modules.links" :key="i">
+                    <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
+                    <Link
+                        v-else
+                        :href="link.url"
+                        class="rounded px-3 py-1 text-sm"
+                        :class="{
+                            'bg-blue-600 text-white': link.active,
+                            'text-gray-700 hover:underline': !link.active,
+                        }"
+                    >
+                        <span v-html="link.label" />
+                    </Link>
+                </template>
             </div>
         </div>
 
@@ -97,15 +120,9 @@ function cancelDelete() {
                     >
                         Cancel
                     </button>
-                    <button
-                        @click="deleteModule"
-                        class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-                    >
-                        Confirm
-                    </button>
+                    <button @click="deleteModule" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
-

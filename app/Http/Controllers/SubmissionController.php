@@ -39,17 +39,30 @@ class SubmissionController extends Controller
     return redirect()->route('dashboard')->with('success', 'Essay submitted successfully!');
 }
 
-public function showEssaySubmissions(Activity $activity)
+public function showEssaySubmissions(Request $request, Activity $activity)
 {
+    $search = $request->input('search');
+
     $submissions = Submission::with('user')
         ->where('activity_id', $activity->id)
-        ->get();
+        ->when($search, function ($query, $search) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString(); // Keeps search query when paginating
 
     return Inertia::render('Activities/EssaySubmissions', [
         'activity' => $activity,
         'submissions' => $submissions,
+        'filters' => [
+            'search' => $search,
+        ],
     ]);
 }
+
 
 public function updateScore(Request $request, Submission $submission)
 {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
+import { Book, GraduationCap, Layers, ListChecks, Users } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
-import { GraduationCap, Users, Book, Layers, ListChecks } from 'lucide-vue-next';
 
 interface YearLevel {
     id: number;
@@ -55,22 +55,26 @@ const selectedSubject = ref<number | null>(props.filters.subject_id);
 const selectedModule = ref<number | null>(props.filters.module_id);
 const selectedType = ref<string>(props.filters.type || 'quiz');
 
-const filteredSections = computed(() => props.sections.filter(s => s.year_level_id === selectedYearLevel.value));
-const filteredSubjects = computed(() => props.subjects.filter(s => s.section_id === selectedSection.value));
+const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevel.value));
+const filteredSubjects = computed(() => props.subjects.filter((s) => s.section_id === selectedSection.value));
 
 watch(selectedSubject, () => {
     selectedModule.value = null;
     if (selectedSubject.value && selectedYearLevel.value && selectedSection.value) {
-        router.get('/students-proficiency', {
-            year_level_id: selectedYearLevel.value,
-            section_id: selectedSection.value,
-            subject_id: selectedSubject.value,
-            type: selectedType.value,
-        }, {
-            preserveScroll: true,
-            preserveState: true,
-            only: ['modules'],
-        });
+        router.get(
+            '/students-proficiency',
+            {
+                year_level_id: selectedYearLevel.value,
+                section_id: selectedSection.value,
+                subject_id: selectedSubject.value,
+                type: selectedType.value,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                only: ['modules'],
+            },
+        );
     }
 });
 
@@ -85,25 +89,32 @@ watch(selectedSection, () => {
     selectedModule.value = null;
 });
 
-watch(() => props.modules, (newModules) => {
-    if (newModules.length > 0) {
-        selectedModule.value = newModules[0].id;
-    }
-});
+watch(
+    () => props.modules,
+    (newModules) => {
+        if (newModules.length > 0) {
+            selectedModule.value = newModules[0].id;
+        }
+    },
+);
 
 const applyFilters = () => {
     filtersApplied.value = false;
-    router.get('/students-proficiency', {
-        year_level_id: selectedYearLevel.value,
-        section_id: selectedSection.value,
-        subject_id: selectedSubject.value,
-        module_id: selectedModule.value,
-        type: selectedType.value,
-    }, {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => filtersApplied.value = true,
-    });
+    router.get(
+        '/students-proficiency',
+        {
+            year_level_id: selectedYearLevel.value,
+            section_id: selectedSection.value,
+            subject_id: selectedSubject.value,
+            module_id: selectedModule.value,
+            type: selectedType.value,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => (filtersApplied.value = true),
+        },
+    );
 };
 
 const pdfUrl = computed(() => {
@@ -117,16 +128,14 @@ const canGeneratePdf = computed(() => {
 
 <template>
     <AppLayout>
-        <div class="space-y-6 px-6 py-8 max-w-full mx-auto">
+        <div class="mx-auto max-w-full space-y-6 px-6 py-8">
             <h1 class="text-3xl font-bold text-gray-800">📊 Proficiency Report</h1>
 
             <!-- Filter Row -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-4 items-end">
+            <div class="grid grid-cols-1 items-end gap-4 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
                 <!-- Year Level -->
                 <div>
-                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700">
-                        <GraduationCap class="w-4 h-4" /> Year Level
-                    </label>
+                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <GraduationCap class="h-4 w-4" /> Year Level </label>
                     <select v-model="selectedYearLevel" class="w-full rounded border px-3 py-2">
                         <option :value="null">Select Year Level</option>
                         <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
@@ -135,9 +144,7 @@ const canGeneratePdf = computed(() => {
 
                 <!-- Section -->
                 <div>
-                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700">
-                        <Users class="w-4 h-4" /> Section
-                    </label>
+                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <Users class="h-4 w-4" /> Section </label>
                     <select v-model="selectedSection" class="w-full rounded border px-3 py-2">
                         <option :value="null">Select Section</option>
                         <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -146,9 +153,7 @@ const canGeneratePdf = computed(() => {
 
                 <!-- Subject -->
                 <div>
-                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700">
-                        <Book class="w-4 h-4" /> Subject
-                    </label>
+                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <Book class="h-4 w-4" /> Subject </label>
                     <select v-model="selectedSubject" class="w-full rounded border px-3 py-2">
                         <option :value="null">Select Subject</option>
                         <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
@@ -157,9 +162,7 @@ const canGeneratePdf = computed(() => {
 
                 <!-- Module -->
                 <div>
-                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700">
-                        <Layers class="w-4 h-4" /> Module
-                    </label>
+                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <Layers class="h-4 w-4" /> Module </label>
                     <select v-model="selectedModule" class="w-full rounded border px-3 py-2">
                         <option :value="null">Select Module</option>
                         <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
@@ -168,9 +171,7 @@ const canGeneratePdf = computed(() => {
 
                 <!-- Type -->
                 <div>
-                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700">
-                        <ListChecks class="w-4 h-4" /> Test Type
-                    </label>
+                    <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <ListChecks class="h-4 w-4" /> Test Type </label>
                     <select v-model="selectedType" class="w-full rounded border px-3 py-2">
                         <option value="quiz">Quiz</option>
                         <option value="exam">Exam</option>
@@ -179,17 +180,14 @@ const canGeneratePdf = computed(() => {
 
                 <!-- Generate Button -->
                 <div>
-                    <button
-                        @click="applyFilters"
-                        class="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 whitespace-nowrap"
-                    >
-                        🔍 Generate Report
+                    <button @click="applyFilters" class="w-full rounded bg-blue-600 px-4 py-2 whitespace-nowrap text-white hover:bg-blue-700">
+                        Generate
                     </button>
                 </div>
             </div>
 
             <!-- PDF Button -->
-            <div v-if="canGeneratePdf" class="flex justify-end mt-4">
+            <div v-if="canGeneratePdf" class="mt-4 flex justify-end">
                 <a :href="pdfUrl" target="_blank" class="inline-flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
                     🧾 Generate PDF
                 </a>
@@ -220,9 +218,7 @@ const canGeneratePdf = computed(() => {
                 </div>
             </div>
 
-            <div v-else class="mt-10 text-center text-gray-500 italic">
-                No data to show.
-            </div>
+            <div v-else class="mt-10 text-center text-gray-500 italic">No data to show.</div>
         </div>
     </AppLayout>
 </template>

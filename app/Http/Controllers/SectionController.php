@@ -9,17 +9,28 @@ use Inertia\Inertia;
 
 class SectionController extends Controller
 {
-    public function index()
-    {
-        $sections = Section::with('yearLevel')->get();
-    $yearLevels = YearLevel::all(); // ✅ Fetch year levels
+   public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $sections = Section::with('yearLevel')
+        ->when($search, fn ($query) =>
+            $query->where('name', 'like', "%{$search}%")
+        )
+        ->orderBy('id')
+        ->paginate(5)
+        ->withQueryString(); // keeps search in the URL when paginating
+
+    $yearLevels = YearLevel::all();
 
     return Inertia::render('Section/Index', [
         'sections' => $sections,
-        'yearLevels' => $yearLevels, // ✅ Pass to Vue page
+        'yearLevels' => $yearLevels,
+        'filters' => [
+            'search' => $search,
+        ],
     ]);
-    }
-
+}
     public function create()
     {
         $yearLevels = YearLevel::all();

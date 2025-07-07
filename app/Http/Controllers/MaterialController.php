@@ -21,20 +21,26 @@ class MaterialController extends Controller
             ->get();
     }
 
-    public function index()
-    {
-        $assignments = $this->getTeacherAssignments();
+    public function index(Request $request)
+{
+    $assignments = $this->getTeacherAssignments();
 
-        $materials = Material::with(['yearLevel', 'section', 'subject', 'user','comments.user:id,name'])
-            ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
-            ->whereIn('subject_id', $assignments->pluck('subject_id'))
-            ->latest()
-            ->get();
+    $materials = Material::with(['yearLevel', 'section', 'subject', 'user', 'comments.user:id,name'])
+        ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
+        ->whereIn('subject_id', $assignments->pluck('subject_id'))
+        ->when($request->filled('search'), function ($query) use ($request) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        })
+        ->latest()
+        ->paginate(5)
+        ->withQueryString();
 
-        return Inertia::render('Materials/Index', [
-            'materials' => $materials,
-        ]);
-    }
+    return Inertia::render('Materials/Index', [
+        'materials' => $materials,
+        'filters' => $request->only('search'),
+    ]);
+}
+
 
     public function create()
     {
