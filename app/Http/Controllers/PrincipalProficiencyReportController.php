@@ -19,7 +19,7 @@ class PrincipalProficiencyReportController extends Controller
         $sectionId   = $request->input('section_id');
         $subjectId   = $request->input('subject_id');
         $moduleId    = $request->input('module_id');
-        $type        = $request->input('type', 'quiz');
+        $type        = $request->input('type', 'quiz', );
 
         $yearLevels = YearLevel::select('id', 'name')->get();
         $sections   = Section::select('id', 'name', 'year_level_id')->get();

@@ -38,7 +38,16 @@ Route::get('dashboard', [AdminDashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:admin'])
 ->name('dashboard');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', function () {
+        return response()->json(Auth::user()->notifications);
+});
 
+Route::post('/notifications/mark-as-read', function () {
+    Auth::user()->unreadNotifications->markAsRead();
+    return response()->json(['status' => 'ok']);
+    });
+});
 
 Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
 ->middleware(['auth', 'verified', 'role:teacher'])
@@ -112,7 +121,7 @@ Route::post('/principal-teachers-lesson-plans/comment', [PrincipalLessonPlanCont
 
 
 // admin routes
-Route::middleware(['role:admin,ict'])->group(function () {
+Route::middleware('role:admin,ict')->group(function () {
     Route::resource('year-levels', YearLevelController::class);
     Route::resource('sections', SectionController::class);
     Route::resource('subjects', SubjectController::class);
@@ -120,8 +129,6 @@ Route::middleware(['role:admin,ict'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('teacher-assignments', TeacherAssignmentController::class);
 });
-
-
 
 
 // head routes
@@ -148,18 +155,6 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 
     Route::post('/activities/{activity}/essay', [SubmissionController::class, 'submitEssay']);
     Route::get('/activities/{activity}/essay', [SubmissionController::class, 'takeEssay'])->name('essay.create');
-
-
-    Route::middleware('auth')->group(function () {
-        Route::get('/notifications', function () {
-        return response()->json(Auth::user()->notifications);
-    });
-
-    Route::post('/notifications/mark-as-read', function () {
-        Auth::user()->unreadNotifications->markAsRead();
-        return response()->json(['status' => 'ok']);
-        });
-    });
 
 });
 

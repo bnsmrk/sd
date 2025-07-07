@@ -66,7 +66,6 @@ const adminNavItems: NavItem[] = [
     },
 ];
 
-// Exclude dashboard for shared use
 const adminNavItemsWithoutDashboard = adminNavItems.filter((item) => item.href !== '/dashboard');
 
 const groupedNavItems: Record<string, NavItem[]> = {
