@@ -4,57 +4,114 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen,  LayoutDashboardIcon,UserCircle2Icon, TrendingUp,Award,Columns,Layers,
-    LucideFileChartColumnIncreasing,FileArchiveIcon,BookOpenCheck,Briefcase, LayoutGrid, UserCheck, TestTubesIcon,LucideTestTube2, UserCog , User2} 
-from 'lucide-vue-next';
+import {
+    ActivityIcon,
+    ActivitySquareIcon,
+    Briefcase,
+    ClipboardListIcon,
+    Columns,
+    FileArchiveIcon,
+    FileUpIcon,
+    Layers,
+    LayoutDashboardIcon,
+    LucideFileChartColumnIncreasing,
+    LucideTestTube2,
+    PuzzleIcon,
+    TestTubesIcon,
+    TrendingUp,
+    UserCheck,
+    UserCircle2Icon,
+    UserCog,
+} from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const { auth } = usePage().props;
 const role = (auth.user as any)?.role || '';
 
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/dashboard',
+        icon: Briefcase,
+    },
+    {
+        title: 'Year Levels',
+        href: '/year-levels',
+        icon: TrendingUp,
+    },
+    {
+        title: 'Sections',
+        href: '/sections',
+        icon: Columns,
+    },
+    {
+        title: 'Subjects',
+        href: '/subjects',
+        icon: Layers,
+    },
+    {
+        title: 'Enroll Students',
+        href: '/enroll',
+        icon: UserCircle2Icon,
+    },
+    {
+        title: 'Register User',
+        href: '/users',
+        icon: UserCheck,
+    },
+    {
+        title: 'Teacher Assign',
+        href: '/teacher-assignments',
+        icon: UserCog,
+    },
+];
+
+// Exclude dashboard for shared use
+const adminNavItemsWithoutDashboard = adminNavItems.filter((item) => item.href !== '/dashboard');
+
 const groupedNavItems: Record<string, NavItem[]> = {
-    common: [
-        // {
-        //     title: 'Dashboard',
-        //     href: '/dashboard', 
-        //     icon: LayoutGrid,
-        // },
+    common: [],
+    admin: adminNavItems,
+    ict: [
+        {
+            title: 'ICT Dashboard',
+            href: '/ict-dashboard',
+            icon: Briefcase,
+        },
+        ...adminNavItemsWithoutDashboard,
     ],
-    admin: [
+    teacher: [
         {
             title: 'Dashboard',
-            href: '/dashboard',
-            icon: LayoutDashboardIcon,
+            href: '/teacher-dashboard',
+            icon: Briefcase,
         },
         {
-            title: 'Year Levels',
-            href: '/year-levels',
-            icon: TrendingUp,
+            title: 'Upload Materials',
+            href: '/materials',
+            icon: FileUpIcon,
         },
         {
-            title: 'Sections',
-            href: '/sections',
-            icon: Columns,
+            title: 'Activities',
+            href: '/activities',
+            icon: ActivityIcon,
         },
         {
-            title: 'Subjects',
-            href: '/subjects',
-            icon: Layers,
+            title: 'My Modules',
+            href: '/modules',
+            icon: PuzzleIcon,
         },
         {
-            title: 'Enroll Students',
-            href: '/enroll',
-            icon: UserCircle2Icon,
+            title: 'Student Activities Results',
+            href: '/students-proficiency',
+            icon: ActivitySquareIcon,
         },
+    ],
+    principal: [
         {
-            title: 'Register User',
-            href: '/users',
-            icon: UserCheck,
-        },
-        {
-            title: 'Teacher Assign',
-            href: '/teacher-assignments',
-            icon: UserCog,
+            title: 'Dashboard',
+            href: '/principal-dashboard',
+            icon: Briefcase,
         },
         {
             title: 'Student Proficiency Report',
@@ -67,50 +124,16 @@ const groupedNavItems: Record<string, NavItem[]> = {
             icon: LucideFileChartColumnIncreasing,
         },
     ],
-    teacher: [
-        {
-            title: 'Dashboard',
-            href: '/teacher-dashboard',
-            icon: Briefcase,
-        },
-        {
-            title: 'Upload Materials',
-            href: '/materials',
-            icon: Briefcase,
-        },
-        {
-            title: 'Activities',
-            href: '/activities',
-            icon: Briefcase,
-        },
-        {
-            title: 'My Modules',
-            href: '/modules',
-            icon: Briefcase,
-        },
-        {
-            title: 'Student Proficiency',
-            href: '/students-proficiency',
-            icon: Briefcase,
-        },
-    ],
-    principal: [
-        {
-            title: 'Dashboard',
-            href: '/principal-dashboard',
-            icon: Briefcase,
-        },
-    ],
     student: [
         {
             title: 'Dashboard',
             href: '/student-dashboard',
-            icon: Briefcase,
+            icon: LayoutDashboardIcon,
         },
         {
             title: 'My Subjects',
             href: '/my-subjects',
-            icon: BookOpen,
+            icon: ClipboardListIcon,
         },
     ],
     head: [
@@ -128,13 +151,6 @@ const groupedNavItems: Record<string, NavItem[]> = {
             title: 'Proficiency Test Result',
             href: '/proficiency-result',
             icon: LucideTestTube2,
-        },
-    ],
-    ict: [
-        {
-            title: 'ICT Dashboard',
-            href: '/ict-dashboard',
-            icon: Briefcase,
         },
     ],
 };
