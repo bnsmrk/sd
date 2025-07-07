@@ -60,10 +60,8 @@ class ActivityController extends Controller
     {
        $user = Auth::user();
 
-    // Get assignments
     $assignments = $user->teacherAssignments()->get();
 
-    // Filter only allowed modules
     $modules = Module::with(['yearLevel', 'section', 'subject'])
         ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
         ->whereIn('section_id', $assignments->pluck('section_id'))
@@ -90,19 +88,17 @@ class ActivityController extends Controller
 
         $activity = Activity::create($data);
 
-        // ✅ Get the module
         $module = Module::findOrFail($data['module_id']);
 
-        // ✅ Get the student user_ids who match the module’s year_level, section, subject
         $studentUserIds = \App\Models\Student::where('year_level_id', $module->year_level_id)
             ->where('section_id', $module->section_id)
             ->where('subject_id', $module->subject_id)
             ->pluck('user_id');
 
-        // ✅ Get the user models
+
         $students = \App\Models\User::whereIn('id', $studentUserIds)->get();
 
-        \Log::info('Notified students:', $students->pluck('id')->toArray());
+
 
         if ($students->isNotEmpty()) {
             Notification::send($students, new NewActivityNotification($activity));
@@ -114,17 +110,14 @@ class ActivityController extends Controller
     {
         $user = Auth::user();
 
-    // Get this teacher's valid assignments
     $assignments = $user->teacherAssignments()->get();
 
-    // Restrict to only assigned modules
     $modules = Module::with(['yearLevel', 'section', 'subject'])
         ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
         ->whereIn('section_id', $assignments->pluck('section_id'))
         ->whereIn('subject_id', $assignments->pluck('subject_id'))
         ->get();
 
-    // Check if the teacher is allowed to edit this activity
     $activityModule = $activity->module;
     $isAssigned = $assignments->contains(function ($a) use ($activityModule) {
         return $a->year_level_id === $activityModule->year_level_id
@@ -167,7 +160,6 @@ class ActivityController extends Controller
         abort(403, 'You are not authorized to update this activity.');
     }
 
-    // Handle file upload
     if ($request->hasFile('file')) {
         if ($activity->file_path && \Storage::disk('public')->exists($activity->file_path)) {
             \Storage::disk('public')->delete($activity->file_path);

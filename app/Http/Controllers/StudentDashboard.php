@@ -33,7 +33,6 @@ class StudentDashboard extends Controller
                     ];
                 });
 
-            // Get test IDs the student has already taken
             $takenTestIds = StudentProficiencyResult::where('user_id', $userId)
                 ->pluck('proficiency_test_id')
                 ->toArray();

@@ -17,7 +17,6 @@ class PrincipalLessonPlanController extends Controller
         $yearLevelId = $request->input('year_level_id');
         $sectionId   = $request->input('section_id');
 
-        // Only fetch lesson plans if both filters are selected
         $lessonPlans = [];
 
         if ($yearLevelId && $sectionId) {

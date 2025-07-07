@@ -21,11 +21,9 @@ class PrincipalProficiencyReportController extends Controller
         $moduleId    = $request->input('module_id');
         $type        = $request->input('type', 'quiz');
 
-        // Static dropdowns
         $yearLevels = YearLevel::select('id', 'name')->get();
         $sections   = Section::select('id', 'name', 'year_level_id')->get();
 
-        // Subjects based on year level and section
         $subjectQuery = Subject::select('id', 'name', 'section_id', 'year_level_id');
         if ($yearLevelId) {
             $subjectQuery->where('year_level_id', $yearLevelId);
@@ -38,7 +36,6 @@ class PrincipalProficiencyReportController extends Controller
         }
         $subjects = $subjectQuery->get();
 
-        // Modules - stricter filtering
         $modules = [];
         if ($subjectId && $type) {
             $modules = Module::where('subject_id', $subjectId)
@@ -53,7 +50,6 @@ class PrincipalProficiencyReportController extends Controller
                 ->get(['id', 'name', 'subject_id']);
         }
 
-        // Results by Activity
         $resultsByActivity = [];
         if ($subjectId && $moduleId && $type) {
             $activities = Activity::with(['studentQuizResults.user'])

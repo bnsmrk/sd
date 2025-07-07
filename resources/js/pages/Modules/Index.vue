@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
 import debounce from 'lodash/debounce';
-import { Pencil, Plus, Trash2 } from 'lucide-vue-next'; // ✅ Icons
+import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -52,7 +52,6 @@ function cancelDelete() {
     <Head title="Modules" />
     <AppLayout>
         <div class="space-y-4 p-4">
-            <!-- Header -->
             <div class="mb-4 flex flex-wrap justify-between gap-2 sm:items-center sm:justify-end">
                 <div class="flex w-full justify-end gap-2 sm:w-auto">
                     <input v-model="search" type="text" placeholder="Search modules..." class="rounded border px-3 py-2 text-sm shadow-sm" />
@@ -89,7 +88,6 @@ function cancelDelete() {
                     </tbody>
                 </table>
             </div>
-            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.modules.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -108,7 +106,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>

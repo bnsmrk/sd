@@ -142,7 +142,6 @@ function cancelDelete() {
                                 </td>
                             </tr>
 
-                            <!-- Comments -->
                             <tr v-if="material.comments?.length" class="bg-gray-50 text-sm">
                                 <td colspan="7" class="p-4">
                                     <p class="mb-2 font-medium text-gray-700">Comments from Principal:</p>
@@ -157,7 +156,6 @@ function cancelDelete() {
                     </tbody>
                 </table>
             </div>
-            <!-- Pagination -->
             <div class="mt-6 flex flex-wrap justify-center gap-2">
                 <template v-for="(link, i) in materials.links" :key="i">
                     <span
@@ -180,7 +178,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>

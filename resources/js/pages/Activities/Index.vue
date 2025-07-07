@@ -60,7 +60,6 @@ function cancelDelete() {
     <Head title="Activities" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-4 p-4">
-            <!-- Header -->
             <div class="mb-4 flex flex-wrap justify-between gap-2 sm:items-center sm:justify-end">
                 <div class="flex w-full justify-end gap-2 sm:w-auto">
                     <input v-model="search" type="text" placeholder="Search activities..." class="rounded border px-3 py-2 text-sm shadow-sm" />
@@ -70,7 +69,6 @@ function cancelDelete() {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="relative overflow-x-auto shadow ring-1 ring-gray-200 sm:rounded-lg">
                 <table class="min-w-full text-left text-sm text-gray-600 dark:text-gray-300">
                     <thead class="bg-gray-100 text-xs text-gray-600 uppercase dark:bg-gray-700 dark:text-gray-400">
@@ -90,7 +88,6 @@ function cancelDelete() {
                         >
                             <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ a.title }}</td>
 
-                            <!-- Type Badge -->
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 capitalize dark:bg-blue-800 dark:text-blue-100"
@@ -102,20 +99,16 @@ function cancelDelete() {
                             <td class="px-6 py-4">{{ a.scheduled_at }}</td>
                             <td class="px-6 py-4">{{ a.due_date }}</td>
 
-                            <!-- Action Buttons -->
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-3">
-                                    <!-- Edit -->
                                     <Link :href="`/activities/${a.id}/edit`" class="text-blue-600 hover:text-blue-800">
                                         <Pencil class="inline h-4 w-4" />
                                     </Link>
 
-                                    <!-- Delete -->
                                     <button @click="confirmDelete(a.id)" class="text-red-600 hover:text-red-800">
                                         <Trash2 class="inline h-4 w-4" />
                                     </button>
 
-                                    <!-- View Essay / Add Question -->
                                     <template v-if="a.type === 'essay'">
                                         <Link :href="`/activities/${a.id}/essay-submissions`" class="text-purple-600 hover:text-purple-800">
                                             <FileText class="inline h-4 w-4" />
@@ -150,7 +143,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-xl dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>

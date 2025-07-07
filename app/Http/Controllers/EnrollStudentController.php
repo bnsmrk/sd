@@ -17,7 +17,6 @@ class EnrollStudentController extends Controller
 {
     $search = $request->input('search');
 
-    // Get the first enrollment per user_id using a subquery
     $subQuery = \App\Models\Student::selectRaw('MIN(id) as id')
         ->groupBy('user_id');
 
@@ -123,10 +122,8 @@ class EnrollStudentController extends Controller
             'section_id' => 'required|exists:sections,id',
         ]);
 
-        // Delete all enrollments of the student
         Student::where('user_id', $validated['user_id'])->delete();
 
-        // Recreate with new year level and section
         $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
 
         foreach ($subjects as $subject) {

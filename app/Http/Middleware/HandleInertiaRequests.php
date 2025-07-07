@@ -47,7 +47,7 @@ class HandleInertiaRequests extends Middleware
             'user' => $request->user() ? [
                 'id' => $request->user()->id,
                 'name' => $request->user()->name,
-                'role' => $request->user()->role, // ✅ shared here
+                'role' => $request->user()->role,
                 ] : null,
                  'notifications' => fn () => $request->user()
                 ? $request->user()->unreadNotifications()->get()->map(function ($notification) {

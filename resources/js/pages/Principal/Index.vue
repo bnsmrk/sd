@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
+import { BarChart2, BookOpen, ClipboardList, FileText, Layers, LayoutTemplate, Search } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
-import {
-  BarChart2,
-  Layers,
-  LayoutTemplate,
-  BookOpen,
-  FileText,
-  ClipboardList,
-  Search
-} from 'lucide-vue-next'; // Or your preferred icon lib
 
 interface YearLevel {
     id: number;
@@ -87,7 +79,6 @@ watch(selectedSection, () => {
     selectedModule.value = null;
 });
 
-// When subject changes, fetch modules
 watch(selectedSubject, (subjectId) => {
     if (subjectId) {
         selectedModule.value = null;
@@ -108,7 +99,6 @@ watch(selectedSubject, (subjectId) => {
     }
 });
 
-// Auto-select first module when modules change
 watch(
     () => props.modules,
     (newModules) => {
@@ -156,127 +146,98 @@ const pdfUrl = computed(() => {
 </script>
 <template>
     <AppLayout>
-      <div class="space-y-6 p-6 max-w-full mx-auto">
-        <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <BarChart2 class="w-6 h-6" /> Proficiency Report
-        </h1>
-  
-        <!-- Filters -->
-        <div class="flex flex-wrap gap-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-          <!-- Year Level -->
-          <div class="relative flex-grow min-w-[180px]">
-            <Layers class="w-4 h-4 absolute left-3 top-2.5 text-gray-500" />
-            <select
-              v-model="selectedYearLevel"
-              class="pl-10 pr-3 py-2 w-full rounded border text-sm bg-white dark:bg-gray-700 dark:text-white"
-            >
-              <option :value="null">Select Year Level</option>
-              <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
-            </select>
-          </div>
-  
-          <!-- Section -->
-          <div class="relative flex-grow min-w-[180px]">
-            <LayoutTemplate class="w-4 h-4 absolute left-3 top-2.5 text-gray-500" />
-            <select
-              v-model="selectedSection"
-              class="pl-10 pr-3 py-2 w-full rounded border text-sm bg-white dark:bg-gray-700 dark:text-white"
-            >
-              <option :value="null">Select Section</option>
-              <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
-            </select>
-          </div>
-  
-          <!-- Subject -->
-          <div class="relative flex-grow min-w-[180px]">
-            <BookOpen class="w-4 h-4 absolute left-3 top-2.5 text-gray-500" />
-            <select
-              v-model="selectedSubject"
-              class="pl-10 pr-3 py-2 w-full rounded border text-sm bg-white dark:bg-gray-700 dark:text-white"
-            >
-              <option :value="null">Select Subject</option>
-              <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
-            </select>
-          </div>
-  
-          <!-- Module -->
-          <div class="relative flex-grow min-w-[180px]">
-            <FileText class="w-4 h-4 absolute left-3 top-2.5 text-gray-500" />
-            <select
-              v-model="selectedModule"
-              class="pl-10 pr-3 py-2 w-full rounded border text-sm bg-white dark:bg-gray-700 dark:text-white"
-            >
-              <option :value="null">Select Module</option>
-              <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
-            </select>
-          </div>
-  
-          <!-- Type -->
-          <div class="relative flex-grow min-w-[160px]">
-            <ClipboardList class="w-4 h-4 absolute left-3 top-2.5 text-gray-500" />
-            <select
-              v-model="selectedType"
-              class="pl-10 pr-3 py-2 w-full rounded border text-sm bg-white dark:bg-gray-700 dark:text-white"
-            >
-              <option value="quiz">Quiz</option>
-              <option value="exam">Exam</option>
-            </select>
-          </div>
-  
-          <!-- Generate Report Button -->
-          <div class="flex-shrink-0">
-            <button
-              @click="applyFilters"
-              class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-            >
-              <Search class="w-4 h-4" /> Generate Report
-            </button>
-          </div>
-        </div>
-  
-        <!-- PDF Button -->
-        <div v-if="canGeneratePdf" class="mt-4 flex justify-end">
-          <a
-            :href="pdfUrl"
-            target="_blank"
-            class="inline-flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-          >
-            <FileText class="w-4 h-4" /> Generate PDF
-          </a>
-        </div>
-  
-        <!-- Results Table -->
-        <div v-if="props.resultsByActivity.length > 0" class="mt-6 space-y-8">
-          <div v-for="group in props.resultsByActivity" :key="group.activity_title">
-            <h2 class="text-lg font-semibold text-blue-700">{{ group.activity_title }}</h2>
-            <table class="mt-2 min-w-full border text-sm">
-              <thead class="bg-gray-100 dark:bg-gray-700 text-left text-gray-700 dark:text-gray-200">
-                <tr>
-                  <th class="border px-4 py-2">Student</th>
-                  <th class="border px-4 py-2">Score</th>
-                  <th class="border px-4 py-2">Total</th>
-                  <th class="border px-4 py-2">Average (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="entry in group.entries"
-                  :key="entry.student"
-                  class="bg-white dark:bg-gray-800"
+        <div class="mx-auto max-w-full space-y-6 p-6">
+            <h1 class="flex items-center gap-2 text-2xl font-bold text-gray-800"><BarChart2 class="h-6 w-6" /> Proficiency Report</h1>
+
+            <div class="flex flex-wrap gap-4 rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+                <div class="relative min-w-[180px] flex-grow">
+                    <Layers class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
+                    <select
+                        v-model="selectedYearLevel"
+                        class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white"
+                    >
+                        <option :value="null">Select Year Level</option>
+                        <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
+                    </select>
+                </div>
+
+                <div class="relative min-w-[180px] flex-grow">
+                    <LayoutTemplate class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
+                    <select v-model="selectedSection" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                        <option :value="null">Select Section</option>
+                        <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
+                    </select>
+                </div>
+
+                <div class="relative min-w-[180px] flex-grow">
+                    <BookOpen class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
+                    <select v-model="selectedSubject" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                        <option :value="null">Select Subject</option>
+                        <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
+                    </select>
+                </div>
+
+                <div class="relative min-w-[180px] flex-grow">
+                    <FileText class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
+                    <select v-model="selectedModule" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                        <option :value="null">Select Module</option>
+                        <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
+                    </select>
+                </div>
+
+                <div class="relative min-w-[160px] flex-grow">
+                    <ClipboardList class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
+                    <select v-model="selectedType" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                        <option value="quiz">Quiz</option>
+                        <option value="exam">Exam</option>
+                    </select>
+                </div>
+
+                <div class="flex-shrink-0">
+                    <button
+                        @click="applyFilters"
+                        class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                    >
+                        <Search class="h-4 w-4" /> Generate Report
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="canGeneratePdf" class="mt-4 flex justify-end">
+                <a
+                    :href="pdfUrl"
+                    target="_blank"
+                    class="inline-flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
                 >
-                  <td class="border px-4 py-2">{{ entry.student }}</td>
-                  <td class="border px-4 py-2">{{ entry.score }}</td>
-                  <td class="border px-4 py-2">{{ entry.total }}</td>
-                  <td class="border px-4 py-2">{{ entry.average }}%</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                    <FileText class="h-4 w-4" /> Generate PDF
+                </a>
+            </div>
+
+            <div v-if="props.resultsByActivity.length > 0" class="mt-6 space-y-8">
+                <div v-for="group in props.resultsByActivity" :key="group.activity_title">
+                    <h2 class="text-lg font-semibold text-blue-700">{{ group.activity_title }}</h2>
+                    <table class="mt-2 min-w-full border text-sm">
+                        <thead class="bg-gray-100 text-left text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                            <tr>
+                                <th class="border px-4 py-2">Student</th>
+                                <th class="border px-4 py-2">Score</th>
+                                <th class="border px-4 py-2">Total</th>
+                                <th class="border px-4 py-2">Average (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="entry in group.entries" :key="entry.student" class="bg-white dark:bg-gray-800">
+                                <td class="border px-4 py-2">{{ entry.student }}</td>
+                                <td class="border px-4 py-2">{{ entry.score }}</td>
+                                <td class="border px-4 py-2">{{ entry.total }}</td>
+                                <td class="border px-4 py-2">{{ entry.average }}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div v-else class="mt-8 text-center text-gray-500 italic">No data to show</div>
         </div>
-  
-        <!-- No Data -->
-        <div v-else class="mt-8 text-center text-gray-500 italic">No data to show</div>
-      </div>
     </AppLayout>
-  </template>
-  
+</template>

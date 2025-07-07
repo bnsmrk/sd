@@ -23,7 +23,6 @@ const props = defineProps<{
     };
 }>();
 
-// Search
 const search = ref(props.filters.search || '');
 watch(
     search,
@@ -32,12 +31,10 @@ watch(
     }, 300),
 );
 
-// Modals
 const showAddModal = ref(false);
 const showEditModal = ref(false);
 const showDeleteModal = ref(false);
 
-// Forms
 const createForm = useForm({
     name: '',
     year_level_id: '',
@@ -51,7 +48,6 @@ const editForm = useForm({
 
 const deleteId = ref<number | null>(null);
 
-// Actions
 const openAddModal = () => {
     createForm.reset();
     showAddModal.value = true;
@@ -74,7 +70,6 @@ const cancelDelete = () => {
     showDeleteModal.value = false;
 };
 
-// Submit actions
 const submitCreate = () => {
     createForm.post('/sections', {
         onSuccess: () => {
@@ -109,7 +104,6 @@ const confirmDelete = () => {
     <Head title="Sections" />
     <AppLayout>
         <div class="p-4">
-            <!-- Header -->
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <h2 class="text-xl font-bold text-gray-800">🏫 Sections</h2>
                 <div class="flex items-center gap-2">
@@ -120,7 +114,6 @@ const confirmDelete = () => {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-x-auto rounded-lg shadow">
                 <table class="min-w-full table-auto text-left text-sm text-gray-700">
                     <thead class="bg-gray-100 text-xs font-semibold text-gray-600 uppercase">
@@ -148,7 +141,6 @@ const confirmDelete = () => {
                     </tbody>
                 </table>
             </div>
-            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in sections.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -169,7 +161,6 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <!-- Add Modal -->
         <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
                 <h3 class="mb-4 text-lg font-bold">➕ Add Section</h3>
@@ -197,7 +188,6 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <!-- Edit Modal -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
                 <h3 class="mb-4 text-lg font-bold">✏️ Edit Section</h3>
@@ -225,7 +215,6 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
                 <h3 class="mb-4 text-lg font-bold text-red-600">🗑️ Confirm Deletion</h3>

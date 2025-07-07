@@ -21,18 +21,13 @@ const props = defineProps<{
 const form = useForm({
     year_level_id: '',
     shared_subjects: [''],
-    major_subjects: {} as Record<number, string[]>, // section_id => [subjects]
+    major_subjects: {} as Record<number, string[]>,
 });
 
-// Filter sections based on selected year level
-const filteredSections = computed(() =>
-    props.sections.filter(s => Number(s.year_level_id) === Number(form.year_level_id))
-);
+const filteredSections = computed(() => props.sections.filter((s) => Number(s.year_level_id) === Number(form.year_level_id)));
 
-// Check if selected year level is SHS (Grade 11 or 12)
 const isSHS = computed(() => [5, 6].includes(Number(form.year_level_id)));
 
-// Reset fields when year level changes
 watch(
     () => form.year_level_id,
     () => {
@@ -41,10 +36,9 @@ watch(
         for (const section of filteredSections.value) {
             form.major_subjects[section.id] = [''];
         }
-    }
+    },
 );
 
-// Add/remove functions
 const addMajor = (sectionId: number) => form.major_subjects[sectionId].push('');
 const removeMajor = (sectionId: number, index: number) => form.major_subjects[sectionId].splice(index, 1);
 </script>
@@ -56,9 +50,8 @@ const removeMajor = (sectionId: number, index: number) => form.major_subjects[se
             <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Add Subjects</h1>
 
             <form @submit.prevent="form.post('/subjects')">
-                <!-- Year Level -->
                 <div class="mb-4">
-                    <label for="year_level" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Year Level</label>
+                    <label for="year_level" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Select Year Level</label>
                     <select
                         id="year_level"
                         v-model="form.year_level_id"
@@ -72,18 +65,27 @@ const removeMajor = (sectionId: number, index: number) => form.major_subjects[se
                     </div>
                 </div>
 
-                <!-- Major Subjects per Section -->
                 <div v-if="isSHS" class="space-y-6">
                     <div v-for="section in filteredSections" :key="section.id">
-                        <label class="block mb-2 text-sm font-bold text-gray-700 dark:text-white">Major Subjects - {{ section.name }}</label>
-                        <div v-for="(subject, index) in form.major_subjects[section.id]" :key="'major-' + section.id + '-' + index" class="mb-2 flex gap-2">
+                        <label class="mb-2 block text-sm font-bold text-gray-700 dark:text-white">Major Subjects - {{ section.name }}</label>
+                        <div
+                            v-for="(subject, index) in form.major_subjects[section.id]"
+                            :key="'major-' + section.id + '-' + index"
+                            class="mb-2 flex gap-2"
+                        >
                             <input
                                 v-model="form.major_subjects[section.id][index]"
                                 type="text"
                                 placeholder="e.g. CSS, HUMSS"
                                 class="w-full rounded border p-2 text-sm dark:bg-gray-700 dark:text-white"
                             />
-                            <button v-if="form.major_subjects[section.id].length > 1" @click.prevent="removeMajor(section.id, index)" class="text-red-500">✕</button>
+                            <button
+                                v-if="form.major_subjects[section.id].length > 1"
+                                @click.prevent="removeMajor(section.id, index)"
+                                class="text-red-500"
+                            >
+                                ✕
+                            </button>
                         </div>
                         <button @click.prevent="addMajor(section.id)" class="text-sm text-blue-600 hover:underline dark:text-blue-400">
                             + Add Major Subject for {{ section.name }}
@@ -91,7 +93,6 @@ const removeMajor = (sectionId: number, index: number) => form.major_subjects[se
                     </div>
                 </div>
 
-                <!-- Shared Subjects (shown once if SHS) -->
                 <div v-if="isSHS" class="mt-8 mb-6">
                     <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Shared Subjects</label>
                     <div v-for="(subject, index) in form.shared_subjects" :key="'shared-' + index" class="mb-2 flex gap-2">
@@ -101,14 +102,15 @@ const removeMajor = (sectionId: number, index: number) => form.major_subjects[se
                             placeholder="e.g. English"
                             class="w-full rounded border p-2 text-sm dark:bg-gray-700 dark:text-white"
                         />
-                        <button v-if="form.shared_subjects.length > 1" @click.prevent="form.shared_subjects.splice(index, 1)" class="text-red-500">✕</button>
+                        <button v-if="form.shared_subjects.length > 1" @click.prevent="form.shared_subjects.splice(index, 1)" class="text-red-500">
+                            ✕
+                        </button>
                     </div>
                     <button @click.prevent="form.shared_subjects.push('')" class="text-sm text-blue-600 hover:underline dark:text-blue-400">
                         + Add Shared Subject
                     </button>
                 </div>
 
-                <!-- Submit -->
                 <div class="mt-6 flex justify-end gap-4">
                     <Link href="/subjects" class="text-gray-600 hover:underline dark:text-gray-300">Cancel</Link>
                     <button

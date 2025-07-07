@@ -9,7 +9,6 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule): void
     {
-        // Add your scheduled commands here
         $schedule->command('notify:due-items')->dailyAt('07:00');
     }
 

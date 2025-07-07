@@ -15,9 +15,6 @@ use App\Models\StudentProficiencyResult;
 
 class ProficiencyTestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $tests = ProficiencyTest::with('yearLevel')->latest()->get();
@@ -101,7 +98,6 @@ class ProficiencyTestController extends Controller
         $user = Auth::user();
         $answers = $request->input('answers', []);
 
-        // Prevent double submission
         $alreadySubmitted = StudentProficiencyResult::where('user_id', $user->id)
             ->where('proficiency_test_id', $testId)
             ->exists();
@@ -120,7 +116,6 @@ class ProficiencyTestController extends Controller
             $isCorrect = null;
             $earned = 0;
 
-            // Normalize stored correct answer
             $correctAnswer = $question->answer_key;
 
             switch ($question->type) {

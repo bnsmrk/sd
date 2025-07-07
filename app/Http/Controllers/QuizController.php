@@ -36,7 +36,6 @@ class QuizController extends Controller
     $quizId = $request->input('quiz_id');
     $answers = $request->input('answers', []);
 
-    // ❌ Prevent double submission
     $alreadySubmitted = StudentQuizResult::where('user_id', $user->id)
         ->where('activity_id', $quizId)
         ->exists();

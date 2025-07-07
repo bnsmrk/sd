@@ -28,7 +28,6 @@ const breadcrumbs = [{ title: 'Enrollments', href: '/enroll' }];
 const showDeleteModal = ref(false);
 const deleteId = ref<number | null>(null);
 
-// Debounced search
 const search = ref(props.filters.search || '');
 watch(
     search,
@@ -60,7 +59,6 @@ const cancelDelete = () => {
     <Head title="Enrollments" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
-            <!-- Header -->
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-gray-800">📋 Enrollments</h2>
                 <div class="flex items-center gap-2">
@@ -71,7 +69,6 @@ const cancelDelete = () => {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="min-w-full text-left text-sm text-gray-700">
                     <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
@@ -117,7 +114,6 @@ const cancelDelete = () => {
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">🗑️ Confirm Deletion</h2>

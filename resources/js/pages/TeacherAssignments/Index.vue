@@ -67,7 +67,6 @@ function cancelDelete() {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-hidden rounded border shadow">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50 text-xs font-semibold text-gray-600">
@@ -102,7 +101,6 @@ function cancelDelete() {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.assignments.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -121,7 +119,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">🗑️ Confirm Deletion</h2>

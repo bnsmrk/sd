@@ -29,7 +29,6 @@ class SubmissionController extends Controller
     $data['activity_id'] = $activity->id;
     $data['user_id'] = auth()->id();
 
-    // Save uploaded file
     if ($request->hasFile('file')) {
         $data['file_path'] = $request->file('file')->store('essay_submissions', 'public');
     }
@@ -52,7 +51,7 @@ public function showEssaySubmissions(Request $request, Activity $activity)
         })
         ->latest()
         ->paginate(10)
-        ->withQueryString(); // Keeps search query when paginating
+        ->withQueryString();
 
     return Inertia::render('Activities/EssaySubmissions', [
         'activity' => $activity,
@@ -66,7 +65,6 @@ public function showEssaySubmissions(Request $request, Activity $activity)
 
 public function updateScore(Request $request, Submission $submission)
 {
-        Log::info('Updating score for submission ID: ' . $submission->id);
 
     $data = $request->validate([
         'score' => 'required|integer|min:0|max:100',
@@ -76,7 +74,6 @@ public function updateScore(Request $request, Submission $submission)
         'score' => $data['score'],
         'graded' => 'Graded',
     ]);
-    Log::info('Updated with score: ' . $data['score']);
 
     return redirect()->route('activities.essay.view', $submission->activity_id)
     ->with('success', 'Score saved.');

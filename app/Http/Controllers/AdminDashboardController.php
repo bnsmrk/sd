@@ -16,7 +16,6 @@ class AdminDashboardController extends Controller
             'teachers' => User::where('role', 'teacher')->count(),
             'admins' => User::where('role', 'admin')->count(),
         ],
-        // Example dummy data for chart — replace with real data
         'monthlyStats' => [
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr'],
             'students' => [30, 45, 60, 80],

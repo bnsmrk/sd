@@ -17,7 +17,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
-            <!-- Grid Container -->
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 <h1>ICT Dashboard</h1>
             </div>

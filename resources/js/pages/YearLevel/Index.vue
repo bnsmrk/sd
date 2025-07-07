@@ -5,7 +5,6 @@ import debounce from 'lodash/debounce';
 import { Check, Pencil, Plus, Save, Trash2, X } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
-// Props
 const props = defineProps<{
     yearLevels: {
         data: Array<{ id: number; name: string }>;
@@ -14,10 +13,8 @@ const props = defineProps<{
     filters: { search?: string };
 }>();
 
-// Breadcrumbs
 const breadcrumbs = [{ title: 'Year Levels', href: '/year-levels' }];
 
-// Search
 const search = ref(props.filters.search || '');
 
 watch(
@@ -27,17 +24,14 @@ watch(
     }, 300),
 );
 
-// Modal state
 const showAddModal = ref(false);
 const showEditModal = ref(false);
 const showDeleteModal = ref(false);
 
-// Form state
 const createForm = useForm({ name: '' });
 const editForm = useForm({ id: null as number | null, name: '' });
 const deleteId = ref<number | null>(null);
 
-// Open modals
 const openAddModal = () => {
     createForm.reset();
     showAddModal.value = true;
@@ -54,7 +48,6 @@ const openDeleteModal = (id: number) => {
     showDeleteModal.value = true;
 };
 
-// Submit handlers
 const createYearLevel = () => {
     createForm.post('/year-levels', {
         onSuccess: () => (showAddModal.value = false),
@@ -120,7 +113,6 @@ const deleteYearLevel = () => {
                     </tbody>
                 </table>
             </div>
-            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.yearLevels.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -139,7 +131,6 @@ const deleteYearLevel = () => {
             </div>
         </div>
 
-        <!-- Add Modal -->
         <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
                 <h3 class="mb-4 text-lg font-bold">➕ Add Year Level</h3>
@@ -163,7 +154,6 @@ const deleteYearLevel = () => {
             </div>
         </div>
 
-        <!-- Edit Modal -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
                 <h3 class="mb-4 text-lg font-bold">✏️ Edit Year Level</h3>
@@ -187,7 +177,6 @@ const deleteYearLevel = () => {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
                 <h3 class="mb-4 text-lg font-bold text-red-600">⚠️ Confirm Deletion</h3>

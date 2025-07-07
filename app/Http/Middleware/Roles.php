@@ -30,7 +30,6 @@ class Roles
         return $next($request);
     }
 
-    // Redirect based on user's actual role
     switch ($user->role) {
         case 'admin':
             return redirect()->route('dashboard');

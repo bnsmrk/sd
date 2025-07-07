@@ -3,7 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Check, Pencil, Plus, Save, Trash2, X } from 'lucide-vue-next';
 import { computed, reactive, ref, watch } from 'vue';
-// Props
 const props = defineProps<{
     subjects: {
         data: Array<{
@@ -24,13 +23,11 @@ const props = defineProps<{
     };
 }>();
 
-// === Modal State ===
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
 const showDeleteModal = ref(false);
 const deleteId = ref<number | null>(null);
 
-// === Create Form ===
 const createForm = reactive<{
     year_level_id: number | '';
     shared_subjects: string[];
@@ -45,7 +42,6 @@ const createForm = reactive<{
     processing: false,
 });
 
-// === Edit Form ===
 const editForm = reactive<{
     id: number | null;
     name: string;
@@ -60,17 +56,14 @@ const editForm = reactive<{
     processing: false,
 });
 
-// === Computed: Is Senior High ===
 const isSHS = computed(() => {
     const yl = props.yearLevels.find((yl) => yl.id === createForm.year_level_id);
     return yl?.name === 'Grade 11' || yl?.name === 'Grade 12';
 });
 
-// === Utilities ===
 const addTo = (arr: string[]) => arr.push('');
 const removeFrom = (arr: string[], index: number) => arr.splice(index, 1);
 
-// === Actions ===
 const openCreateModal = () => {
     showCreateModal.value = true;
     createForm.year_level_id = '';
@@ -147,7 +140,6 @@ watch(search, (value) => {
     <Head title="Subjects" />
     <AppLayout>
         <div class="p-4">
-            <!-- Header -->
             <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <h2 class="text-xl font-bold text-gray-800">📘 Subjects</h2>
                 <div class="flex items-center gap-2">
@@ -161,7 +153,6 @@ watch(search, (value) => {
                 </div>
             </div>
 
-            <!-- Subject Table -->
             <table class="min-w-full table-auto text-sm text-gray-700 shadow">
                 <thead class="bg-gray-100">
                     <tr>
@@ -203,12 +194,10 @@ watch(search, (value) => {
             </template>
         </div>
 
-        <!-- Create Modal -->
         <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
             <div class="w-full max-w-xl rounded bg-white p-6 shadow">
                 <h2 class="mb-4 text-lg font-bold">➕ Add Subject</h2>
 
-                <!-- Year Level -->
                 <div class="mb-4">
                     <label class="block font-semibold">Year Level</label>
                     <select v-model.number="createForm.year_level_id" class="w-full rounded border p-2">
@@ -218,7 +207,6 @@ watch(search, (value) => {
                     <div class="text-sm text-red-600">{{ createForm.errors.year_level_id }}</div>
                 </div>
 
-                <!-- Shared Subjects -->
                 <div class="mb-4">
                     <label class="block font-semibold">Shared Subjects</label>
                     <div v-for="(subject, index) in createForm.shared_subjects" :key="index" class="mb-2 flex gap-2">
@@ -234,7 +222,6 @@ watch(search, (value) => {
                     <button @click.prevent="addTo(createForm.shared_subjects)" class="text-blue-600 hover:underline">+ Add</button>
                 </div>
 
-                <!-- Major Subjects -->
                 <div class="mb-4" v-if="isSHS">
                     <label class="block font-semibold">Major Subjects</label>
                     <div v-for="(subject, index) in createForm.major_subjects" :key="index" class="mb-2 flex gap-2">
@@ -265,7 +252,6 @@ watch(search, (value) => {
             </div>
         </div>
 
-        <!-- Edit Modal -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
             <div class="w-full max-w-md rounded bg-white p-6 shadow">
                 <h2 class="mb-4 text-lg font-bold">✏️ Edit Subject</h2>
@@ -297,7 +283,6 @@ watch(search, (value) => {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
             <div class="w-full max-w-sm rounded bg-white p-6 shadow">
                 <h2 class="mb-4 text-lg font-bold text-red-600">🗑️ Confirm Deletion</h2>

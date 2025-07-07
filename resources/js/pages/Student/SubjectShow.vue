@@ -31,7 +31,7 @@ const goTo = (activity: { id: number; type: string }) => {
 
             <div v-for="mod in modules" :key="mod.id" class="space-y-2 rounded-xl border p-4">
                 <h2 class="text-lg font-semibold text-blue-700">{{ mod.title }}</h2>
-                
+
                 <ul class="space-y-1">
                     <li v-for="act in mod.activities" :key="act.id" class="cursor-pointer hover:underline" @click="goTo(act)">
                         {{ act.type.toUpperCase() }} – {{ act.title }} ({{ act.scheduled_at }})

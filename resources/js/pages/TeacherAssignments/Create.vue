@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, useForm , Link} from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ArrowLeft, BookOpen, Layers, Layout, Send, User } from 'lucide-vue-next';
 import { computed } from 'vue';
-import { ArrowLeft } from 'lucide-vue-next';
-import { User, Layers, Layout, BookOpen, Send } from 'lucide-vue-next';
 const props = defineProps<{
     teachers: Array<{ id: number; name: string }>;
     yearLevels: Array<{ id: number; name: string }>;
@@ -24,93 +23,82 @@ const filteredSubjects = computed(() => {
     const ylId = Number(form.year_level_id);
     const secId = Number(form.section_id);
 
-    // Filter shared or matched section subjects for the selected year level
     return props.subjects.filter((subject) => subject.year_level_id === ylId && (subject.section_id === null || subject.section_id === secId));
 });
 </script>
 
 <template>
-  <Head title="Assign Teacher" />
-  <AppLayout>
-    <div class="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-lg shadow dark:bg-gray-800">
-      <!-- Back Button -->
-      <div class="mb-6">
-        <Link
-          href="/teacher-assignments"
-          class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] shadow hover:bg-[#ffc60b]"
-        >
-          <ArrowLeft class="w-4 h-4" /> Back
-        </Link>
-      </div>
+    <Head title="Assign Teacher" />
+    <AppLayout>
+        <div class="mx-auto mt-10 max-w-3xl rounded-lg bg-white p-8 shadow dark:bg-gray-800">
+            <div class="mb-6">
+                <Link
+                    href="/teacher-assignments"
+                    class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] shadow hover:bg-[#ffc60b]"
+                >
+                    <ArrowLeft class="h-4 w-4" /> Back
+                </Link>
+            </div>
 
-      <!-- Form Title -->
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Assign Teacher</h1>
+            <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Assign Teacher</h1>
 
-      <!-- Form -->
-      <form @submit.prevent="form.post('/teacher-assignments')" class="space-y-6">
-        <div class="grid grid-cols-4 gap-4">
-          <!-- Teacher -->
-          <div>
-            <label class="flex items-center gap-1 mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              <User class="w-4 h-4" /> Teacher
-            </label>
-            <select v-model="form.user_id" required class="input-select">
-              <option value="">Select a Teacher</option>
-              <option v-for="t in props.teachers" :key="t.id" :value="t.id">{{ t.name }}</option>
-            </select>
-            <p v-if="form.errors.user_id" class="text-sm text-red-600 mt-1">{{ form.errors.user_id }}</p>
-          </div>
+            <form @submit.prevent="form.post('/teacher-assignments')" class="space-y-6">
+                <div class="grid grid-cols-4 gap-4">
+                    <div>
+                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
+                            <User class="h-4 w-4" /> Teacher
+                        </label>
+                        <select v-model="form.user_id" required class="input-select">
+                            <option value="">Select a Teacher</option>
+                            <option v-for="t in props.teachers" :key="t.id" :value="t.id">{{ t.name }}</option>
+                        </select>
+                        <p v-if="form.errors.user_id" class="mt-1 text-sm text-red-600">{{ form.errors.user_id }}</p>
+                    </div>
 
-          <!-- Year Level -->
-          <div>
-            <label class="flex items-center gap-1 mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              <Layers class="w-4 h-4" /> Year Level
-            </label>
-            <select v-model="form.year_level_id" required class="input-select">
-              <option value="">Select a Year Level</option>
-              <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
-            </select>
-            <p v-if="form.errors.year_level_id" class="text-sm text-red-600 mt-1">{{ form.errors.year_level_id }}</p>
-          </div>
+                    <div>
+                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
+                            <Layers class="h-4 w-4" /> Year Level
+                        </label>
+                        <select v-model="form.year_level_id" required class="input-select">
+                            <option value="">Select a Year Level</option>
+                            <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
+                        </select>
+                        <p v-if="form.errors.year_level_id" class="mt-1 text-sm text-red-600">{{ form.errors.year_level_id }}</p>
+                    </div>
 
-          <!-- Section -->
-          <div>
-            <label class="flex items-center gap-1 mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              <Layout class="w-4 h-4" /> Section
-            </label>
-            <select v-model="form.section_id" required class="input-select">
-              <option value="">Select a Section</option>
-              <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
-            </select>
-            <p v-if="form.errors.section_id" class="text-sm text-red-600 mt-1">{{ form.errors.section_id }}</p>
-          </div>
+                    <div>
+                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
+                            <Layout class="h-4 w-4" /> Section
+                        </label>
+                        <select v-model="form.section_id" required class="input-select">
+                            <option value="">Select a Section</option>
+                            <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
+                        </select>
+                        <p v-if="form.errors.section_id" class="mt-1 text-sm text-red-600">{{ form.errors.section_id }}</p>
+                    </div>
 
-          <!-- Subject -->
-          <div>
-            <label class="flex items-center gap-1 mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              <BookOpen class="w-4 h-4" /> Subject
-            </label>
-            <select v-model="form.subject_id" required class="input-select">
-              <option value="">Select a Subject</option>
-              <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
-            </select>
-            <p v-if="form.errors.subject_id" class="text-sm text-red-600 mt-1">{{ form.errors.subject_id }}</p>
-          </div>
+                    <div>
+                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
+                            <BookOpen class="h-4 w-4" /> Subject
+                        </label>
+                        <select v-model="form.subject_id" required class="input-select">
+                            <option value="">Select a Subject</option>
+                            <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
+                        </select>
+                        <p v-if="form.errors.subject_id" class="mt-1 text-sm text-red-600">{{ form.errors.subject_id }}</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="inline-flex items-center gap-2 rounded-lg bg-gray-800 px-8 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:bg-gray-800 dark:hover:bg-gray-700"
+                    >
+                        <Send class="h-4 w-4" /> Assign Teacher
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <!-- Submit -->
-        <div class="flex justify-end pt-4">
-          <button
-            type="submit"
-            :disabled="form.processing"
-            class="inline-flex items-center gap-2 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-8 py-2.5 dark:bg-gray-800 dark:hover:bg-gray-700"
-          >
-            <Send class="w-4 h-4" /> Assign Teacher
-          </button>
-        </div>
-      </form>
-    </div>
-  </AppLayout>
+    </AppLayout>
 </template>
-
-

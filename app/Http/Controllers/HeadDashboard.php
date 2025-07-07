@@ -14,12 +14,11 @@ class HeadDashboard extends Controller
     {
         $yearLevels = YearLevel::withCount(['students'])->get();
         $sectionCount = Section::count();
-        $teacherCount = User::where('role', 'teacher')->count(); 
+        $teacherCount = User::where('role', 'teacher')->count();
 
-        // Sample chart data: monthly student registration (replace with actual data)
         $chartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-        $barData = [40, 55, 32, 50, 70, 30, 90]; // example
-        $lineData = [30, 35, 25, 45, 60, 20, 80]; // example
+        $barData = [40, 55, 32, 50, 70, 30, 90];
+        $lineData = [30, 35, 25, 45, 60, 20, 80];
 
         return Inertia::render('Head/HeadDashboard', [
             'yearLevels' => $yearLevels,

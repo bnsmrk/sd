@@ -21,12 +21,10 @@ watch(
     }, 300),
 );
 
-// Modal States
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
 const showDeleteModal = ref(false);
 
-// Forms
 const createForm = useForm({
     name: '',
     email: '',
@@ -44,7 +42,6 @@ const editForm = useForm({
 
 const deleteId = ref<number | null>(null);
 
-// Actions
 const openCreateModal = () => {
     createForm.reset();
     showCreateModal.value = true;
@@ -134,8 +131,6 @@ const destroyItem = () => {
                 </tbody>
             </table>
 
-            <!-- Pagination -->
-            <!-- Pagination -->
             <div class="mt-6 flex flex-wrap justify-center gap-2">
                 <template v-for="(link, i) in props.users.links" :key="i">
                     <span
@@ -157,7 +152,6 @@ const destroyItem = () => {
                 </template>
             </div>
 
-            <!-- Create Modal -->
             <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
                 <div class="w-full max-w-md rounded bg-white p-6 shadow">
                     <h2 class="mb-4 text-lg font-bold">Create User</h2>
@@ -206,7 +200,6 @@ const destroyItem = () => {
                 </div>
             </div>
 
-            <!-- Edit Modal -->
             <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
                 <div class="w-full max-w-md rounded bg-white p-6 shadow">
                     <h2 class="mb-4 text-lg font-bold">Edit User</h2>
@@ -242,7 +235,6 @@ const destroyItem = () => {
                 </div>
             </div>
 
-            <!-- Delete Modal -->
             <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
                 <div class="w-full max-w-sm rounded bg-white p-6 shadow">
                     <h2 class="mb-4 text-lg font-bold">Confirm Deletion</h2>

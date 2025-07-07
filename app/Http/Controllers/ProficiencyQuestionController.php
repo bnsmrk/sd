@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ProficiencyQuestionController extends Controller
 {
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(ProficiencyTest $proficiencyTest)
 {
     $proficiencyTest->load('yearLevel', 'proficiencyQuestions');
@@ -41,9 +38,6 @@ class ProficiencyQuestionController extends Controller
 }
 
 
-    /**
-     * Store newly created/updated questions for a Proficiency Test.
-     */
    public function store(Request $request, ProficiencyTest $proficiencyTest)
 {
     $data = $request->all();
@@ -59,7 +53,7 @@ class ProficiencyQuestionController extends Controller
 
     $validator->validate();
 
-    $existingIds = $proficiencyTest->proficiencyQuestions()->pluck('id')->toArray(); // ✅ fixed
+    $existingIds = $proficiencyTest->proficiencyQuestions()->pluck('id')->toArray();
     $submittedIds = [];
 
     foreach ($data['questions'] as $q) {

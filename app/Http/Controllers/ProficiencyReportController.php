@@ -100,9 +100,7 @@ class ProficiencyReportController extends Controller
         $type      = $request->input('type', 'quiz');
 
         $resultsByActivity = [];
-        \Log::info('PDF Request Params', $request->all());
 
- \Log::info('PDF Export', compact('subjectId', 'moduleId', 'type'));
         if ($subjectId && $moduleId && $type) {
             $activities = Activity::with(['studentQuizResults.user'])
                 ->where('module_id', $moduleId)

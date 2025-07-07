@@ -20,7 +20,6 @@ const success = ref<string | null>(null);
 const danger = ref<string | null>(null);
 const warning = ref<string | null>(null);
 
-// Cast flash to known structure
 watch(
     () => page.props.flash as Record<string, string>,
     (flash) => {

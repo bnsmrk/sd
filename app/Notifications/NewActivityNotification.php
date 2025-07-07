@@ -16,13 +16,9 @@ class NewActivityNotification extends Notification
 
     public function __construct(Activity $activity)
     {
-        // Reload with fresh data to make sure subject_id is present
         $this->activity = Activity::find($activity->id);
-        $this->activity = Activity::with('subject')->find($activity->id); // ✅ force reload with relationship
-        // \Log::info('Notification subject_id check', [
-        //     'activity_id' => $this->activity->id,
-        //     'subject_id' => $this->activity->subject_id,
-        // ]);
+        $this->activity = Activity::with('subject')->find($activity->id);
+
     }
 
     public function via(object $notifiable): array
@@ -32,11 +28,7 @@ class NewActivityNotification extends Notification
 
     public function toDatabase(object $notifiable): DatabaseMessage
     {
-        // Log for debugging
-        // \Log::info('Notification subject_id check', [
-        //     'activity_id' => $this->activity->id,
-        //     'subject_id' => $this->activity->module?->subject_id,
-        // ]);
+
 
 
         return new DatabaseMessage([

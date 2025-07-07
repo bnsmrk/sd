@@ -131,9 +131,7 @@ const canGeneratePdf = computed(() => {
         <div class="mx-auto max-w-full space-y-6 px-6 py-8">
             <h1 class="text-3xl font-bold text-gray-800">📊 Proficiency Report</h1>
 
-            <!-- Filter Row -->
             <div class="grid grid-cols-1 items-end gap-4 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
-                <!-- Year Level -->
                 <div>
                     <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <GraduationCap class="h-4 w-4" /> Year Level </label>
                     <select v-model="selectedYearLevel" class="w-full rounded border px-3 py-2">
@@ -142,7 +140,6 @@ const canGeneratePdf = computed(() => {
                     </select>
                 </div>
 
-                <!-- Section -->
                 <div>
                     <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <Users class="h-4 w-4" /> Section </label>
                     <select v-model="selectedSection" class="w-full rounded border px-3 py-2">
@@ -151,7 +148,6 @@ const canGeneratePdf = computed(() => {
                     </select>
                 </div>
 
-                <!-- Subject -->
                 <div>
                     <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <Book class="h-4 w-4" /> Subject </label>
                     <select v-model="selectedSubject" class="w-full rounded border px-3 py-2">
@@ -160,7 +156,6 @@ const canGeneratePdf = computed(() => {
                     </select>
                 </div>
 
-                <!-- Module -->
                 <div>
                     <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <Layers class="h-4 w-4" /> Module </label>
                     <select v-model="selectedModule" class="w-full rounded border px-3 py-2">
@@ -169,7 +164,6 @@ const canGeneratePdf = computed(() => {
                     </select>
                 </div>
 
-                <!-- Type -->
                 <div>
                     <label class="flex items-center gap-1 text-sm font-semibold text-gray-700"> <ListChecks class="h-4 w-4" /> Test Type </label>
                     <select v-model="selectedType" class="w-full rounded border px-3 py-2">
@@ -178,7 +172,6 @@ const canGeneratePdf = computed(() => {
                     </select>
                 </div>
 
-                <!-- Generate Button -->
                 <div>
                     <button @click="applyFilters" class="w-full rounded bg-blue-600 px-4 py-2 whitespace-nowrap text-white hover:bg-blue-700">
                         Generate
@@ -186,14 +179,12 @@ const canGeneratePdf = computed(() => {
                 </div>
             </div>
 
-            <!-- PDF Button -->
             <div v-if="canGeneratePdf" class="mt-4 flex justify-end">
                 <a :href="pdfUrl" target="_blank" class="inline-flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
                     🧾 Generate PDF
                 </a>
             </div>
 
-            <!-- Results -->
             <div v-if="props.resultsByActivity.length > 0" class="mt-8 space-y-10">
                 <div v-for="group in props.resultsByActivity" :key="group.activity_title">
                     <h2 class="text-xl font-semibold text-blue-700">{{ group.activity_title }}</h2>

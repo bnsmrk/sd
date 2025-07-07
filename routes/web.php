@@ -29,34 +29,35 @@ use App\Http\Controllers\TeacherAssignmentController;
 use App\Http\Controllers\PrincipalLessonPlanController;
 use App\Http\Controllers\ProficiencyQuestionController;
 use App\Http\Controllers\PrincipalProficiencyReportController;
+
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
 Route::get('dashboard', [AdminDashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:admin'])
-    ->name('dashboard');
+->name('dashboard');
 
-    Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/notifications', function () {
         return response()->json(Auth::user()->notifications);
+});
+
+Route::post('/notifications/mark-as-read', function () {
+    Auth::user()->unreadNotifications->markAsRead();
+    return response()->json(['status' => 'ok']);
     });
+});
 
-    Route::post('/notifications/mark-as-read', function () {
-        Auth::user()->unreadNotifications->markAsRead();
-        return response()->json(['status' => 'ok']);
-        });
-    });
-
- Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
-    ->middleware(['auth', 'verified', 'role:teacher'])
-    ->name('teacher.dashboard');
+Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
+->middleware(['auth', 'verified', 'role:teacher'])
+->name('teacher.dashboard');
 
 
 
-    Route::get('principal-dashboard', [PrincipalDashboard::class, 'index'])
-    ->middleware(['auth', 'verified', 'role:principal'])
-    ->name('principal.dashboard');
+Route::get('principal-dashboard', [PrincipalDashboard::class, 'index'])
+->middleware(['auth', 'verified', 'role:principal'])
+->name('principal.dashboard');
 
 
 
@@ -82,7 +83,7 @@ Route::get('/ict-dashboard', [IctDashboard::class, 'index'])
 Route::get('/students-proficiency-result/export', [StudentsProficiencyResult::class, 'exportPdf']);
 
 
-
+//teacher routes
 Route::middleware('role:teacher')->group(function () {
     Route::resource('materials', MaterialController::class);
     Route::resource('activities', ActivityController::class);
@@ -107,6 +108,7 @@ Route::middleware('role:teacher')->group(function () {
 
 });
 
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/principal-students-proficiency', [PrincipalProficiencyReportController::class, 'index'])->name('principal.proficiency.index');
     Route::get('/principal-students-proficiency/pdf', [PrincipalProficiencyReportController::class, 'exportPdf'])->name('principal.proficiency.pdf');
@@ -118,6 +120,7 @@ Route::get('/principal-teachers-lesson-plans', [PrincipalLessonPlanController::c
 Route::post('/principal-teachers-lesson-plans/comment', [PrincipalLessonPlanController::class, 'storeComment'])->middleware('auth');
 
 
+// admin routes
 Route::middleware('role:admin')->group(function () {
     Route::resource('year-levels', YearLevelController::class);
     Route::resource('sections', SectionController::class);
@@ -128,11 +131,14 @@ Route::middleware('role:admin')->group(function () {
 });
 
 
+// head routes
 Route::middleware('role:head')->group(function () {
     Route::resource('proficiency-test', ProficiencyTestController::class);
     Route::resource('proficiency-result', StudentsProficiencyResult::class);
 });
 
+
+//student routes
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/my-subjects', [StudentSubjectController::class, 'index'])->name('student.subjects');
     Route::get('/subjects/{subject}', [StudentSubjectController::class, 'show'])->name('student.subject.show');

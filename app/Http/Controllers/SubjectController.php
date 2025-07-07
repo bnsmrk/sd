@@ -18,7 +18,7 @@ class SubjectController extends Controller
         $query->where('name', 'like', '%' . $request->search . '%');
     }
 
-    $subjects = $query->paginate(5)->withQueryString(); // keep search param on pagination
+    $subjects = $query->paginate(5)->withQueryString();
 
     return Inertia::render('Subject/Index', [
         'subjects' => $subjects,
@@ -84,7 +84,6 @@ class SubjectController extends Controller
         $yearLevel = YearLevel::findOrFail($request->year_level_id);
         $isSHS = in_array($yearLevel->name, ['Grade 11', 'Grade 12']);
 
-        // Prevent duplicates for Grade 7–10
         if (!$isSHS) {
             $exists = Subject::where('year_level_id', $request->year_level_id)
                 ->whereNull('section_id')

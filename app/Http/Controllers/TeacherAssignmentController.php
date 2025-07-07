@@ -53,7 +53,7 @@ class TeacherAssignmentController extends Controller
         'teachers' => User::where('role', 'teacher')->select('id', 'name')->get(),
         'yearLevels' => YearLevel::select('id', 'name')->get(),
         'sections' => Section::select('id', 'name', 'year_level_id')->get(),
-        'subjects' => Subject::select('id', 'name', 'year_level_id', 'section_id')->get(), // include section_id
+        'subjects' => Subject::select('id', 'name', 'year_level_id', 'section_id')->get(),
     ]);
     }
 
@@ -66,7 +66,6 @@ class TeacherAssignmentController extends Controller
         'subject_id' => 'required|exists:subjects,id',
     ]);
 
-    // Check for existing assignment
     $exists = TeacherAssignment::where('year_level_id', $request->year_level_id)
         ->where('section_id', $request->section_id)
         ->where('subject_id', $request->subject_id)
@@ -110,7 +109,6 @@ class TeacherAssignmentController extends Controller
         'subject_id' => 'required|exists:subjects,id',
     ]);
 
-    // Check if another assignment already exists
     $exists = TeacherAssignment::where('year_level_id', $request->year_level_id)
         ->where('section_id', $request->section_id)
         ->where('subject_id', $request->subject_id)

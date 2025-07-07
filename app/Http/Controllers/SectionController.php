@@ -19,7 +19,7 @@ class SectionController extends Controller
         )
         ->orderBy('id')
         ->paginate(5)
-        ->withQueryString(); // keeps search in the URL when paginating
+        ->withQueryString();
 
     $yearLevels = YearLevel::all();
 

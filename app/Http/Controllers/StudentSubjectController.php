@@ -74,13 +74,12 @@ public function show($id)
         ];
     });
 
-    // ✅ Calculate actual completion % for this module
     $moduleProgress = $activityCount > 0 ? ($completedCount / $activityCount) * 100 : 0;
 
     return [
         'id' => $mod->id,
         'title' => $mod->title,
-        'progress' => round($moduleProgress, 2), // ✅ real module progress, not subject share
+        'progress' => round($moduleProgress, 2),
         'materials' => $mod->materials->map(fn ($mat) => [
             'id' => $mat->id,
             'title' => $mat->title,

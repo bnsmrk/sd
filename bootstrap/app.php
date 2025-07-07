@@ -26,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => Roles::class,
 
         ]);
-        
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

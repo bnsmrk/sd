@@ -54,7 +54,6 @@ class MaterialController extends Controller
             ->with(['yearLevel', 'subject'])
             ->get();
 
-        // Create subject-section pairs
         $subjectSectionMap = $assignments->map(function ($assignment) {
             return [
                 'section_id' => $assignment->section_id,
@@ -86,11 +85,11 @@ class MaterialController extends Controller
         'section_id' => 'nullable|exists:sections,id',
     ]);
 
-    $user = Auth::user();
-    $year_level_id = null;
-    $section_id = null;
-    $subject_id = null;
-    $module_id = null;
+        $user = Auth::user();
+        $year_level_id = null;
+        $section_id = null;
+        $subject_id = null;
+        $module_id = null;
 
     if ($request->type === 'material') {
         $module = Module::findOrFail($request->module_id);
@@ -145,9 +144,8 @@ class MaterialController extends Controller
 
    public function edit(Material $material)
 {
-    \Log::info('EDIT page hit: material id=' . $material->id);
 
-    $user = Auth::user(); // ✅ fix: define $user
+    $user = Auth::user();
 
     $assignments = $this->getTeacherAssignments();
 
@@ -160,7 +158,6 @@ class MaterialController extends Controller
         ->with(['yearLevel', 'subject'])
         ->get();
 
-    // ✅ Corrected subject-section map using $assignments, not $user
     $subjectSectionMap = $assignments->map(fn ($assignment) => [
         'section_id' => $assignment->section_id,
         'subject_id' => $assignment->subject_id,
@@ -201,7 +198,6 @@ class MaterialController extends Controller
         abort(403, 'Unauthorized to update this material.');
     }
 
-    \Log::info('Updating material', $request->all());
 
     $material->update([
         'title' => $request->title,

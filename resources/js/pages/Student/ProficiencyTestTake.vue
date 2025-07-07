@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
 import { router } from '@inertiajs/vue3';
+import { ArrowLeft, ArrowRight, BookOpen, Calendar, Check, Eye, FileText } from 'lucide-vue-next';
 import { computed, nextTick, reactive, ref, watch, watchEffect } from 'vue';
-import { ArrowLeft, ArrowRight, Check, Eye, Send, BookOpen, FileText, Calendar, ListOrdered } from 'lucide-vue-next';
 const props = defineProps<{
     test: {
         id: number;
@@ -63,7 +63,6 @@ function isAnswered(id: number): boolean {
     return Array.isArray(a) ? a.length > 0 : !!a;
 }
 
-// Update scroll function
 function scrollToQuestion(id: number) {
     nextTick(() => {
         const el = document.getElementById(`question-${id}`);
@@ -76,7 +75,6 @@ function scrollToQuestion(id: number) {
     });
 }
 
-// Calculate the page number for a specific question ID
 function getPageForQuestion(id: number): number {
     return Math.ceil((props.test.questions.findIndex((q) => q.id === id) + 1) / questionsPerPage);
 }
@@ -100,9 +98,7 @@ const selectedQuestionId = ref<number | null>(null);
 
 watch(selectedQuestionId, (id) => {
     if (id !== null) {
-        // Scroll to the selected question
         scrollToQuestion(id);
-        // Dynamically set the page based on the question ID
         const page = getPageForQuestion(id);
         if (page !== currentPage.value) {
             currentPage.value = page;
@@ -113,37 +109,30 @@ watch(selectedQuestionId, (id) => {
 
 <template>
     <AppLayoutStudent>
-        <div class="container mx-auto max-w-6xl px-6 py-8 bg-gradient-to-b from-pink-50 via-white to-blue-50 min-h-screen">
-            <!-- Header -->
+        <div class="container mx-auto min-h-screen max-w-6xl bg-gradient-to-b from-pink-50 via-white to-blue-50 px-6 py-8">
             <div class="mb-6">
-                <h1 class="text-3xl font-bold text-indigo-900 flex items-center gap-2 mb-1">
-                    <BookOpen class="w-6 h-6" /> {{ test.title }}
-                </h1>
-                <p class="text-sm text-gray-600 flex items-center gap-4">
-    <span class="flex items-center gap-1">
-        <FileText class="w-4 h-4 text-indigo-600" /> <span class="capitalize font-semibold">{{ test.type }}</span>
-    </span>
-    <span class="flex items-center gap-1">
-        <Calendar class="w-4 h-4 text-indigo-600" /> {{ test.scheduled_at }}
-    </span>
-</p>
-
+                <h1 class="mb-1 flex items-center gap-2 text-3xl font-bold text-indigo-900"><BookOpen class="h-6 w-6" /> {{ test.title }}</h1>
+                <p class="flex items-center gap-4 text-sm text-gray-600">
+                    <span class="flex items-center gap-1">
+                        <FileText class="h-4 w-4 text-indigo-600" /> <span class="font-semibold capitalize">{{ test.type }}</span>
+                    </span>
+                    <span class="flex items-center gap-1"> <Calendar class="h-4 w-4 text-indigo-600" /> {{ test.scheduled_at }} </span>
+                </p>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-8">
-                <!-- Sidebar Navigator -->
-                <aside v-if="!previewMode" class="w-full md:max-w-[220px] sticky top-20">
-                    <div class="rounded-xl border bg-white shadow-md p-4">
-                        <h3 class="text-center text-sm font-bold text-gray-700 mb-4">🔢 Question Navigator</h3>
+            <div class="flex flex-col gap-8 md:flex-row">
+                <aside v-if="!previewMode" class="sticky top-20 w-full md:max-w-[220px]">
+                    <div class="rounded-xl border bg-white p-4 shadow-md">
+                        <h3 class="mb-4 text-center text-sm font-bold text-gray-700">🔢 Question Navigator</h3>
                         <div class="space-y-3">
-                            <div v-for="(group, gIndex) in groupedButtons" :key="gIndex" class="grid grid-cols-5 gap-2 justify-items-center">
+                            <div v-for="(group, gIndex) in groupedButtons" :key="gIndex" class="grid grid-cols-5 justify-items-center gap-2">
                                 <label
                                     v-for="(qid, index) in group"
                                     :key="qid"
-                                    class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer"
+                                    class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-xs font-semibold transition-all duration-300"
                                     :class="{
                                         'bg-green-500 text-white hover:bg-green-600': isAnswered(qid),
-                                        'bg-red-400 text-white hover:bg-red-500': !isAnswered(qid)
+                                        'bg-red-400 text-white hover:bg-red-500': !isAnswered(qid),
                                     }"
                                 >
                                     <input type="radio" v-model="selectedQuestionId" :value="qid" class="hidden" />
@@ -154,9 +143,7 @@ watch(selectedQuestionId, (id) => {
                     </div>
                 </aside>
 
-                <!-- Main Test Content -->
                 <section class="flex-1">
-                    <!-- Form Mode -->
                     <form v-if="!previewMode" @submit.prevent="previewAnswers">
                         <div
                             v-for="(q, index) in paginatedQuestions"
@@ -168,13 +155,8 @@ watch(selectedQuestionId, (id) => {
                                 {{ (currentPage - 1) * questionsPerPage + index + 1 }}. {{ q.question }}
                             </p>
 
-                            <!-- Multiple Choice -->
                             <div v-if="q.type === 'multiple_choice'" class="space-y-3">
-                                <div
-                                    v-for="(option, idx) in getOptions(q.options)"
-                                    :key="idx"
-                                    class="flex items-center space-x-3"
-                                >
+                                <div v-for="(option, idx) in getOptions(q.options)" :key="idx" class="flex items-center space-x-3">
                                     <input
                                         type="radio"
                                         :id="`q-${q.id}-opt-${idx}`"
@@ -187,13 +169,8 @@ watch(selectedQuestionId, (id) => {
                                 </div>
                             </div>
 
-                            <!-- Checkboxes -->
                             <div v-else-if="q.type === 'checkboxes'" class="space-y-3">
-                                <div
-                                    v-for="(option, idx) in getOptions(q.options)"
-                                    :key="idx"
-                                    class="flex items-center space-x-3"
-                                >
+                                <div v-for="(option, idx) in getOptions(q.options)" :key="idx" class="flex items-center space-x-3">
                                     <input
                                         type="checkbox"
                                         class="accent-pink-600"
@@ -216,7 +193,6 @@ watch(selectedQuestionId, (id) => {
                                 </div>
                             </div>
 
-                            <!-- True/False -->
                             <div v-else-if="q.type === 'true_false'" class="space-x-6">
                                 <label class="inline-flex items-center space-x-2">
                                     <input type="radio" :name="'q-' + q.id" value="true" class="accent-green-600" v-model="answers[q.id]" />
@@ -228,7 +204,6 @@ watch(selectedQuestionId, (id) => {
                                 </label>
                             </div>
 
-                            <!-- Essay -->
                             <div v-else-if="q.type === 'essay'">
                                 <textarea
                                     rows="4"
@@ -238,7 +213,6 @@ watch(selectedQuestionId, (id) => {
                                 ></textarea>
                             </div>
 
-                            <!-- Fill in the Blank -->
                             <div v-else-if="q.type === 'fill_in_blank'">
                                 <input
                                     type="text"
@@ -251,62 +225,53 @@ watch(selectedQuestionId, (id) => {
                             <div v-else class="text-sm text-red-600">⚠ Unknown question type: {{ q.type }}</div>
                         </div>
 
-                        <!-- Pagination -->
-                        <div class="mt-4 flex justify-between items-center">
+                        <div class="mt-4 flex items-center justify-between">
                             <button
                                 v-if="currentPage > 1"
                                 class="inline-flex items-center gap-2 rounded bg-gray-200 px-5 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300"
                                 @click.prevent="currentPage--"
                             >
-                                <ArrowLeft class="w-4 h-4" /> Previous
+                                <ArrowLeft class="h-4 w-4" /> Previous
                             </button>
                             <button
                                 v-if="currentPage < totalPages"
                                 class="inline-flex items-center gap-2 rounded bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
                                 @click.prevent="currentPage++"
                             >
-                                Next <ArrowRight class="w-4 h-4" />
+                                Next <ArrowRight class="h-4 w-4" />
                             </button>
                         </div>
 
-                        <!-- Done Button -->
                         <div class="mt-8 text-right">
                             <button
                                 type="submit"
-                                class="inline-flex items-center gap-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 px-6 py-3 text-white text-lg font-medium shadow-md"
+                                class="inline-flex items-center gap-2 rounded-lg bg-yellow-500 px-6 py-3 text-lg font-medium text-white shadow-md hover:bg-yellow-600"
                             >
-                                <Eye class="w-5 h-5" /> Preview Answers
+                                <Eye class="h-5 w-5" /> Preview Answers
                             </button>
                         </div>
                     </form>
 
-                    <!-- Preview -->
                     <div v-else class="space-y-6 pt-6">
-                        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
-                            <Eye class="w-6 h-6" /> Review Your Answers
-                        </h2>
-                        <div
-                            v-for="q in props.test.questions"
-                            :key="q.id"
-                            class="rounded-lg border bg-white p-5 shadow-sm"
-                        >
+                        <h2 class="mb-4 flex items-center gap-2 text-2xl font-bold text-gray-700"><Eye class="h-6 w-6" /> Review Your Answers</h2>
+                        <div v-for="q in props.test.questions" :key="q.id" class="rounded-lg border bg-white p-5 shadow-sm">
                             <p class="mb-1 text-base font-medium text-indigo-900">Q: {{ q.question }}</p>
                             <p class="text-gray-600">
                                 Answer: <span class="font-semibold">{{ formatAnswer(answers[q.id]) }}</span>
                             </p>
                         </div>
-                        <div class="flex justify-end gap-4 mt-6">
+                        <div class="mt-6 flex justify-end gap-4">
                             <button
                                 class="inline-flex items-center gap-2 rounded bg-gray-500 px-6 py-2 text-white hover:bg-gray-600"
                                 @click="previewMode = false"
                             >
-                                <ArrowLeft class="w-4 h-4" /> Back
+                                <ArrowLeft class="h-4 w-4" /> Back
                             </button>
                             <button
                                 class="inline-flex items-center gap-2 rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
                                 @click="submitAnswers"
                             >
-                                <Check class="w-5 h-5" /> Confirm & Submit
+                                <Check class="h-5 w-5" /> Confirm & Submit
                             </button>
                         </div>
                     </div>
@@ -315,4 +280,3 @@ watch(selectedQuestionId, (id) => {
         </div>
     </AppLayoutStudent>
 </template>
-

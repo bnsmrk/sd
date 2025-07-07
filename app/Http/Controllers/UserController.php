@@ -10,10 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    // UserController.php
+
 public function index(Request $request)
 {
     $query = User::query()->whereIn('role', ['teacher', 'ict', 'head']);

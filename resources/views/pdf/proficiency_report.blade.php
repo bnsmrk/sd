@@ -76,7 +76,7 @@
 
 <body>
 
-    <!-- Header -->
+
     <div class="header">
         <img src="{{ public_path('images/lmslogoo.png') }}" alt="School Logo" class="logo">
         <div class="header-text">
@@ -86,7 +86,7 @@
     </div>
 
 
-    <!-- Report Data -->
+
     @forelse ($resultsByActivity as $group)
         <h2>{{ $group['activity_title'] }}</h2>
         <table>

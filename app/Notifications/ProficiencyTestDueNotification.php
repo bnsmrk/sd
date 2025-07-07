@@ -26,7 +26,7 @@ class ProficiencyTestDueNotification extends Notification
     return (new \Illuminate\Notifications\Messages\MailMessage)
         ->subject('Proficiency Test Due Today: ' . $this->test->title)
         ->line('A proficiency test is due today: ' . $this->test->title)
-        ->action('Take Test', url('/student-dashboard')); // ✅ direct URL
+        ->action('Take Test', url('/student-dashboard'));
 }
 
     /**

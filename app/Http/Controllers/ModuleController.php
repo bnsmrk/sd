@@ -37,12 +37,10 @@ class ModuleController extends Controller
     {
         $user = Auth::user();
 
-        // ✅ Define assignments first
         $assignments = $user->teacherAssignments()
             ->with(['yearLevel', 'section', 'subject'])
             ->get();
 
-        // ✅ Then group by year level
         $grouped = $assignments->groupBy(fn($a) => $a->yearLevel->id)->map(function ($items, $yearLevelId) {
             $yearLevel = $items->first()->yearLevel;
 
@@ -80,12 +78,10 @@ class ModuleController extends Controller
             'subject_id' => 'required|exists:subjects,id',
         ]);
 
-        // Check if the user is authenticated
         if (!Auth::check()) {
             abort(403, 'Unauthorized action.');
         }
 
-            // Make sure the teacher is assigned to this combination
             $isAssigned = Auth::user()->teacherAssignments()
                 ->where('year_level_id', $validated['year_level_id'])
                 ->where('section_id', $validated['section_id'])

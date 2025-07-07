@@ -33,14 +33,12 @@ const isSHS = computed(() => {
             <h1 class="text-xl font-bold">Edit Subject</h1>
 
             <form @submit.prevent="form.put(`/subjects/${props.subject.id}`)">
-                <!-- Subject Name -->
                 <div>
                     <label class="block font-medium">Subject Name</label>
                     <input v-model="form.name" class="w-full rounded border p-2" required />
                     <div v-if="form.errors.name" class="text-sm text-red-600">{{ form.errors.name }}</div>
                 </div>
 
-                <!-- Year Level -->
                 <div>
                     <label class="block font-medium">Year Level</label>
                     <select v-model="form.year_level_id" class="w-full rounded border p-2" required>
@@ -50,7 +48,6 @@ const isSHS = computed(() => {
                     <div v-if="form.errors.year_level_id" class="text-sm text-red-600">{{ form.errors.year_level_id }}</div>
                 </div>
 
-                <!-- Section (only shown if SHS) -->
                 <div v-if="isSHS && props.subject.section">
                     <label class="block font-medium">Section</label>
                     <div class="rounded border bg-gray-100 px-3 py-2 text-sm text-gray-700">
@@ -58,7 +55,6 @@ const isSHS = computed(() => {
                     </div>
                 </div>
 
-                <!-- Submit -->
                 <div>
                     <button class="mt-4 w-full rounded bg-blue-600 py-2 text-white" :disabled="form.processing">Update Subject</button>
                 </div>

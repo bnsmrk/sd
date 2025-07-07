@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { router } from '@inertiajs/vue3';
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
-import { Check, Eye, ArrowLeft, ArrowRight, FileText, ScrollText } from 'lucide-vue-next';
+import { router } from '@inertiajs/vue3';
+import { ArrowLeft, ArrowRight, Check, Eye } from 'lucide-vue-next';
 import { computed, nextTick, reactive, ref, watch, watchEffect } from 'vue';
 
 const props = defineProps<{
@@ -26,7 +26,6 @@ const currentPage = ref(1);
 const questionsPerPage = 5;
 const selectedQuestionId = ref<number | null>(null);
 
-// Initialize checkboxes
 watchEffect(() => {
     props.quiz.questions.forEach((q) => {
         if (q.type === 'checkboxes' && !Array.isArray(answers[q.id])) {
@@ -56,7 +55,6 @@ function isAnswered(id: number): boolean {
     return Array.isArray(a) ? a.length > 0 : !!a;
 }
 
-// Update scroll function
 function scrollToQuestion(id: number) {
     nextTick(() => {
         const el = document.getElementById(`question-${id}`);
@@ -68,7 +66,6 @@ function scrollToQuestion(id: number) {
     });
 }
 
-// Calculate the page number for a specific question ID
 function getPageForQuestion(id: number): number {
     return Math.ceil((props.quiz.questions.findIndex((q) => q.id === id) + 1) / questionsPerPage);
 }
@@ -89,12 +86,9 @@ const groupedButtons = computed(() => {
     return groups;
 });
 
-// Handle question selection and page navigation
 watch(selectedQuestionId, (id) => {
     if (id !== null) {
-        // Scroll to the selected question
         scrollToQuestion(id);
-        // Dynamically set the page based on the question ID
         const page = getPageForQuestion(id);
         if (page !== currentPage.value) {
             currentPage.value = page;
@@ -106,7 +100,6 @@ watch(selectedQuestionId, (id) => {
 <template>
     <AppLayoutStudent>
         <div class="container mx-auto max-w-6xl px-6 py-8">
-            <!-- Header -->
             <div class="mb-6">
                 <h1 class="mb-2 text-3xl font-bold text-primary">{{ quiz.title }}</h1>
                 <p class="text-sm text-gray-600">
@@ -115,12 +108,10 @@ watch(selectedQuestionId, (id) => {
             </div>
 
             <div class="flex flex-col gap-8 md:flex-row">
-                <!-- Sidebar Navigator -->
                 <aside v-if="!previewMode" class="w-full md:sticky md:top-20 md:ml-6 md:max-w-[200px]">
                     <div class="rounded-lg border bg-white p-3 shadow-sm">
                         <h3 class="mb-4 text-center text-sm font-semibold text-gray-700">Question Navigator</h3>
 
-                        <!-- Scrollable container on mobile, grid on desktop -->
                         <div class="overflow-x-auto md:overflow-visible">
                             <div class="space-y-3">
                                 <div v-for="(group, gIndex) in groupedButtons" :key="gIndex" class="grid grid-cols-5 justify-items-center gap-2">
@@ -142,9 +133,7 @@ watch(selectedQuestionId, (id) => {
                     </div>
                 </aside>
 
-                <!-- Main Test Area -->
                 <section class="flex-1">
-                    <!-- Form Mode -->
                     <form v-if="!previewMode" @submit.prevent="previewAnswers">
                         <div
                             v-for="(q, index) in paginatedQuestions"
@@ -156,7 +145,6 @@ watch(selectedQuestionId, (id) => {
                                 {{ (currentPage - 1) * questionsPerPage + index + 1 }}. {{ q.question }}
                             </p>
 
-                            <!-- Multiple Choice -->
                             <div v-if="q.type === 'multiple_choice'" class="space-y-3">
                                 <div v-for="(option, index) in JSON.parse(q.options || '[]')" :key="index" class="flex items-center space-x-4">
                                     <input
@@ -171,7 +159,6 @@ watch(selectedQuestionId, (id) => {
                                 </div>
                             </div>
 
-                            <!-- Checkboxes -->
                             <div v-else-if="q.type === 'checkboxes'" class="space-y-3">
                                 <div v-for="(option, index) in JSON.parse(q.options || '[]')" :key="index" class="flex items-center space-x-4">
                                     <input
@@ -196,7 +183,6 @@ watch(selectedQuestionId, (id) => {
                                 </div>
                             </div>
 
-                            <!-- True/False -->
                             <div v-else-if="q.type === 'true_false'" class="flex space-x-8">
                                 <label class="flex items-center space-x-2">
                                     <input type="radio" :name="'q-' + q.id" value="true" class="accent-green-600" v-model="answers[q.id]" />
@@ -208,7 +194,6 @@ watch(selectedQuestionId, (id) => {
                                 </label>
                             </div>
 
-                            <!-- Essay -->
                             <div v-else-if="q.type === 'essay'">
                                 <textarea
                                     rows="4"
@@ -218,7 +203,6 @@ watch(selectedQuestionId, (id) => {
                                 ></textarea>
                             </div>
 
-                            <!-- Fill in the Blank -->
                             <div v-else-if="q.type === 'fill_in_blank'">
                                 <input
                                     type="text"
@@ -231,38 +215,33 @@ watch(selectedQuestionId, (id) => {
                             <div v-else class="text-sm text-red-600">Unknown question type: {{ q.type }}</div>
                         </div>
 
-                        <!-- Pagination -->
-<div class="mt-4 flex justify-between">
-    <button
-        v-if="currentPage > 1"
-        class="inline-flex items-center gap-2 rounded bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-400"
-        @click.prevent="currentPage--"
-    >
-        <ArrowLeft class="h-4 w-4" /> Previous
-    </button>
-    <button
-        v-if="currentPage < totalPages"
-        class="inline-flex items-center gap-2 rounded bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600"
-        @click.prevent="currentPage++"
-    >
-        Next <ArrowRight class="h-4 w-4" />
-    </button>
-</div>
+                        <div class="mt-4 flex justify-between">
+                            <button
+                                v-if="currentPage > 1"
+                                class="inline-flex items-center gap-2 rounded bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-400"
+                                @click.prevent="currentPage--"
+                            >
+                                <ArrowLeft class="h-4 w-4" /> Previous
+                            </button>
+                            <button
+                                v-if="currentPage < totalPages"
+                                class="inline-flex items-center gap-2 rounded bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600"
+                                @click.prevent="currentPage++"
+                            >
+                                Next <ArrowRight class="h-4 w-4" />
+                            </button>
+                        </div>
 
-
-                        <!-- Preview Button -->
                         <div class="mt-8 text-right">
-    <button
-        type="submit"
-        class="inline-flex items-center gap-2 rounded-xl bg-blue-500 px-8 py-3 text-lg text-white shadow-md hover:bg-yellow-600"
-    >
-        <Eye class="h-5 w-5" /> Preview Answers
-    </button>
-</div>
-
+                            <button
+                                type="submit"
+                                class="inline-flex items-center gap-2 rounded-xl bg-blue-500 px-8 py-3 text-lg text-white shadow-md hover:bg-yellow-600"
+                            >
+                                <Eye class="h-5 w-5" /> Preview Answers
+                            </button>
+                        </div>
                     </form>
 
-                    <!-- Preview Mode -->
                     <div v-else class="space-y-6 border-t pt-6">
                         <h2 class="text-2xl font-semibold text-gray-700">Review Your Answers</h2>
 
@@ -274,20 +253,19 @@ watch(selectedQuestionId, (id) => {
                         </div>
 
                         <div class="mt-6 flex justify-end space-x-4">
-    <button
-        class="inline-flex items-center gap-2 rounded bg-gray-500 px-6 py-2 text-white hover:bg-gray-600"
-        @click="previewMode = false"
-    >
-        <ArrowLeft class="h-4 w-4" /> Back
-    </button>
-    <button
-        class="inline-flex items-center gap-2 rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
-        @click="submitAnswers"
-    >
-        <Check class="h-4 w-4" /> Confirm & Submit
-    </button>
-</div>
-
+                            <button
+                                class="inline-flex items-center gap-2 rounded bg-gray-500 px-6 py-2 text-white hover:bg-gray-600"
+                                @click="previewMode = false"
+                            >
+                                <ArrowLeft class="h-4 w-4" /> Back
+                            </button>
+                            <button
+                                class="inline-flex items-center gap-2 rounded bg-green-600 px-6 py-2 text-white hover:bg-green-700"
+                                @click="submitAnswers"
+                            >
+                                <Check class="h-4 w-4" /> Confirm & Submit
+                            </button>
+                        </div>
                     </div>
                 </section>
             </div>

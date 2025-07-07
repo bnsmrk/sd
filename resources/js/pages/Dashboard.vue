@@ -94,7 +94,6 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' 
     <Head title="Dashboard" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-10 p-4">
-            <!-- Stats Cards -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div class="rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white shadow">
                     <h3 class="text-sm tracking-wide uppercase">Total Students</h3>
@@ -110,9 +109,7 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' 
                 </div>
             </div>
 
-            <!-- Charts Section -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <!-- Bar Chart -->
                 <div class="rounded-xl bg-white p-4 shadow dark:bg-gray-800">
                     <h2 class="mb-2 text-lg font-semibold">User Role Distribution</h2>
                     <div class="h-64">
@@ -120,7 +117,6 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' 
                     </div>
                 </div>
 
-                <!-- Line Chart -->
                 <div class="rounded-xl bg-white p-4 shadow dark:bg-gray-800">
                     <h2 class="mb-2 text-lg font-semibold">Monthly Growth</h2>
                     <div class="h-64">
