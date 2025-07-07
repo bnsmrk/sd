@@ -91,7 +91,7 @@ function submitForm() {
 <template>
     <Head title="Upload Material" />
     <AppLayout>
-        <div class="mx-auto max-w-5xl space-y-6 p-6">
+        <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
             <h2 class="flex items-center gap-2 text-2xl font-bold">
                 <FileUp class="h-6 w-6 text-blue-600" />
                 Upload {{ selectedType === 'material' ? 'Material' : 'Lesson Plan' }}
