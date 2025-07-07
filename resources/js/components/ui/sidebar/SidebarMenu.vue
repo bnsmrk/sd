@@ -7,7 +7,7 @@ const props = defineProps<{
 }>()
 </script>
 
-<template>
+<template >
   <ul
     data-slot="sidebar-menu"
     data-sidebar="menu"
