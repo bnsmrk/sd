@@ -23,10 +23,10 @@ class ProficiencyTestDueNotification extends Notification
 
     public function toMail($notifiable)
 {
-    return (new \Illuminate\Notifications\Messages\MailMessage)
-        ->subject('Proficiency Test Due Today: ' . $this->test->title)
-        ->line('A proficiency test is due today: ' . $this->test->title)
-        ->action('Take Test', url('/student-dashboard'));
+   return (new MailMessage)
+            ->subject('Proficiency Test Due Today: ' . $this->test->title)
+            ->line('A proficiency test is due today: ' . $this->test->title)
+            ->action('Take Test', route('student.proficiency.index'));
 }
 
     /**

@@ -9,6 +9,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Schedule::command('notify:due-items')->everyMinute();
+Schedule::command('notify:due-items')->everyMinute();
 
-Schedule::command('notify:due-items')->dailyAt('20:37');
+Schedule::command('notify:due-items')->dailyAt('07:00');
+
+Schedule::call(function () {
+    \Log::info('⏰ Scheduler ran at ' . now());
+})->everyMinute();

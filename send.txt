@@ -1,0 +1,50 @@
+--------------------------------windowns up -----------------------------------
+1. Open Task Scheduler
+Press Win + R
+
+Type: taskschd.msc and press Enter
+
+2. Create a Basic Task
+Click "Create Basic Task"
+
+Name it: Laravel Scheduler
+
+Click Next
+
+3. Set the Trigger
+Choose: Daily
+
+Recur every: 1 day
+
+Set the Start date and time (e.g., July 8, 2025 – 12:00:00 AM)
+
+Click Next
+
+4. Set the Action
+Choose: Start a program
+
+Click Next
+
+5. Configure the Program
+Program/script:
+    C:\laragon\bin\php\php-8.4.1-nts-Win32-vs17-x64\php.exe
+
+
+Add arguments:
+    artisan schedule:run
+
+
+Start in (optional):
+    C:\laragon\www\sd
+
+--------------------------------windowns up -----------------------------------
+--------------------------------linux down -----------------------------------
+crontab -e
+* * * * * cd /opt/lampp/htdocs/sd && /opt/lampp/bin/php artisan schedule:run >> /dev/null 2>&1
+Ctrl + X → Y → Enter
+
+sudo service cron start
+sudo service cron status
+
+--------------------------------linux up -----------------------------------
+
