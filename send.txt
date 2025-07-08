@@ -14,7 +14,7 @@ Click Next
 3. Set the Trigger
 Choose: Daily
 
-Recur every: 1 day
+Recur every: 1 day 2 days
 
 Set the Start date and time (e.g., July 8, 2025 – 12:00:00 AM)
 
@@ -41,10 +41,15 @@ Start in (optional):
 --------------------------------linux down -----------------------------------
 crontab -e
 * * * * * cd /opt/lampp/htdocs/sd && /opt/lampp/bin/php artisan schedule:run >> /dev/null 2>&1
-Ctrl + X → Y → Enter
+CTRL + O, Enter  CTRL + X
 
 sudo service cron start
 sudo service cron status
+* * * * * cd /home/v1n5t3ch/Downloads/Codes/sd && /opt/lampp/bin/php artisan schedule:run >> /dev/null 2>&1     -> this coded will run every minute
+
+
+crontab -l
+
 
 --------------------------------linux up -----------------------------------
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -8,6 +9,8 @@ use App\Models\Student;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
+use App\Models\StudentQuizResult;
+use App\Models\StudentProficiencyResult;
 use App\Notifications\ActivityDueNotification;
 use App\Notifications\ProficiencyTestDueNotification;
 
@@ -20,29 +23,44 @@ class SendDueNotifications extends Command
     {
         $today = Carbon::today();
 
-        // ✅ Notify due Activities
+        // ✅ Notify due Activities (not yet taken)
         Activity::with('module')->whereDate('due_date', $today)->get()->each(function ($activity) {
             $studentUserIds = Student::where('year_level_id', $activity->module->year_level_id)
                 ->where('section_id', $activity->module->section_id)
                 ->where('subject_id', $activity->module->subject_id)
                 ->pluck('user_id');
 
-            $students = User::whereIn('id', $studentUserIds)->get();
+            $untakenStudentIds = $studentUserIds->filter(function ($userId) use ($activity) {
+                return !StudentQuizResult::where('user_id', $userId)
+                    ->where('activity_id', $activity->id)
+                    ->exists();
+            });
 
-            Notification::send($students, new ActivityDueNotification($activity));
+            $students = User::whereIn('id', $untakenStudentIds)->get();
+
+            if ($students->isNotEmpty()) {
+                Notification::send($students, new ActivityDueNotification($activity));
+            }
         });
 
-        // ✅ Notify due Proficiency Tests
+        // ✅ Notify due Proficiency Tests (not yet taken)
         ProficiencyTest::whereDate('due_date', $today)->get()->each(function ($test) {
             $studentUserIds = Student::where('year_level_id', $test->year_level_id)
                 ->pluck('user_id');
 
-            $students = User::whereIn('id', $studentUserIds)->get();
+            $untakenStudentIds = $studentUserIds->filter(function ($userId) use ($test) {
+                return !StudentProficiencyResult::where('user_id', $userId)
+                    ->where('proficiency_test_id', $test->id)
+                    ->exists();
+            });
 
-            Notification::send($students, new ProficiencyTestDueNotification($test));
+            $students = User::whereIn('id', $untakenStudentIds)->get();
+
+            if ($students->isNotEmpty()) {
+                Notification::send($students, new ProficiencyTestDueNotification($test));
+            }
         });
 
         $this->info('Due notifications sent.');
     }
 }
-

@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\Submission;
+use App\Models\StudentQuizResult;
 use App\Models\TeacherAssignment;
 use App\Models\StudentProficiencyResult;
 use Illuminate\Notifications\Notifiable;
@@ -50,6 +51,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Section::class);
     }
+    public function quizResults()
+{
+    return $this->hasMany(StudentQuizResult::class, 'user_id');
+}
             /**
      * The attributes that should be hidden for serialization.
      *
