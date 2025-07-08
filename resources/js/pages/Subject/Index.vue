@@ -194,13 +194,17 @@ watch(search, (value) => {
             </template>
         </div>
 
-        <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
-            <div class="w-full max-w-xl rounded bg-white p-6 shadow">
-                <h2 class="mb-4 text-lg font-bold">➕ Add Subject</h2>
+        <!-- 🌸 Add Subject Modal -->
+        <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <div class="w-full max-w-xl rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
+                <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">➕ Add Subject</h2>
 
                 <div class="mb-4">
-                    <label class="block font-semibold">Year Level</label>
-                    <select v-model.number="createForm.year_level_id" class="w-full rounded border p-2">
+                    <label class="block font-semibold text-[#01006c]">Year Level</label>
+                    <select
+                        v-model.number="createForm.year_level_id"
+                        class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 focus:border-[#ffc60b] focus:outline-none"
+                    >
                         <option value="">Select Year Level</option>
                         <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
                     </select>
@@ -208,90 +212,122 @@ watch(search, (value) => {
                 </div>
 
                 <div class="mb-4">
-                    <label class="block font-semibold">Shared Subjects</label>
+                    <label class="block font-semibold text-[#01006c]">Shared Subjects</label>
                     <div v-for="(subject, index) in createForm.shared_subjects" :key="index" class="mb-2 flex gap-2">
-                        <input v-model="createForm.shared_subjects[index]" class="w-full rounded border p-2" />
+                        <input
+                            v-model="createForm.shared_subjects[index]"
+                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 focus:border-[#ffc60b] focus:outline-none"
+                        />
                         <button
                             @click.prevent="removeFrom(createForm.shared_subjects, index)"
                             v-if="createForm.shared_subjects.length > 1"
-                            class="text-red-500"
+                            class="text-red-600 hover:text-red-800"
                         >
                             <X class="h-4 w-4" />
                         </button>
                     </div>
-                    <button @click.prevent="addTo(createForm.shared_subjects)" class="text-blue-600 hover:underline">+ Add</button>
+                    <button @click.prevent="addTo(createForm.shared_subjects)" class="text-sm text-blue-600 hover:underline">+ Add</button>
                 </div>
 
                 <div class="mb-4" v-if="isSHS">
-                    <label class="block font-semibold">Major Subjects</label>
+                    <label class="block font-semibold text-[#01006c]">Major Subjects</label>
                     <div v-for="(subject, index) in createForm.major_subjects" :key="index" class="mb-2 flex gap-2">
-                        <input v-model="createForm.major_subjects[index]" class="w-full rounded border p-2" />
+                        <input
+                            v-model="createForm.major_subjects[index]"
+                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 focus:border-[#ffc60b]"
+                        />
                         <button
                             @click.prevent="removeFrom(createForm.major_subjects, index)"
                             v-if="createForm.major_subjects.length > 1"
-                            class="text-red-500"
+                            class="text-red-600 hover:text-red-800"
                         >
                             <X class="h-4 w-4" />
                         </button>
                     </div>
-                    <button @click.prevent="addTo(createForm.major_subjects)" class="text-blue-600 hover:underline">+ Add</button>
+                    <button @click.prevent="addTo(createForm.major_subjects)" class="text-sm text-blue-600 hover:underline">+ Add</button>
                 </div>
 
                 <div class="mt-4 flex justify-end space-x-2">
-                    <button @click="showCreateModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
+                    <button
+                        @click="showCreateModal = false"
+                        class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                    >
                         <X class="h-4 w-4" /> Cancel
                     </button>
                     <button
                         @click="submitCreate"
-                        class="inline-flex items-center gap-1 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                        class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
                         :disabled="createForm.processing"
                     >
-                        <Save class="h-4 w-4" /> {{ createForm.processing ? 'Saving...' : 'Save' }}
+                        <Save class="h-4 w-4" />
+                        {{ createForm.processing ? 'Saving...' : 'Save' }}
                     </button>
                 </div>
             </div>
         </div>
 
-        <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
-            <div class="w-full max-w-md rounded bg-white p-6 shadow">
-                <h2 class="mb-4 text-lg font-bold">✏️ Edit Subject</h2>
+        <!-- 🌸 Edit Subject Modal -->
+        <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
+                <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">✏️ Edit Subject</h2>
+
                 <div class="mb-4">
-                    <label class="block font-semibold">Subject Name</label>
-                    <input v-model="editForm.name" class="w-full rounded border p-2" />
+                    <label class="block font-semibold text-[#01006c]">Subject Name</label>
+                    <input
+                        v-model="editForm.name"
+                        class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 focus:border-[#ffc60b] focus:outline-none"
+                    />
                     <div class="text-sm text-red-600">{{ editForm.errors.name }}</div>
                 </div>
+
                 <div class="mb-4">
-                    <label class="block font-semibold">Year Level</label>
-                    <select v-model.number="editForm.year_level_id" class="w-full rounded border p-2">
+                    <label class="block font-semibold text-[#01006c]">Year Level</label>
+                    <select
+                        v-model.number="editForm.year_level_id"
+                        class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 focus:border-[#ffc60b]"
+                    >
                         <option value="">Select Year Level</option>
                         <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
                     </select>
                     <div class="text-sm text-red-600">{{ editForm.errors.year_level_id }}</div>
                 </div>
+
                 <div class="flex justify-end space-x-2">
-                    <button @click="showEditModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
-                        <X class="h-4 w-4" /> Cancel
+                    <button
+                        @click="showEditModal = false"
+                        class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                    >
+                        <X class="h-4 w-4" />
+                        Cancel
                     </button>
                     <button
                         @click="submitEdit"
-                        class="inline-flex items-center gap-1 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                        class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
                         :disabled="editForm.processing"
                     >
-                        <Check class="h-4 w-4" /> {{ editForm.processing ? 'Updating...' : 'Update' }}
+                        <Check class="h-4 w-4" />
+                        {{ editForm.processing ? 'Updating...' : 'Update' }}
                     </button>
                 </div>
             </div>
         </div>
 
-        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
-            <div class="w-full max-w-sm rounded bg-white p-6 shadow">
-                <h2 class="mb-4 text-lg font-bold text-red-600">🗑️ Confirm Deletion</h2>
-                <p class="mb-6 text-gray-600">Are you sure you want to delete this subject?</p>
+        <!-- 🌸 Delete Subject Modal -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <div class="w-full max-w-sm rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
+                <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">🗑️ Confirm Deletion</h2>
+                <p class="mb-6 text-[#01006c]">Are you sure you want to delete this subject?</p>
                 <div class="flex justify-end space-x-4">
-                    <button @click="showDeleteModal = false" class="inline-flex items-center gap-1 rounded bg-gray-300 px-4 py-2">
+                    <button
+                        @click="showDeleteModal = false"
+                        class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                    >
                         <X class="h-4 w-4" /> Cancel
                     </button>
-                    <button @click="destroyItem" class="inline-flex items-center gap-1 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+                    <button
+                        @click="destroyItem"
+                        class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                    >
                         <Trash2 class="h-4 w-4" /> Confirm
                     </button>
                 </div>

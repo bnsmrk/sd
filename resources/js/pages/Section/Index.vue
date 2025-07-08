@@ -161,26 +161,45 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-                <h3 class="mb-4 text-lg font-bold">➕ Add Section</h3>
+        <!-- 🌸 Add Section Modal -->
+        <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
+                <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">➕ Add Section</h3>
                 <form @submit.prevent="submitCreate" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium">Section Name</label>
-                        <input v-model="createForm.name" type="text" class="w-full rounded border p-2" />
+                        <label class="block text-sm font-semibold text-[#01006c]">Section Name</label>
+                        <input
+                            v-model="createForm.name"
+                            type="text"
+                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        />
                         <div v-if="createForm.errors.name" class="text-sm text-red-600">{{ createForm.errors.name }}</div>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-medium">Year Level</label>
-                        <select v-model="createForm.year_level_id" class="w-full rounded border p-2">
+                        <label class="block text-sm font-semibold text-[#01006c]">Year Level</label>
+                        <select
+                            v-model="createForm.year_level_id"
+                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option value="">Select Year Level</option>
                             <option v-for="level in yearLevels" :key="level.id" :value="level.id">{{ level.name }}</option>
                         </select>
                         <div v-if="createForm.errors.year_level_id" class="text-sm text-red-600">{{ createForm.errors.year_level_id }}</div>
                     </div>
-                    <div class="flex justify-end space-x-2">
-                        <button @click="showAddModal = false" type="button" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                        <button type="submit" class="inline-flex items-center gap-1 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+
+                    <div class="flex justify-end space-x-2 pt-2">
+                        <button
+                            @click="showAddModal = false"
+                            type="button"
+                            class="rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                        >
                             <Save class="h-4 w-4" /> Save
                         </button>
                     </div>
@@ -188,26 +207,45 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-                <h3 class="mb-4 text-lg font-bold">✏️ Edit Section</h3>
+        <!-- 🌸 Edit Section Modal -->
+        <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
+                <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">✏️ Edit Section</h3>
                 <form @submit.prevent="submitEdit" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium">Section Name</label>
-                        <input v-model="editForm.name" type="text" class="w-full rounded border p-2" />
+                        <label class="block text-sm font-semibold text-[#01006c]">Section Name</label>
+                        <input
+                            v-model="editForm.name"
+                            type="text"
+                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        />
                         <div v-if="editForm.errors.name" class="text-sm text-red-600">{{ editForm.errors.name }}</div>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-medium">Year Level</label>
-                        <select v-model="editForm.year_level_id" class="w-full rounded border p-2">
+                        <label class="block text-sm font-semibold text-[#01006c]">Year Level</label>
+                        <select
+                            v-model="editForm.year_level_id"
+                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option value="">Select Year Level</option>
                             <option v-for="level in yearLevels" :key="level.id" :value="level.id">{{ level.name }}</option>
                         </select>
                         <div v-if="editForm.errors.year_level_id" class="text-sm text-red-600">{{ editForm.errors.year_level_id }}</div>
                     </div>
-                    <div class="flex justify-end space-x-2">
-                        <button @click="showEditModal = false" type="button" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                        <button type="submit" class="inline-flex items-center gap-1 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">
+
+                    <div class="flex justify-end space-x-2 pt-2">
+                        <button
+                            @click="showEditModal = false"
+                            type="button"
+                            class="rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                        >
                             <Check class="h-4 w-4" /> Update
                         </button>
                     </div>
@@ -215,13 +253,23 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-                <h3 class="mb-4 text-lg font-bold text-red-600">🗑️ Confirm Deletion</h3>
+        <!-- 🌸 Delete Section Modal -->
+        <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
+                <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">🗑️ Confirm Deletion</h3>
                 <p class="mb-6 text-gray-700">Are you sure you want to delete this section?</p>
-                <div class="flex justify-end space-x-2">
-                    <button @click="cancelDelete" type="button" class="rounded bg-gray-300 px-4 py-2">Cancel</button>
-                    <button @click="confirmDelete" class="inline-flex items-center gap-1 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button
+                        @click="cancelDelete"
+                        type="button"
+                        class="rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        @click="confirmDelete"
+                        class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                    >
                         <Trash2 class="h-4 w-4" /> Delete
                     </button>
                 </div>
