@@ -44,38 +44,40 @@ watch(search, (value) => {
     }, 300);
 });
 </script>
-
 <template>
     <AppLayout>
         <Head :title="`Essay Submissions - ${props.activity.title}`" />
 
         <div class="mx-auto w-full max-w-screen-2xl space-y-6 p-6">
+            <!-- Page Header -->
             <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                <h1 class="text-2xl font-semibold text-gray-800">Essay Submissions – {{ props.activity.title }}</h1>
+                <h1 class="text-2xl font-semibold text-[#01006c]">Essay Submissions – {{ props.activity.title }}</h1>
 
                 <div class="flex gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search student..."
-                        class="rounded border border-gray-300 px-3 py-2 text-sm shadow-sm"
+                        class="rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                     />
                     <Link
                         href="/activities"
-                        class="inline-flex items-center gap-2 text-sm text-gray-600 transition hover:text-blue-600 hover:underline"
+                        class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] hover:bg-[#ffc60b]"
                     >
-                        <ArrowLeft class="h-4 w-4" /> Back to Activities
+                        <ArrowLeft class="h-4 w-4 text-[#ff69b4]" /> Back to Activities
                     </Link>
                 </div>
             </div>
 
+            <!-- No Submissions Message -->
             <div v-if="props.submissions.data.length === 0" class="rounded-lg bg-yellow-50 px-4 py-3 text-yellow-700 shadow-sm">
                 No students have submitted yet.
             </div>
 
-            <div v-else class="overflow-x-auto rounded-lg border bg-white shadow-sm">
-                <table class="min-w-full divide-y text-sm text-gray-700">
-                    <thead class="bg-gray-100 text-left text-sm font-semibold">
+            <!-- Submission Table -->
+            <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
+                <table class="min-w-full table-auto text-left text-sm">
+                    <thead class="bg-[#01006c] text-white">
                         <tr>
                             <th class="px-6 py-3">Student</th>
                             <th class="px-6 py-3">Graded</th>
@@ -105,8 +107,11 @@ watch(search, (value) => {
                             </td>
 
                             <td class="px-6 py-3">
-                                <Link :href="`/submissions/${submission.id}`" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
-                                    <Eye class="h-4 w-4" /> View
+                                <Link
+                                    :href="`/submissions/${submission.id}`"
+                                    class="inline-flex items-center gap-1 text-[#01006c] hover:text-[#ffc60b] hover:underline"
+                                >
+                                    <Eye class="h-4 w-4 text-[#ff69b4]" /> View
                                 </Link>
                             </td>
                         </tr>
@@ -114,6 +119,7 @@ watch(search, (value) => {
                 </table>
             </div>
 
+            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.submissions.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -122,8 +128,8 @@ watch(search, (value) => {
                         :href="link.url"
                         class="rounded px-3 py-1 text-sm"
                         :class="{
-                            'bg-blue-600 text-white': link.active,
-                            'text-gray-700 hover:underline': !link.active,
+                            'bg-[#01006c] text-white': link.active,
+                            'text-gray-700 hover:text-[#ffc60b] hover:underline': !link.active,
                         }"
                     >
                         <span v-html="link.label" />

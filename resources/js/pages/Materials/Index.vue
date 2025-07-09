@@ -70,20 +70,22 @@ function cancelDelete() {
     <Head title="My Materials" />
     <AppLayout>
         <div class="space-y-6 p-6">
+            <!-- Header -->
             <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
-                <h1 class="flex items-center gap-2 text-2xl font-bold text-gray-800">
-                    <BookOpen class="h-6 w-6 text-blue-600" /> My Uploaded Materials
+                <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
+                    <BookOpen class="h-6 w-6 text-[#01006c]" /> My Uploaded Materials
                 </h1>
+
                 <div class="flex items-center gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search by title..."
-                        class="rounded border px-3 py-2 text-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        class="rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                     />
                     <button
                         @click="createMaterial"
-                        class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-sm text-white hover:bg-[#0d1282]"
                     >
                         <BookOpen class="h-4 w-4" />
                         <span>Upload Material</span>
@@ -91,9 +93,10 @@ function cancelDelete() {
                 </div>
             </div>
 
-            <div class="overflow-x-auto rounded-lg shadow">
-                <table class="min-w-full table-auto border border-gray-200 bg-white">
-                    <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+            <!-- Table -->
+            <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
+                <table class="min-w-full table-auto text-left text-sm">
+                    <thead class="bg-[#01006c] text-white">
                         <tr>
                             <th class="p-3">Title</th>
                             <th class="p-3">Type</th>
@@ -107,7 +110,7 @@ function cancelDelete() {
                     <tbody class="text-sm text-gray-700">
                         <template v-for="material in props.materials.data" :key="material.id">
                             <tr class="border-t hover:bg-gray-50">
-                                <td class="p-3 align-top">{{ material.title }}</td>
+                                <td class="p-3 align-top text-[#01006c]">{{ material.title }}</td>
                                 <td class="p-3 align-top capitalize">{{ material.type.replace('_', ' ') }}</td>
                                 <td class="p-3 align-top">{{ material.year_level.name }}</td>
                                 <td class="p-3 align-top">{{ material.section?.name || '—' }}</td>
@@ -116,7 +119,7 @@ function cancelDelete() {
                                     <a
                                         :href="`/storage/${material.file_path}`"
                                         target="_blank"
-                                        class="inline-flex items-center gap-1 font-medium text-blue-600 transition hover:text-blue-800"
+                                        class="inline-flex items-center gap-1 font-medium text-blue-600 hover:text-[#ff69b4]"
                                     >
                                         <Eye class="h-4 w-4" />
                                         <span>View</span>
@@ -125,14 +128,14 @@ function cancelDelete() {
                                 <td class="p-3 text-center align-top">
                                     <div class="flex justify-center gap-3">
                                         <button
-                                            class="inline-flex items-center gap-1 font-medium text-blue-600 transition hover:text-blue-800"
+                                            class="inline-flex items-center gap-1 font-medium text-blue-600 hover:text-[#01006c]"
                                             @click="editMaterial(material.id)"
                                         >
                                             <Pencil class="h-4 w-4" />
                                             <span>Edit</span>
                                         </button>
                                         <button
-                                            class="inline-flex items-center gap-1 font-medium text-red-600 transition hover:text-red-800"
+                                            class="inline-flex items-center gap-1 font-medium text-red-600 hover:text-[#a60000]"
                                             @click="confirmDelete(material.id)"
                                         >
                                             <Trash2 class="h-4 w-4" />
@@ -144,7 +147,7 @@ function cancelDelete() {
 
                             <tr v-if="material.comments?.length" class="bg-gray-50 text-sm">
                                 <td colspan="7" class="p-4">
-                                    <p class="mb-2 font-medium text-gray-700">Comments from Principal:</p>
+                                    <p class="mb-2 font-medium text-[#ff69b4]">Comments from Principal:</p>
                                     <ul class="ml-4 list-disc space-y-1 text-gray-600">
                                         <li v-for="comment in material.comments" :key="comment.id">
                                             "{{ comment.comment }}" — <i>{{ comment.user.name }}</i>
@@ -156,6 +159,8 @@ function cancelDelete() {
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
             <div class="mt-6 flex flex-wrap justify-center gap-2">
                 <template v-for="(link, i) in materials.links" :key="i">
                     <span
@@ -168,7 +173,7 @@ function cancelDelete() {
                         :href="link.url"
                         class="inline-flex items-center justify-center rounded px-4 py-2 text-sm font-medium transition-all"
                         :class="{
-                            'bg-blue-600 text-white hover:bg-blue-700': link.active,
+                            'bg-[#01006c] text-white hover:bg-[#0d1282]': link.active,
                             'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100': !link.active,
                         }"
                     >
@@ -178,15 +183,13 @@ function cancelDelete() {
             </div>
         </div>
 
+        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
-                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
-                <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this material?</p>
+            <div class="w-full max-w-md rounded border border-[#01006c] bg-white p-6 shadow-lg">
+                <h2 class="mb-4 text-lg font-semibold text-[#01006c]">Confirm Deletion</h2>
+                <p class="mb-6 text-gray-700">Are you sure you want to delete this material?</p>
                 <div class="flex justify-end space-x-4">
-                    <button
-                        @click="cancelDelete"
-                        class="rounded bg-gray-300 px-4 py-2 text-sm text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
-                    >
+                    <button @click="cancelDelete" class="rounded border border-gray-400 bg-white px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
                         Cancel
                     </button>
                     <button @click="destroyMaterial" class="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700">Confirm</button>

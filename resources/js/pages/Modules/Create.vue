@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ArrowLeft, Book, GraduationCap, Layers, Users } from 'lucide-vue-next';
 import { computed, watch } from 'vue';
 
@@ -50,55 +50,86 @@ watch(
     <Head title="Create Module" />
     <AppLayout>
         <div class="mx-auto w-full max-w-4xl space-y-6 px-6 py-4">
+            <!-- Header -->
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-gray-800">Create Module</h1>
-                <Link href="/modules" class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 hover:underline">
-                    <ArrowLeft class="h-4 w-4" /> Back to Modules
+                <h1 class="text-2xl font-bold text-[#01006c]">Create Module</h1>
+                <Link
+                    href="/modules"
+                    class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] shadow hover:bg-[#ffc60b]"
+                >
+                    <ArrowLeft class="h-4 w-4" />
+                    Back to Modules
                 </Link>
             </div>
 
+            <!-- Form -->
             <form @submit.prevent="form.post('/modules')" class="space-y-6">
+                <!-- Module Name -->
                 <div>
-                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700"> <Layers class="h-4 w-4" /> Module Name </label>
-                    <input v-model="form.name" class="w-full rounded border px-3 py-2" required />
+                    <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
+                        <Layers class="h-4 w-4 text-[#ff69b4]" /> Module Name
+                    </label>
+                    <input
+                        v-model="form.name"
+                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        required
+                    />
                     <div v-if="form.errors.name" class="text-sm text-red-600">{{ form.errors.name }}</div>
                 </div>
 
+                <!-- Year Level -->
                 <div>
-                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700"> <GraduationCap class="h-4 w-4" /> Year Level </label>
-                    <select v-model="form.year_level_id" class="w-full rounded border px-3 py-2" required>
+                    <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
+                        <GraduationCap class="h-4 w-4 text-[#ff69b4]" /> Year Level
+                    </label>
+                    <select
+                        v-model="form.year_level_id"
+                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        required
+                    >
                         <option value="">Select Year Level</option>
-                        <option v-for="yl in props.assignments" :key="yl.id" :value="yl.id">
-                            {{ yl.name }}
-                        </option>
+                        <option v-for="yl in props.assignments" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
                     </select>
                     <div v-if="form.errors.year_level_id" class="text-sm text-red-600">{{ form.errors.year_level_id }}</div>
                 </div>
 
+                <!-- Section -->
                 <div v-if="availableSections.length > 0">
-                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700"> <Users class="h-4 w-4" /> Section </label>
-                    <select v-model="form.section_id" class="w-full rounded border px-3 py-2" required>
+                    <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
+                        <Users class="h-4 w-4 text-[#ff69b4]" /> Section
+                    </label>
+                    <select
+                        v-model="form.section_id"
+                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        required
+                    >
                         <option value="">Select Section</option>
-                        <option v-for="section in availableSections" :key="section.id" :value="section.id">
-                            {{ section.name }}
-                        </option>
+                        <option v-for="section in availableSections" :key="section.id" :value="section.id">{{ section.name }}</option>
                     </select>
                     <div v-if="form.errors.section_id" class="text-sm text-red-600">{{ form.errors.section_id }}</div>
                 </div>
 
+                <!-- Subject -->
                 <div v-if="filteredSubjects.length > 0">
-                    <label class="flex items-center gap-1 text-sm font-medium text-gray-700"> <Book class="h-4 w-4" /> Subject </label>
-                    <select v-model="form.subject_id" class="w-full rounded border px-3 py-2" required>
+                    <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
+                        <Book class="h-4 w-4 text-[#ff69b4]" /> Subject
+                    </label>
+                    <select
+                        v-model="form.subject_id"
+                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        required
+                    >
                         <option value="">Select Subject</option>
-                        <option v-for="subject in filteredSubjects" :key="subject.id" :value="subject.id">
-                            {{ subject.name }}
-                        </option>
+                        <option v-for="subject in filteredSubjects" :key="subject.id" :value="subject.id">{{ subject.name }}</option>
                     </select>
                     <div v-if="form.errors.subject_id" class="text-sm text-red-600">{{ form.errors.subject_id }}</div>
                 </div>
 
+                <!-- Submit -->
                 <div>
-                    <button class="w-full rounded bg-blue-600 py-2 text-white hover:bg-blue-700" :disabled="form.processing">Save</button>
+                    <button class="w-full rounded bg-[#01006c] py-2 text-white transition hover:bg-[#0d1282]" :disabled="form.processing">
+                        Save
+                    </button>
                 </div>
             </form>
         </div>

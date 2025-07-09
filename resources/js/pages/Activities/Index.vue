@@ -55,23 +55,34 @@ function cancelDelete() {
     deleteId.value = null;
 }
 </script>
-
 <template>
     <Head title="Activities" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="space-y-4 p-4">
-            <div class="mb-4 flex flex-wrap justify-between gap-2 sm:items-center sm:justify-end">
+        <div class="space-y-4 p-6">
+            <!-- Search + Create -->
+            <div class="mb-4 flex flex-wrap justify-between gap-2 sm:items-center sm:justify-between">
+                <h1 class="text-2xl font-bold text-[#01006c]">Activities</h1>
                 <div class="flex w-full justify-end gap-2 sm:w-auto">
-                    <input v-model="search" type="text" placeholder="Search activities..." class="rounded border px-3 py-2 text-sm shadow-sm" />
-                    <Link href="/activities/create" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-                        <PlusCircle class="h-4 w-4" /> Create Activity
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Search activities..."
+                        class="rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                    />
+                    <Link
+                        href="/activities/create"
+                        class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-[#01006c] px-4 py-2 text-sm font-semibold text-white hover:bg-[#ffc60b] hover:text-[#01006c]"
+                    >
+                        <PlusCircle class="h-4 w-4" />
+                        Create Activity
                     </Link>
                 </div>
             </div>
 
-            <div class="relative overflow-x-auto shadow ring-1 ring-gray-200 sm:rounded-lg">
-                <table class="min-w-full text-left text-sm text-gray-600 dark:text-gray-300">
-                    <thead class="bg-gray-100 text-xs text-gray-600 uppercase dark:bg-gray-700 dark:text-gray-400">
+            <!-- Table -->
+            <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
+                <table class="min-w-full table-auto text-left text-sm">
+                    <thead class="bg-[#01006c] text-white">
                         <tr>
                             <th class="px-6 py-3">Title</th>
                             <th class="px-6 py-3">Type</th>
@@ -86,8 +97,7 @@ function cancelDelete() {
                             :key="a.id"
                             class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
                         >
-                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ a.title }}</td>
-
+                            <td class="px-6 py-4 font-medium text-[#01006c] dark:text-white">{{ a.title }}</td>
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 capitalize dark:bg-blue-800 dark:text-blue-100"
@@ -95,13 +105,11 @@ function cancelDelete() {
                                     {{ a.type }}
                                 </span>
                             </td>
-
                             <td class="px-6 py-4">{{ a.scheduled_at }}</td>
                             <td class="px-6 py-4">{{ a.due_date }}</td>
-
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-3">
-                                    <Link :href="`/activities/${a.id}/edit`" class="text-blue-600 hover:text-blue-800">
+                                    <Link :href="`/activities/${a.id}/edit`" class="text-[#01006c] hover:text-[#ffc60b]">
                                         <Pencil class="inline h-4 w-4" />
                                     </Link>
 
@@ -115,7 +123,7 @@ function cancelDelete() {
                                         </Link>
                                     </template>
                                     <template v-else>
-                                        <Link :href="`/activities/${a.id}/questions/create`" class="text-indigo-600 hover:text-indigo-800">
+                                        <Link :href="`/activities/${a.id}/questions/create`" class="text-pink-600 hover:text-pink-800">
                                             <PlusCircle class="inline h-4 w-4" />
                                         </Link>
                                     </template>
@@ -125,16 +133,18 @@ function cancelDelete() {
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.activities.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
                     <Link
                         v-else
                         :href="link.url"
-                        class="rounded px-3 py-1 text-sm"
+                        class="rounded px-3 py-1 text-sm font-medium"
                         :class="{
-                            'bg-blue-600 text-white': link.active,
-                            'text-gray-700 hover:underline': !link.active,
+                            'bg-[#01006c] text-white': link.active,
+                            'text-gray-700 hover:text-[#ffc60b] hover:underline': !link.active,
                         }"
                     >
                         <span v-html="link.label" />
@@ -143,9 +153,10 @@ function cancelDelete() {
             </div>
         </div>
 
+        <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-xl dark:bg-gray-800">
-                <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Confirm Deletion</h2>
+                <h2 class="mb-4 text-lg font-semibold text-[#01006c] dark:text-white">Confirm Deletion</h2>
                 <p class="mb-6 text-gray-600 dark:text-gray-300">Are you sure you want to delete this activity?</p>
                 <div class="flex justify-end space-x-4">
                     <button

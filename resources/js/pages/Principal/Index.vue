@@ -145,16 +145,21 @@ const pdfUrl = computed(() => {
 });
 </script>
 <template>
+    <Head title="Proficiency Report" />
     <AppLayout>
-        <div class="mx-auto max-w-full space-y-6 p-6">
-            <h1 class="flex items-center gap-2 text-2xl font-bold text-gray-800"><BarChart2 class="h-6 w-6" /> Proficiency Report</h1>
+        <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
+            <!-- Header -->
+            <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
+                <BarChart2 class="h-6 w-6" /> Proficiency Report
+            </h1>
 
-            <div class="flex flex-wrap gap-4 rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-4 rounded-lg border  bg-white p-4">
                 <div class="relative min-w-[180px] flex-grow">
-                    <Layers class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
+                    <Layers class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
                     <select
                         v-model="selectedYearLevel"
-                        class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white"
+                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
                     >
                         <option :value="null">Select Year Level</option>
                         <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
@@ -162,62 +167,77 @@ const pdfUrl = computed(() => {
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <LayoutTemplate class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
-                    <select v-model="selectedSection" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                    <LayoutTemplate class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <select
+                        v-model="selectedSection"
+                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                    >
                         <option :value="null">Select Section</option>
                         <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
                     </select>
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <BookOpen class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
-                    <select v-model="selectedSubject" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                    <BookOpen class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <select
+                        v-model="selectedSubject"
+                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                    >
                         <option :value="null">Select Subject</option>
                         <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
                     </select>
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <FileText class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
-                    <select v-model="selectedModule" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                    <FileText class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <select
+                        v-model="selectedModule"
+                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                    >
                         <option :value="null">Select Module</option>
                         <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
                     </select>
                 </div>
 
                 <div class="relative min-w-[160px] flex-grow">
-                    <ClipboardList class="absolute top-2.5 left-3 h-4 w-4 text-gray-500" />
-                    <select v-model="selectedType" class="w-full rounded border bg-white py-2 pr-3 pl-10 text-sm dark:bg-gray-700 dark:text-white">
+                    <ClipboardList class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <select
+                        v-model="selectedType"
+                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                    >
                         <option value="quiz">Quiz</option>
                         <option value="exam">Exam</option>
                     </select>
                 </div>
 
+                <!-- Generate Button -->
                 <div class="flex-shrink-0">
                     <button
                         @click="applyFilters"
-                        class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-sm text-white hover:bg-[#0d1282]"
                     >
                         <Search class="h-4 w-4" /> Generate Report
                     </button>
                 </div>
             </div>
 
+            <!-- PDF Button -->
             <div v-if="canGeneratePdf" class="mt-4 flex justify-end">
                 <a
                     :href="pdfUrl"
                     target="_blank"
-                    class="inline-flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                    class="inline-flex items-center gap-2 rounded bg-[#ff69b4] px-4 py-2 text-sm text-white hover:bg-[#e85aa7]"
                 >
                     <FileText class="h-4 w-4" /> Generate PDF
                 </a>
             </div>
 
+            <!-- Results Table -->
             <div v-if="props.resultsByActivity.length > 0" class="mt-6 space-y-8">
                 <div v-for="group in props.resultsByActivity" :key="group.activity_title">
-                    <h2 class="text-lg font-semibold text-blue-700">{{ group.activity_title }}</h2>
+                    <h2 class="text-lg font-semibold text-[#01006c]">{{ group.activity_title }}</h2>
                     <table class="mt-2 min-w-full border text-sm">
-                        <thead class="bg-gray-100 text-left text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                        <thead class="bg-[#01006c] text-left text-white">
                             <tr>
                                 <th class="border px-4 py-2">Student</th>
                                 <th class="border px-4 py-2">Score</th>
@@ -226,18 +246,19 @@ const pdfUrl = computed(() => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="entry in group.entries" :key="entry.student" class="bg-white dark:bg-gray-800">
-                                <td class="border px-4 py-2">{{ entry.student }}</td>
-                                <td class="border px-4 py-2">{{ entry.score }}</td>
-                                <td class="border px-4 py-2">{{ entry.total }}</td>
-                                <td class="border px-4 py-2">{{ entry.average }}%</td>
+                            <tr v-for="entry in group.entries" :key="entry.student" class="bg-white">
+                                <td class="border px-4 py-2 text-[#01006c]">{{ entry.student }}</td>
+                                <td class="border px-4 py-2 text-[#01006c]">{{ entry.score }}</td>
+                                <td class="border px-4 py-2 text-[#01006c]">{{ entry.total }}</td>
+                                <td class="border px-4 py-2 text-[#01006c]">{{ entry.average }}%</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div v-else class="mt-8 text-center text-gray-500 italic">No data to show</div>
+            <!-- No Results -->
+            <div v-else class="mt-8 text-center text-gray-400 italic">No data to show</div>
         </div>
     </AppLayout>
 </template>
