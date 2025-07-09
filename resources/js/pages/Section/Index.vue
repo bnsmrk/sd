@@ -104,19 +104,29 @@ const confirmDelete = () => {
     <Head title="Sections" />
     <AppLayout>
         <div class="p-4">
+            <!-- Header -->
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <h2 class="text-xl font-bold text-gray-800">🏫 Sections</h2>
+                <h2 class="text-xl font-bold text-[#01006c]">🏫 Sections</h2>
                 <div class="flex items-center gap-2">
-                    <input v-model="search" type="text" placeholder="Search sections..." class="rounded border px-3 py-2 text-sm shadow-sm" />
-                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Search sections..."
+                        class="rounded border border-[#01006c] px-3 py-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none"
+                    />
+                    <button
+                        @click="openAddModal"
+                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white transition hover:bg-[#0d1282]"
+                    >
                         <Plus class="h-4 w-4" /> Add Section
                     </button>
                 </div>
             </div>
 
-            <div class="overflow-x-auto rounded-lg shadow">
-                <table class="min-w-full table-auto text-left text-sm text-gray-700">
-                    <thead class="bg-gray-100 text-xs font-semibold text-gray-600 uppercase">
+            <!-- Table -->
+            <div class="overflow-x-auto rounded-lg border border-[#01006c] shadow">
+                <table class="min-w-full table-auto text-left text-sm text-[#01006c]">
+                    <thead class="bg-[#01006c] text-xs font-semibold text-white uppercase">
                         <tr>
                             <th class="px-6 py-3">ID</th>
                             <th class="px-6 py-3">Section Name</th>
@@ -124,16 +134,22 @@ const confirmDelete = () => {
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">
-                        <tr v-for="section in sections.data" :key="section.id">
+                    <tbody class="divide-y divide-[#01006c] bg-white">
+                        <tr v-for="section in sections.data" :key="section.id" class="hover:bg-gray-50">
                             <td class="px-6 py-4">{{ section.id }}</td>
                             <td class="px-6 py-4">{{ section.name }}</td>
                             <td class="px-6 py-4">{{ section.year_level.name }}</td>
                             <td class="space-x-4 px-6 py-4 text-center">
-                                <button @click="openEditModal(section)" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                                <button
+                                    @click="openEditModal(section)"
+                                    class="inline-flex items-center gap-1 text-[#01006c] transition hover:text-[#ff69b4]"
+                                >
                                     <Pencil class="h-4 w-4" /> Edit
                                 </button>
-                                <button @click="openDeleteModal(section.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
+                                <button
+                                    @click="openDeleteModal(section.id)"
+                                    class="inline-flex items-center gap-1 text-red-600 transition hover:text-red-800"
+                                >
                                     <Trash2 class="h-4 w-4" /> Delete
                                 </button>
                             </td>
@@ -141,6 +157,7 @@ const confirmDelete = () => {
                     </tbody>
                 </table>
             </div>
+
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in sections.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -180,7 +197,7 @@ const confirmDelete = () => {
                         <label class="block text-sm font-semibold text-[#01006c]">Year Level</label>
                         <select
                             v-model="createForm.year_level_id"
-                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                            class="rounded-lgbg-white w-full border-2 border-[#01006c] bg-white px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option value="">Select Year Level</option>
                             <option v-for="level in yearLevels" :key="level.id" :value="level.id">{{ level.name }}</option>
@@ -226,7 +243,7 @@ const confirmDelete = () => {
                         <label class="block text-sm font-semibold text-[#01006c]">Year Level</label>
                         <select
                             v-model="editForm.year_level_id"
-                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded-lg border-2 border-[#01006c] bg-white px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option value="">Select Year Level</option>
                             <option v-for="level in yearLevels" :key="level.id" :value="level.id">{{ level.name }}</option>

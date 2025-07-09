@@ -40,58 +40,77 @@ function submitForm() {
 <template>
     <Head title="Edit Teacher Assignment" />
     <AppLayout>
-        <div class="mx-auto mt-10 max-w-3xl rounded-lg bg-white p-8 shadow dark:bg-gray-800">
+        <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
+            <!-- Back Button -->
             <div class="mb-6">
                 <Link
                     href="/teacher-assignments"
-                    class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] shadow hover:bg-[#ffc60b]"
+                    class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] hover:bg-[#ffc60b]"
                 >
                     <ArrowLeft class="h-4 w-4" /> Back
                 </Link>
             </div>
 
-            <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Edit Teacher Assignment</h1>
+            <!-- Title -->
+            <h1 class="mb-6 text-2xl font-bold text-[#01006c]">✏️ Edit Teacher Assignment</h1>
 
+            <!-- Form -->
             <form @submit.prevent="submitForm" class="space-y-6">
-                <div class="grid grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                    <!-- Teacher -->
                     <div>
-                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
-                            <User class="h-4 w-4" /> Teacher
-                        </label>
-                        <select v-model="form.user_id" required class="input-select">
+                        <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]"> <User class="h-4 w-4" /> Teacher </label>
+                        <select
+                            v-model="form.user_id"
+                            required
+                            class="w-full rounded border-2 border-[#01006c] bg-white px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option value="">Select a Teacher</option>
                             <option v-for="t in props.teachers" :key="t.id" :value="t.id">{{ t.name }}</option>
                         </select>
                         <p v-if="form.errors.user_id" class="mt-1 text-sm text-red-600">{{ form.errors.user_id }}</p>
                     </div>
 
+                    <!-- Year Level -->
                     <div>
-                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
+                        <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]">
                             <Layers class="h-4 w-4" /> Year Level
                         </label>
-                        <select v-model="form.year_level_id" required class="input-select">
+                        <select
+                            v-model="form.year_level_id"
+                            required
+                            class="w-full rounded border-2 border-[#01006c] bg-white px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option value="">Select a Year Level</option>
                             <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
                         </select>
                         <p v-if="form.errors.year_level_id" class="mt-1 text-sm text-red-600">{{ form.errors.year_level_id }}</p>
                     </div>
 
+                    <!-- Section -->
                     <div>
-                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
-                            <Layout class="h-4 w-4" /> Section
-                        </label>
-                        <select v-model="form.section_id" required class="input-select">
+                        <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]"> <Layout class="h-4 w-4" /> Section </label>
+                        <select
+                            v-model="form.section_id"
+                            required
+                            class="w-full rounded border-2 border-[#01006c] bg-white px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option value="">Select a Section</option>
                             <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
                         </select>
                         <p v-if="form.errors.section_id" class="mt-1 text-sm text-red-600">{{ form.errors.section_id }}</p>
                     </div>
 
+                    <!-- Subject -->
                     <div>
-                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-white">
+                        <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]">
                             <BookOpen class="h-4 w-4" /> Subject
                         </label>
-                        <select v-model="form.subject_id" required class="input-select">
+                        <select
+                            v-model="form.subject_id"
+                            required
+                            class="w-full rounded border-2 border-[#01006c] bg-white px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option value="">Select a Subject</option>
                             <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
                         </select>
@@ -99,11 +118,12 @@ function submitForm() {
                     </div>
                 </div>
 
+                <!-- Submit -->
                 <div class="flex justify-end pt-4">
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="inline-flex items-center gap-2 rounded-lg bg-gray-800 px-8 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:bg-gray-800 dark:hover:bg-gray-700"
+                        class="inline-flex items-center gap-2 rounded-md bg-[#ff69b4] px-6 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
                     >
                         <Save class="h-4 w-4" /> Update Assignment
                     </button>

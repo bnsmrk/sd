@@ -85,24 +85,33 @@ const pdfUrl = computed(() => {
             <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-md">
                 <div class="flex flex-wrap items-end gap-4">
                     <div class="flex flex-col">
-                        <label class="text-sm font-medium text-gray-700">Year Level</label>
-                        <select v-model="selectedYearLevel" class="rounded border-gray-300 px-3 py-2 text-sm shadow-sm">
+                        <label class="text-sm font-medium text-[#ff69b4]">Year Level</label>
+                        <select
+                            v-model="selectedYearLevel"
+                            class="rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option :value="null">Select Year Level</option>
                             <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
                         </select>
                     </div>
 
                     <div class="flex flex-col">
-                        <label class="text-sm font-medium text-gray-700">Section</label>
-                        <select v-model="selectedSection" class="rounded border-gray-300 px-3 py-2 text-sm shadow-sm">
+                        <label class="text-sm font-medium text-[#ff69b4]">Section</label>
+                        <select
+                            v-model="selectedSection"
+                            class="rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option :value="null">Select Section</option>
                             <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
                         </select>
                     </div>
 
                     <div class="flex flex-col">
-                        <label class="text-sm font-medium text-gray-700">Test Type</label>
-                        <select v-model="selectedType" class="rounded border-gray-300 px-3 py-2 text-sm shadow-sm">
+                        <label class="text-sm font-medium text-[#ff69b4]">Test Type</label>
+                        <select
+                            v-model="selectedType"
+                            class="rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option value="">Select Type</option>
                             <option value="reading">Reading</option>
                             <option value="numerical">Numerical</option>
@@ -128,54 +137,59 @@ const pdfUrl = computed(() => {
             </div>
 
             <div v-if="filtersApplied && props.individuals.length > 0" class="space-y-8">
+                <!-- Individual Averages Table -->
                 <div>
                     <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-[#01006c]">
                         <BookOpen class="h-5 w-5 text-green-600" /> Individual Averages
                     </div>
-                    <table class="w-full border-collapse overflow-hidden rounded-md text-sm shadow-sm">
-                        <thead class="bg-gray-100 text-gray-700">
+                    <table class="w-full overflow-hidden rounded-md border border-[#01006c] text-sm">
+                        <thead class="bg-[#01006c] text-white">
                             <tr>
-                                <th class="border px-4 py-2 text-left">Student</th>
-                                <th class="border px-4 py-2 text-left">Section</th>
-                                <th class="border px-4 py-2 text-left">Average (%)</th>
+                                <th class="border border-[#01006c] px-4 py-2 text-left">Student</th>
+                                <th class="border border-[#01006c] px-4 py-2 text-left">Section</th>
+                                <th class="border border-[#01006c] px-4 py-2 text-left">Average (%)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="i in props.individuals" :key="i.student.id" class="even:bg-gray-50">
-                                <td class="border px-4 py-2">{{ i.student.name }}</td>
-                                <td class="border px-4 py-2">{{ i.student.section?.name ?? 'N/A' }}</td>
-                                <td class="border px-4 py-2 font-medium text-green-700">{{ i.average }}%</td>
+                                <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ i.student.name }}</td>
+                                <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ i.student.section?.name ?? 'N/A' }}</td>
+                                <td class="border border-[#01006c] px-4 py-2 font-medium text-green-700">{{ i.average }}%</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
+                <!-- Section Averages Table -->
                 <div>
                     <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-[#01006c]">
                         <ListChecks class="h-5 w-5 text-indigo-600" /> Section Averages
                     </div>
-                    <table class="w-full border-collapse overflow-hidden rounded-md text-sm shadow-sm">
-                        <thead class="bg-gray-100 text-gray-700">
+                    <table class="w-full overflow-hidden rounded-md border border-[#01006c] text-sm">
+                        <thead class="bg-[#01006c] text-white">
                             <tr>
-                                <th class="border px-4 py-2 text-left">Section</th>
-                                <th class="border px-4 py-2 text-left">Average (%)</th>
+                                <th class="border border-[#01006c] px-4 py-2 text-left">Section</th>
+                                <th class="border border-[#01006c] px-4 py-2 text-left">Average (%)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="s in props.sectionsAvg" :key="s.section.id" class="even:bg-gray-50">
-                                <td class="border px-4 py-2">{{ s.section.name }}</td>
-                                <td class="border px-4 py-2 font-medium text-blue-700">{{ s.average }}%</td>
+                                <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ s.section.name }}</td>
+                                <td class="border border-[#01006c] px-4 py-2 font-medium text-pink-600">{{ s.average }}%</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
+                <!-- Year Level Average -->
                 <div class="mt-2 flex items-center gap-2 text-lg font-bold text-[#01006c]">
                     <CalendarClock class="h-5 w-5 text-yellow-500" />
-                    Year Level Average: <span class="ml-2 text-green-700">{{ props.yearLevelAverage }}%</span>
+                    Year Level Average:
+                    <span class="ml-2 text-green-700">{{ props.yearLevelAverage }}%</span>
                 </div>
             </div>
 
+            <!-- No Results -->
             <div v-else-if="filtersApplied" class="mt-8 text-center text-sm text-gray-500 italic">
                 <p>No results available for the selected filters.</p>
             </div>

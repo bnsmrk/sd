@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
-import { Check, Pencil, Plus, Save, Trash2, X } from 'lucide-vue-next';
+import { Check, Pencil, Save, Trash2, X } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -78,34 +78,45 @@ const deleteYearLevel = () => {
     <Head title="Year Levels" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-6">
-            <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <h2 class="text-xl font-bold">🎓 Year Levels</h2>
-                <div class="flex items-center gap-2">
-                    <input v-model="search" type="text" placeholder="Search year level..." class="rounded border px-3 py-2 text-sm shadow-sm" />
-                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-                        <Plus class="h-4 w-4" /> Add Year Level
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h1 class="text-xl font-bold text-[#01006c]">👥 Users</h1>
+                <div class="flex flex-wrap items-center gap-2">
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Search..."
+                        class="rounded border border-[#01006c] px-3 py-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none"
+                    />
+                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white hover:bg-[#0d1282]">
+                        <UserPlus class="h-4 w-4" /> Add User
                     </button>
                 </div>
             </div>
 
-            <div class="overflow-hidden rounded-lg border shadow">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50 text-xs font-semibold text-gray-600">
+            <div class="overflow-hidden rounded-lg border border-[#01006c] shadow">
+                <table class="min-w-full divide-y divide-[#01006c]">
+                    <thead class="bg-[#01006c] text-xs font-semibold text-white">
                         <tr>
                             <th class="px-6 py-3 text-center">ID</th>
                             <th class="px-6 py-3 text-left">Name</th>
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 bg-white text-sm">
-                        <tr v-for="level in props.yearLevels.data" :key="level.id">
-                            <td class="px-6 py-4 text-center font-medium text-gray-800">{{ level.id }}</td>
-                            <td class="px-6 py-4 text-left text-gray-700">{{ level.name }}</td>
+                    <tbody class="divide-y divide-[#01006c] bg-white text-sm">
+                        <tr v-for="level in props.yearLevels.data" :key="level.id" class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-center font-medium text-[#01006c]">{{ level.id }}</td>
+                            <td class="px-6 py-4 text-left text-[#01006c]">{{ level.name }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
-                                <button @click="openEditModal(level)" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                                <button
+                                    @click="openEditModal(level)"
+                                    class="inline-flex items-center gap-1 text-[#01006c] transition hover:text-[#ff69b4]"
+                                >
                                     <Pencil class="h-4 w-4" /> Edit
                                 </button>
-                                <button @click="openDeleteModal(level.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
+                                <button
+                                    @click="openDeleteModal(level.id)"
+                                    class="inline-flex items-center gap-1 text-red-600 transition hover:text-red-800"
+                                >
                                     <Trash2 class="h-4 w-4" /> Delete
                                 </button>
                             </td>
@@ -113,6 +124,7 @@ const deleteYearLevel = () => {
                     </tbody>
                 </table>
             </div>
+
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.yearLevels.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />

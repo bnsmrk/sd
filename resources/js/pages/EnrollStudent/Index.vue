@@ -60,18 +60,26 @@ const cancelDelete = () => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
             <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-gray-800">📋 Enrollments</h2>
+                <h2 class="text-xl font-bold text-[#01006c]">📋 Enrollments</h2>
                 <div class="flex items-center gap-2">
-                    <input v-model="search" type="text" placeholder="Search student..." class="rounded border px-3 py-2 text-sm shadow-sm" />
-                    <Link href="/enroll/create" class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Search student..."
+                        class="rounded border border-[#01006c] px-3 py-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none"
+                    />
+                    <Link
+                        href="/enroll/create"
+                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white transition hover:bg-[#0d1282]"
+                    >
                         <Plus class="h-4 w-4" /> Add Enrollment
                     </Link>
                 </div>
             </div>
 
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="min-w-full text-left text-sm text-gray-700">
-                    <thead class="bg-gray-50 text-xs text-gray-600 uppercase">
+            <div class="relative overflow-x-auto rounded-lg border border-[#01006c] shadow">
+                <table class="min-w-full text-left text-sm text-[#01006c]">
+                    <thead class="bg-[#01006c] text-xs text-white uppercase">
                         <tr>
                             <th class="px-6 py-3">Student</th>
                             <th class="px-6 py-3">Year Level</th>
@@ -79,16 +87,22 @@ const cancelDelete = () => {
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr v-for="enroll in enrollments.data" :key="enroll.id" class="border-b bg-white hover:bg-gray-50">
+                    <tbody class="divide-y divide-[#01006c] bg-white">
+                        <tr v-for="enroll in enrollments.data" :key="enroll.id" class="transition hover:bg-gray-50">
                             <td class="px-6 py-4 font-medium">{{ enroll.user.name }}</td>
                             <td class="px-6 py-4">{{ enroll.year_level.name }}</td>
                             <td class="px-6 py-4">{{ enroll.section?.name ?? '—' }}</td>
                             <td class="space-x-3 px-6 py-4 text-center">
-                                <Link :href="`/enroll/${enroll.id}/edit`" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                                <Link
+                                    :href="`/enroll/${enroll.id}/edit`"
+                                    class="inline-flex items-center gap-1 text-[#01006c] transition hover:text-[#ff69b4]"
+                                >
                                     <Pencil class="h-4 w-4" /> Edit
                                 </Link>
-                                <button @click="confirmDelete(enroll.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
+                                <button
+                                    @click="confirmDelete(enroll.id)"
+                                    class="inline-flex items-center gap-1 text-red-600 transition hover:text-red-800"
+                                >
                                     <Trash2 class="h-4 w-4" /> Delete
                                 </button>
                             </td>
@@ -96,6 +110,7 @@ const cancelDelete = () => {
                     </tbody>
                 </table>
             </div>
+
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in enrollments.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />

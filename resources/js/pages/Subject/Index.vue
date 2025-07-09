@@ -135,47 +135,63 @@ watch(search, (value) => {
     router.get('/subjects', { search: value }, { preserveState: true, replace: true });
 });
 </script>
-
 <template>
     <Head title="Subjects" />
     <AppLayout>
         <div class="p-4">
+            <!-- Header -->
             <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <h2 class="text-xl font-bold text-gray-800">📘 Subjects</h2>
+                <h2 class="text-xl font-bold text-[#01006c]">📘 Subjects</h2>
                 <div class="flex items-center gap-2">
-                    <input v-model="search" type="text" placeholder="Search subject..." class="w-full rounded border p-2 text-sm md:w-64" />
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Search subject..."
+                        class="w-full rounded border border-[#01006c] p-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none md:w-64"
+                    />
                     <button
                         @click="openCreateModal"
-                        class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white transition hover:bg-[#0d1282]"
                     >
-                        <Plus class="h-4 w-4" /> Add Subject
+                        <Plus class="h-4 w-4" />
+                        Add Subject
                     </button>
                 </div>
             </div>
-
-            <table class="min-w-full table-auto text-sm text-gray-700 shadow">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-4 py-2">Name</th>
-                        <th class="px-4 py-2">Year Level</th>
-                        <th class="px-4 py-2 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="subject in props.subjects.data" :key="subject.id" class="bg-white hover:bg-gray-50">
-                        <td class="px-4 py-2">{{ subject.name }}</td>
-                        <td class="px-4 py-2">{{ subject.year_level?.name ?? '—' }}</td>
-                        <td class="space-x-2 px-4 py-2 text-center">
-                            <button @click="openEditModal(subject)" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
-                                <Pencil class="h-4 w-4" /> Edit
-                            </button>
-                            <button @click="confirmDelete(subject.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
-                                <Trash2 class="h-4 w-4" /> Delete
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Table -->
+            <div class="overflow-x-auto rounded-lg border border-[#01006c] shadow">
+                <table class="min-w-full table-auto text-sm text-[#01006c]">
+                    <thead class="bg-[#01006c] text-xs font-semibold text-white uppercase">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Name</th>
+                            <th class="px-4 py-2 text-left">Year Level</th>
+                            <th class="px-4 py-2 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#01006c] bg-white">
+                        <tr v-for="subject in props.subjects.data" :key="subject.id" class="transition hover:bg-gray-50">
+                            <td class="px-4 py-2">{{ subject.name }}</td>
+                            <td class="px-4 py-2">{{ subject.year_level?.name ?? '—' }}</td>
+                            <td class="space-x-2 px-4 py-2 text-center">
+                                <button
+                                    @click="openEditModal(subject)"
+                                    class="inline-flex items-center gap-1 text-[#01006c] transition hover:text-[#ff69b4]"
+                                >
+                                    <Pencil class="h-4 w-4" />
+                                    Edit
+                                </button>
+                                <button
+                                    @click="confirmDelete(subject.id)"
+                                    class="inline-flex items-center gap-1 text-red-600 transition hover:text-red-800"
+                                >
+                                    <Trash2 class="h-4 w-4" />
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="mt-6 flex justify-center gap-2">
             <template v-for="(link, i) in props.subjects.links" :key="i">
@@ -193,12 +209,10 @@ watch(search, (value) => {
                 </Link>
             </template>
         </div>
-
         <!-- 🌸 Add Subject Modal -->
         <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-xl rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">➕ Add Subject</h2>
-
                 <div class="mb-4">
                     <label class="block font-semibold text-[#01006c]">Year Level</label>
                     <select
@@ -210,7 +224,6 @@ watch(search, (value) => {
                     </select>
                     <div class="text-sm text-red-600">{{ createForm.errors.year_level_id }}</div>
                 </div>
-
                 <div class="mb-4">
                     <label class="block font-semibold text-[#01006c]">Shared Subjects</label>
                     <div v-for="(subject, index) in createForm.shared_subjects" :key="index" class="mb-2 flex gap-2">
@@ -228,7 +241,6 @@ watch(search, (value) => {
                     </div>
                     <button @click.prevent="addTo(createForm.shared_subjects)" class="text-sm text-blue-600 hover:underline">+ Add</button>
                 </div>
-
                 <div class="mb-4" v-if="isSHS">
                     <label class="block font-semibold text-[#01006c]">Major Subjects</label>
                     <div v-for="(subject, index) in createForm.major_subjects" :key="index" class="mb-2 flex gap-2">
@@ -246,13 +258,13 @@ watch(search, (value) => {
                     </div>
                     <button @click.prevent="addTo(createForm.major_subjects)" class="text-sm text-blue-600 hover:underline">+ Add</button>
                 </div>
-
                 <div class="mt-4 flex justify-end space-x-2">
                     <button
                         @click="showCreateModal = false"
                         class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
                     >
-                        <X class="h-4 w-4" /> Cancel
+                        <X class="h-4 w-4" />
+                        Cancel
                     </button>
                     <button
                         @click="submitCreate"
@@ -265,12 +277,10 @@ watch(search, (value) => {
                 </div>
             </div>
         </div>
-
         <!-- 🌸 Edit Subject Modal -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">✏️ Edit Subject</h2>
-
                 <div class="mb-4">
                     <label class="block font-semibold text-[#01006c]">Subject Name</label>
                     <input
@@ -279,7 +289,6 @@ watch(search, (value) => {
                     />
                     <div class="text-sm text-red-600">{{ editForm.errors.name }}</div>
                 </div>
-
                 <div class="mb-4">
                     <label class="block font-semibold text-[#01006c]">Year Level</label>
                     <select
@@ -291,7 +300,6 @@ watch(search, (value) => {
                     </select>
                     <div class="text-sm text-red-600">{{ editForm.errors.year_level_id }}</div>
                 </div>
-
                 <div class="flex justify-end space-x-2">
                     <button
                         @click="showEditModal = false"
@@ -311,7 +319,6 @@ watch(search, (value) => {
                 </div>
             </div>
         </div>
-
         <!-- 🌸 Delete Subject Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-sm rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
@@ -322,13 +329,15 @@ watch(search, (value) => {
                         @click="showDeleteModal = false"
                         class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
                     >
-                        <X class="h-4 w-4" /> Cancel
+                        <X class="h-4 w-4" />
+                        Cancel
                     </button>
                     <button
                         @click="destroyItem"
                         class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
                     >
-                        <Trash2 class="h-4 w-4" /> Confirm
+                        <Trash2 class="h-4 w-4" />
+                        Confirm
                     </button>
                 </div>
             </div>

@@ -16,38 +16,44 @@ const props = defineProps<{
 <template>
     <Head title="View Assignment" />
     <AppLayout :breadcrumbs="[{ title: 'Assignments', href: '/teacher-assignments' }]">
-        <div class="mx-auto mt-10 max-w-6xl space-y-8 px-6">
+        <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
+            <!-- Header -->
             <div class="flex items-center justify-between">
-                <h1 class="text-lg font-bold text-gray-900 dark:text-white">Teacher Assignment Details</h1>
+                <h1 class="text-lg font-bold text-[#01006c]">📄 Teacher Assignment Details</h1>
                 <Link
                     href="/teacher-assignments"
-                    class="rounded-lg bg-gray-800 px-2 py-2 text-sm font-medium text-white hover:bg-gray-900 focus:ring-2 focus:ring-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+                    class="inline-flex items-center gap-1 rounded-md border border-[#01006c] bg-white px-3 py-1.5 text-sm font-semibold text-[#01006c] hover:bg-[#ffc60b]"
                 >
                     ← Back to List
                 </Link>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 rounded-lg border border-gray-200 bg-white p-4 shadow dark:border-gray-700 dark:bg-gray-800">
+            <!-- Assignment Info Card -->
+            <div class="grid grid-cols-1 gap-4 rounded-lg border-2 border-[#01006c] bg-white p-6 shadow-sm md:grid-cols-2">
+                <!-- Teacher -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-300">Teacher</label>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ props.assignment.teacher.name }}</p>
+                    <label class="mb-1 block text-sm font-medium text-[#ff69b4]">👤 Teacher</label>
+                    <p class="text-lg font-semibold text-[#01006c]">{{ props.assignment.teacher.name }}</p>
                 </div>
 
+                <!-- Year Level -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-300">Year Level</label>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ props.assignment.year_level.name }}</p>
+                    <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🎓 Year Level</label>
+                    <p class="text-lg font-semibold text-[#01006c]">{{ props.assignment.year_level.name }}</p>
                 </div>
 
+                <!-- Section -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-300">Section</label>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                    <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🏫 Section</label>
+                    <p class="text-lg font-semibold text-[#01006c]">
                         {{ props.assignment.section?.name ?? '— (Shared Subject)' }}
                     </p>
                 </div>
 
+                <!-- Subject -->
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-300">Subject</label>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ props.assignment.subject.name }}</p>
+                    <label class="mb-1 block text-sm font-medium text-[#ff69b4]">📘 Subject</label>
+                    <p class="text-lg font-semibold text-[#01006c]">{{ props.assignment.subject.name }}</p>
                 </div>
             </div>
         </div>
