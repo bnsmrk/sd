@@ -149,17 +149,15 @@ const pdfUrl = computed(() => {
     <AppLayout>
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
             <!-- Header -->
-            <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
-                <BarChart2 class="h-6 w-6" /> Proficiency Report
-            </h1>
+            <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><BarChart2 class="h-6 w-6" /> Proficiency Reports</h1>
 
             <!-- Filters -->
-            <div class="flex flex-wrap gap-4 rounded-lg border  bg-white p-4">
+            <div class="flex flex-wrap gap-4 rounded-lg border bg-white p-4">
                 <div class="relative min-w-[180px] flex-grow">
-                    <Layers class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <Layers class="absolute top-2.5 left-3 h-4 w-4 text-[#01006c]" />
                     <select
                         v-model="selectedYearLevel"
-                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white py-2 pr-3 pl-10 text-sm focus:border-[#ffc60b] focus:outline-none"
                     >
                         <option :value="null">Select Year Level</option>
                         <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
@@ -167,10 +165,10 @@ const pdfUrl = computed(() => {
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <LayoutTemplate class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <LayoutTemplate class="absolute top-2.5 left-3 h-4 w-4 text-[#01006c]" />
                     <select
                         v-model="selectedSection"
-                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white py-2 pr-3 pl-10 text-sm focus:border-[#ffc60b] focus:outline-none"
                     >
                         <option :value="null">Select Section</option>
                         <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -178,10 +176,10 @@ const pdfUrl = computed(() => {
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <BookOpen class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <BookOpen class="absolute top-2.5 left-3 h-4 w-4 text-[#01006c]" />
                     <select
                         v-model="selectedSubject"
-                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white py-2 pr-3 pl-10 text-sm focus:border-[#ffc60b] focus:outline-none"
                     >
                         <option :value="null">Select Subject</option>
                         <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
@@ -189,10 +187,10 @@ const pdfUrl = computed(() => {
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <FileText class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <FileText class="absolute top-2.5 left-3 h-4 w-4 text-[#01006c]" />
                     <select
                         v-model="selectedModule"
-                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white py-2 pr-3 pl-10 text-sm focus:border-[#ffc60b] focus:outline-none"
                     >
                         <option :value="null">Select Module</option>
                         <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
@@ -200,10 +198,10 @@ const pdfUrl = computed(() => {
                 </div>
 
                 <div class="relative min-w-[160px] flex-grow">
-                    <ClipboardList class="absolute left-3 top-2.5 h-4 w-4 text-[#01006c]" />
+                    <ClipboardList class="absolute top-2.5 left-3 h-4 w-4 text-[#01006c]" />
                     <select
                         v-model="selectedType"
-                        class="w-full rounded border border-[#01006c] py-2 pl-10 pr-3 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white py-2 pr-3 pl-10 text-sm focus:border-[#ffc60b] focus:outline-none"
                     >
                         <option value="quiz">Quiz</option>
                         <option value="exam">Exam</option>

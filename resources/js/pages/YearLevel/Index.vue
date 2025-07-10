@@ -88,7 +88,7 @@ const deleteYearLevel = () => {
                         class="rounded border border-[#01006c] px-3 py-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none"
                     />
                     <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white hover:bg-[#0d1282]">
-                        <UserPlus class="h-4 w-4" /> Add User
+                        <UserPlus class="h-4 w-4" /> + Add Year Level
                     </button>
                 </div>
             </div>

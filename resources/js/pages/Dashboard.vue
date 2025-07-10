@@ -3,7 +3,9 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Chart, registerables } from 'chart.js';
+import { Shield, User, Users } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
+
 Chart.register(...registerables);
 
 const props = defineProps<{
@@ -21,6 +23,20 @@ const props = defineProps<{
 
 const barChartRef = ref<HTMLCanvasElement | null>(null);
 const lineChartRef = ref<HTMLCanvasElement | null>(null);
+
+const hoverBorders = ['hover:border-[#ff69b4]', 'hover:border-[#01006c]', 'hover:border-[#ffc60b]'];
+const topBorderColors = ['bg-blue-400', 'bg-green-400', 'bg-yellow-400'];
+
+function getCardClasses(index: number) {
+    const borderHover = hoverBorders[index % hoverBorders.length];
+    return `relative overflow-hidden rounded-xl border border-pink-200 bg-white p-5 shadow-md transition-all hover:scale-[1.02] hover:shadow-xl ${borderHover}`;
+}
+
+function getTopBorderColor(index: number) {
+    return topBorderColors[index % topBorderColors.length];
+}
+
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }];
 
 onMounted(() => {
     if (barChartRef.value) {
@@ -86,39 +102,56 @@ onMounted(() => {
         });
     }
 });
-
-const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }];
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="" />
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="space-y-10 p-4">
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <div class="rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white shadow">
-                    <h3 class="text-sm tracking-wide uppercase">Total Students</h3>
-                    <p class="mt-2 text-3xl font-bold">{{ props.userSummary.students }}</p>
+        <div class="min-h-screen space-y-10 bg-pink-50 px-6 py-8">
+            <h1 class="text-3xl font-bold text-[#01006c]">💻 ICT Dashboard</h1>
+
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div :class="getCardClasses(0)">
+                    <div :class="getTopBorderColor(0)" class="absolute top-0 left-0 h-1 w-full"></div>
+                    <div class="flex h-full flex-col justify-between">
+                        <div class="pb-4">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]"><Users class="h-5 w-5" /> Total Students</h2>
+                            <p class="mt-2 text-4xl font-bold text-blue-800">{{ props.userSummary.students }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="rounded-xl bg-gradient-to-r from-green-500 to-green-600 p-4 text-white shadow">
-                    <h3 class="text-sm tracking-wide uppercase">Total Teachers</h3>
-                    <p class="mt-2 text-3xl font-bold">{{ props.userSummary.teachers }}</p>
+
+                <div :class="getCardClasses(1)">
+                    <div :class="getTopBorderColor(1)" class="absolute top-0 left-0 h-1 w-full"></div>
+                    <div class="flex h-full flex-col justify-between">
+                        <div class="pb-4">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]"><User class="h-5 w-5" /> Total Teachers</h2>
+                            <p class="mt-2 text-4xl font-bold text-green-800">{{ props.userSummary.teachers }}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 p-4 text-white shadow">
-                    <h3 class="text-sm tracking-wide uppercase">Total Admins</h3>
-                    <p class="mt-2 text-3xl font-bold">{{ props.userSummary.admins }}</p>
+
+                <div :class="getCardClasses(2)">
+                    <div :class="getTopBorderColor(2)" class="absolute top-0 left-0 h-1 w-full"></div>
+                    <div class="flex h-full flex-col justify-between">
+                        <div class="pb-4">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]"><Shield class="h-5 w-5" /> Total Admins</h2>
+                            <p class="mt-2 text-4xl font-bold text-yellow-800">{{ props.userSummary.admins }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div class="rounded-xl bg-white p-4 shadow dark:bg-gray-800">
-                    <h2 class="mb-2 text-lg font-semibold">User Role Distribution</h2>
+            <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div class="rounded-xl bg-white p-6 shadow transition hover:shadow-lg">
+                    <h2 class="mb-2 text-lg font-semibold text-indigo-800">📊 User Role Distribution</h2>
                     <div class="h-64">
                         <canvas ref="barChartRef"></canvas>
                     </div>
                 </div>
 
-                <div class="rounded-xl bg-white p-4 shadow dark:bg-gray-800">
-                    <h2 class="mb-2 text-lg font-semibold">Monthly Growth</h2>
+                <div class="rounded-xl bg-white p-6 shadow transition hover:shadow-lg">
+                    <h2 class="mb-2 text-lg font-semibold text-red-600">📈 Monthly Growth</h2>
                     <div class="h-64">
                         <canvas ref="lineChartRef"></canvas>
                     </div>

@@ -94,13 +94,11 @@ const applyFilters = () => {
 <template>
     <Head title="Teachers Lesson Plans" />
     <AppLayout>
-        <div class="mx-auto max-w-7xl space-y-8 px-6 py-8">
-            <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
-                <FileText class="h-6 w-6" /> Teachers Lesson Plans
-            </h1>
+        <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
+            <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><FileText class="h-6 w-6" /> Teachers Lesson Plans</h1>
 
             <!-- Filter Bar -->
-            <div class="flex flex-wrap items-center gap-4 rounded-lg border  bg-white p-4">
+            <div class="flex flex-wrap items-center gap-4 rounded-lg border bg-white p-4">
                 <select
                     v-model="selectedYearLevel"
                     @change="selectedSection = null"
@@ -139,11 +137,7 @@ const applyFilters = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr
-                            v-for="plan in props.lessonPlans"
-                            :key="plan.id"
-                            class="bg-white hover:bg-gray-50"
-                        >
+                        <tr v-for="plan in props.lessonPlans" :key="plan.id" class="bg-white hover:bg-gray-50">
                             <td class="border px-4 py-2 text-[#01006c]">{{ plan.title }}</td>
                             <td class="border px-4 py-2 text-[#01006c]">{{ plan.uploader?.name ?? 'N/A' }}</td>
                             <td class="border px-4 py-2 text-[#01006c]">{{ plan.year_level?.name ?? '—' }}</td>
@@ -162,7 +156,7 @@ const applyFilters = () => {
                                         <p class="font-medium text-[#ff69b4]">Comments:</p>
                                         <ul class="ml-4 list-disc">
                                             <li v-for="c in plan.comments" :key="c.id">
-                                                <span class="italic text-[#01006c]">{{ c.user.name }}:</span> {{ c.comment }}
+                                                <span class="text-[#01006c] italic">{{ c.user.name }}:</span> {{ c.comment }}
                                             </li>
                                         </ul>
                                     </div>
@@ -188,10 +182,7 @@ const applyFilters = () => {
             </div>
 
             <!-- No Results -->
-            <div v-else-if="filtersApplied" class="text-center text-gray-500 italic">
-                No lesson plans found for selected filters.
-            </div>
+            <div v-else-if="filtersApplied" class="text-center text-gray-500 italic">No lesson plans found for selected filters.</div>
         </div>
     </AppLayout>
 </template>
-

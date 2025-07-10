@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import FullCalendar from '@fullcalendar/vue3';
 import { Head } from '@inertiajs/vue3';
 import { Chart, registerables } from 'chart.js';
-import { onMounted, ref } from 'vue';
+import { ClipboardList, Layers, Users } from 'lucide-vue-next';
+import { onMounted } from 'vue';
 
 Chart.register(...registerables);
 
@@ -19,16 +18,14 @@ const props = defineProps<{
     };
 }>();
 
-const calendarEvents = ref([
-    { title: 'English Proficiency Test', date: '2025-07-04' },
-    { title: 'Science Activity', date: '2025-07-06' },
-]);
+const totalStudents = props.yearLevels.reduce((sum, yl) => sum + yl.students_count, 0);
 
-const calendarOptions = ref({
-    plugins: [dayGridPlugin],
-    initialView: 'dayGridMonth',
-    events: calendarEvents.value,
-});
+const hoverBorders = ['hover:border-[#ff69b4]', 'hover:border-[#01006c]', 'hover:border-[#ffc60b]'];
+
+function getCardClasses(index: number) {
+    const borderHover = hoverBorders[index % hoverBorders.length];
+    return `relative overflow-hidden rounded-xl border border-pink-200 bg-white p-5 shadow-md transition-all hover:scale-[1.02] hover:shadow-xl ${borderHover}`;
+}
 
 onMounted(() => {
     const ctx = document.getElementById('chart') as HTMLCanvasElement;
@@ -64,44 +61,47 @@ onMounted(() => {
 <template>
     <Head title="Head Dashboard" />
     <AppLayout :breadcrumbs="[{ title: 'Head Dashboard', href: '/head-dashboard' }]">
-        <div class="mx-auto max-w-full space-y-6 p-4 sm:p-6">
-            <h1 class="text-xl font-bold text-[#01006c] sm:text-2xl">Head Dashboard</h1>
+        <div class="min-h-screen space-y-6 bg-pink-50 px-6 py-8">
+            <h1 class="text-3xl font-bold text-[#01006c]">📊 Head Dashboard</h1>
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <div
-                    v-for="level in props.yearLevels"
-                    :key="level.id"
-                    class="flex flex-col justify-between rounded-lg bg-white p-4 shadow dark:bg-gray-800"
-                >
-                    <p class="text-sm text-gray-500">Year Level</p>
-                    <p class="text-lg font-bold">{{ level.name }}</p>
-                    <p class="text-blue-600 dark:text-blue-400">{{ level.students_count }} students</p>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div :class="getCardClasses(0)">
+                    <div class="absolute top-0 left-0 h-1 w-full bg-yellow-400"></div>
+                    <div class="flex h-full flex-col justify-between">
+                        <div class="pb-4">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]"><Users class="h-5 w-5" /> Total Students</h2>
+                            <p class="mt-2 text-4xl font-bold text-blue-800">{{ totalStudents }}</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-                    <p class="text-sm text-gray-500">Total Sections</p>
-                    <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ props.sectionCount }}</p>
+                <div :class="getCardClasses(1)">
+                    <div class="absolute top-0 left-0 h-1 w-full bg-pink-400"></div>
+                    <div class="flex h-full flex-col justify-between">
+                        <div class="pb-4">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]"><Layers class="h-5 w-5" /> Total Sections</h2>
+                            <p class="mt-2 text-4xl font-bold text-green-800">{{ props.sectionCount }}</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-                    <p class="text-sm text-gray-500">Total Teachers</p>
-                    <p class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ props.teacherCount }}</p>
+                <div :class="getCardClasses(2)">
+                    <div class="absolute top-0 left-0 h-1 w-full bg-indigo-400"></div>
+                    <div class="flex h-full flex-col justify-between">
+                        <div class="pb-4">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]">
+                                <ClipboardList class="h-5 w-5" /> Total Teachers
+                            </h2>
+                            <p class="mt-2 text-4xl font-bold text-purple-800">{{ props.teacherCount }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="sha dow rounded-lg bg-white p-4 dark:bg-gray-800">
-                <FullCalendar :options="calendarOptions" />
-            </div>
-
-            <div class="mt-4 h-[400px] rounded-lg bg-white p-4 shadow sm:p-6 dark:bg-gray-800">
+            <div class="mt-10 h-[400px] rounded-xl bg-white p-6 shadow">
+                <h2 class="mb-2 text-lg font-semibold text-indigo-800">📊 Students & Activity Overview</h2>
                 <canvas id="chart" class="h-full w-full"></canvas>
             </div>
         </div>
     </AppLayout>
 </template>
-
-<style scoped>
-.fc {
-    font-size: 0.95rem;
-}
-</style>

@@ -15,25 +15,17 @@ const props = defineProps<{
     };
 }>();
 
-const iconMap = {
-    yearLevels: Book,
-    sections: LayoutGrid,
-    subjects: ClipboardList,
-    teachers: User,
-    students: GraduationCap,
-    heads: Users,
-    ict: MonitorSmartphone,
-};
+const hoverBorders = ['hover:border-[#ff69b4]', 'hover:border-[#01006c]', 'hover:border-[#ffc60b]'];
+const topBorderColors = ['bg-yellow-400', 'bg-pink-400', 'bg-indigo-400'];
 
-const labels = {
-    yearLevels: 'Year Levels',
-    sections: 'Sections',
-    subjects: 'Subjects',
-    teachers: 'Teachers',
-    students: 'Students',
-    heads: 'Heads',
-    ict: 'ICT Personnel',
-};
+function getCardClasses(index: number) {
+    const borderHover = hoverBorders[index % hoverBorders.length];
+    return `relative overflow-hidden rounded-xl border border-pink-200 bg-white p-5 shadow-md transition-all hover:scale-[1.02] hover:shadow-xl ${borderHover}`;
+}
+
+function getTopBorderColor(index: number) {
+    return topBorderColors[index % topBorderColors.length];
+}
 
 const statsKeys = Object.keys(props.counts) as (keyof typeof props.counts)[];
 </script>
@@ -41,14 +33,43 @@ const statsKeys = Object.keys(props.counts) as (keyof typeof props.counts)[];
 <template>
     <Head title="Principal Dashboard" />
     <AppLayout :breadcrumbs="[{ title: 'Principal Dashboard', href: '/principal-dashboard' }]">
-        <div class="space-y-8 p-6">
+        <div class="min-h-screen space-y-8 bg-pink-50 p-6">
             <h1 class="text-3xl font-bold text-[#01006c]">📊 Principal Dashboard</h1>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                <div v-for="key in statsKeys" :key="key" class="rounded-xl border border-indigo-200 bg-white p-6 shadow transition hover:shadow-md">
-                    <component :is="iconMap[key]" class="mb-3 h-8 w-8 text-indigo-600" />
-                    <h2 class="text-2xl font-bold text-gray-800">{{ props.counts[key] }}</h2>
-                    <p class="text-sm text-gray-500">{{ labels[key] }}</p>
+                <div v-for="(key, index) in statsKeys" :key="key" :class="getCardClasses(index)">
+                    <div :class="getTopBorderColor(index)" class="absolute top-0 left-0 h-1 w-full"></div>
+                    <div class="flex h-full flex-col justify-between">
+                        <div class="pb-4">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]">
+                                <Book v-if="key === 'yearLevels'" class="h-5 w-5" />
+                                <LayoutGrid v-else-if="key === 'sections'" class="h-5 w-5" />
+                                <ClipboardList v-else-if="key === 'subjects'" class="h-5 w-5" />
+                                <User v-else-if="key === 'teachers'" class="h-5 w-5" />
+                                <GraduationCap v-else-if="key === 'students'" class="h-5 w-5" />
+                                <Users v-else-if="key === 'heads'" class="h-5 w-5" />
+                                <MonitorSmartphone v-else-if="key === 'ict'" class="h-5 w-5" />
+                                {{
+                                    key === 'yearLevels'
+                                        ? 'Year Levels'
+                                        : key === 'sections'
+                                          ? 'Sections'
+                                          : key === 'subjects'
+                                            ? 'Subjects'
+                                            : key === 'teachers'
+                                              ? 'Teachers'
+                                              : key === 'students'
+                                                ? 'Students'
+                                                : key === 'heads'
+                                                  ? 'Heads'
+                                                  : key === 'ict'
+                                                    ? 'ICT Personnel'
+                                                    : key
+                                }}
+                            </h2>
+                            <p class="mt-2 text-4xl font-bold text-blue-800">{{ props.counts[key] }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
