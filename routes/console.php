@@ -16,6 +16,6 @@ Artisan::command('inspire', function () {
 
 Schedule::command('notify:due-items')->cron('0 7 */2 * *'); //will run once every two days
 
-Schedule::call(function () {
-    Log::info('⏰ Scheduler ran at ' . now());
-})->everyMinute();
+// Schedule::call(function () {
+//     Log::info('⏰ Scheduler ran at ' . now());
+// })->everyMinute();

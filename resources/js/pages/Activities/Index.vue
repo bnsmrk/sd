@@ -128,7 +128,7 @@ function cancelDelete() {
                                             <PlusCircle class="inline h-4 w-4" />
                                         </Link>
 
-                                        <Link :href="`/activities/${a.id}/essay-scores`" class="text-purple-600 hover:text-purple-800">
+                                        <Link :href="`/activities/${a.id}/essay-answers`" class="text-purple-600 hover:text-purple-800">
                                             <FileText class="inline h-4 w-4" />
                                         </Link>
                                     </template>

@@ -22,16 +22,16 @@ export default defineConfig({
             },
         }),
     ],
-    server: {
-        host: '192.168.169.6', // 👈 use your machine's IP
-        port: 5173,
-        hmr: {
-            host: '192.168.169.6', // 👈 ensure hot-reload also uses same IP
-        },
-    },
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './resources/js'),
-        },
-    },
+    // server: {
+    //     host: '192.168.169.6', // 👈 use your machine's IP
+    //     port: 5173,
+    //     hmr: {
+    //         host: '192.168.169.6', // 👈 ensure hot-reload also uses same IP
+    //     },
+    // },
+    // resolve: {
+    //     alias: {
+    //         '@': path.resolve(__dirname, './resources/js'),
+    //     },
+    // },
 });

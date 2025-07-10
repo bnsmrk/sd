@@ -52,37 +52,44 @@ class QuizController extends Controller
     foreach ($answers as $questionId => $answer) {
         $question = Question::find($questionId);
         if (!$question) continue;
-
+    
         $points = 1;
         $isCorrect = null;
         $earned = 0;
-
+    
         if ($question->type !== 'essay') {
             $correctAnswer = $question->answer_key;
-
+    
             if ($question->type === 'checkboxes') {
                 $userAnswer = is_array($answer) ? $answer : json_decode($answer, true);
                 $correct = is_array($correctAnswer) ? $correctAnswer : json_decode($correctAnswer, true);
-
+    
                 $userAnswer = array_map(fn($v) => strtolower(trim($v)), $userAnswer ?? []);
                 $correct = array_map(fn($v) => strtolower(trim($v)), $correct ?? []);
-
+    
                 sort($userAnswer);
                 sort($correct);
-
+                Log::debug('Checkbox Validation', [
+                    'question_id' => $questionId,
+                    'userAnswer' => $userAnswer,
+                    'correctAnswer' => $correct,
+                    'isMatch' => $userAnswer === $correct,
+                ]);
+            
                 $isCorrect = $userAnswer === $correct;
             } else {
                 $isCorrect = strtolower(trim($correctAnswer)) === strtolower(trim(is_array($answer) ? '' : $answer));
             }
-
+    
             if ($isCorrect) {
                 $earned = $points;
                 $score += $earned;
             }
-
-            $total += $points;
         }
-
+    
+        // ✅ Always increment total — even essay
+        $total += $points;
+    
         StudentAnswer::create([
             'user_id' => $user->id,
             'activity_id' => $quizId,
@@ -92,7 +99,7 @@ class QuizController extends Controller
             'score' => $earned,
         ]);
     }
-
+    
 
     StudentQuizResult::create([
         'user_id' => $user->id,
