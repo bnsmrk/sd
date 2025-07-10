@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+
 import { router } from '@inertiajs/vue3';
 import { ArrowLeftCircle, CheckCircle2 } from 'lucide-vue-next';
 defineProps<{
@@ -10,7 +12,7 @@ defineProps<{
 </script>
 
 <template>
-    <AppLayoutStudent>
+    <AppLayout>
         <div class="flex min-h-[70vh] items-center justify-center bg-gradient-to-br from-blue-50 to-pink-50 px-4 py-10">
             <div class="w-full max-w-md rounded-xl border border-blue-200 bg-white p-8 text-center shadow-lg">
                 <div class="mb-4 flex flex-col items-center justify-center">
@@ -34,5 +36,5 @@ defineProps<{
                 </button>
             </div>
         </div>
-    </AppLayoutStudent>
+    </AppLayout>
 </template>

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+
 import { Head, useForm } from '@inertiajs/vue3';
 import { FileDown, FileText, PencilLine, Send, UploadCloud } from 'lucide-vue-next';
 
@@ -23,7 +25,7 @@ const form = useForm({
 <template>
     <Head :title="`Submit Essay - ${props.activity.title}`" />
 
-    <AppLayoutStudent>
+    <AppLayout>
         <div class="mx-auto max-w-6xl px-8 py-12">
             <div class="mb-10">
                 <h1 class="mb-2 flex items-center gap-3 text-4xl font-bold text-[#01006c]"><FileText class="h-8 w-8" /> Submit Essay</h1>
@@ -88,5 +90,5 @@ const form = useForm({
                 </div>
             </form>
         </div>
-    </AppLayoutStudent>
+    </AppLayout>
 </template>

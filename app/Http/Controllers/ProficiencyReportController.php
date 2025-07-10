@@ -12,7 +12,8 @@ use App\Models\Subject;
 use App\Models\Module;
 use App\Models\Activity;
 use App\Models\TeacherAssignment;
-
+use Google_Client;
+use Google_Service_Sheets;
 class ProficiencyReportController extends Controller
 {
     public function index(Request $request)
@@ -135,4 +136,6 @@ class ProficiencyReportController extends Controller
 
         return $pdf->download('proficiency_report.pdf');
     }
+
+
 }

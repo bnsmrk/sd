@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+
 import { router } from '@inertiajs/vue3';
 import { ArrowLeft, ArrowRight, Check, Eye } from 'lucide-vue-next';
 import { computed, nextTick, reactive, ref, watch, watchEffect } from 'vue';
@@ -98,7 +100,7 @@ watch(selectedQuestionId, (id) => {
 </script>
 
 <template>
-    <AppLayoutStudent>
+    <AppLayout>
         <div class="container mx-auto max-w-6xl px-6 py-8">
             <div class="mb-6">
                 <h1 class="mb-2 text-3xl font-bold text-primary">{{ quiz.title }}</h1>
@@ -270,5 +272,5 @@ watch(selectedQuestionId, (id) => {
                 </section>
             </div>
         </div>
-    </AppLayoutStudent>
+    </AppLayout>
 </template>

@@ -183,6 +183,13 @@ const canGeneratePdf = computed(() => {
                 <a :href="pdfUrl" target="_blank" class="inline-flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700">
                     🧾 Generate PDF
                 </a>
+                <!-- <a
+                    :href="pdfUrl.replace('/pdf', '/upload')"
+                    target="_blank"
+                    class="inline-flex items-center gap-2 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                >
+                    ☁️ Upload to Google Sheets
+                </a> -->
             </div>
 
             <div v-if="props.resultsByActivity.length > 0" class="mt-8 space-y-10">

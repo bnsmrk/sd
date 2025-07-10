@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+
 import { router } from '@inertiajs/vue3';
 import { BookOpen, CheckCircle, Clock, FileText, Package } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
@@ -58,7 +60,7 @@ function goToActivity(activity: { id: number; type: string }) {
 </script>
 
 <template>
-    <AppLayoutStudent>
+    <AppLayout>
         <div class="min-h-screen space-y-8 bg-gray-50 px-6 py-8">
             <h1 class="flex items-center gap-2 text-3xl font-bold text-indigo-800">
                 <BookOpen class="h-6 w-6 text-sky-600" />
@@ -164,5 +166,5 @@ function goToActivity(activity: { id: number; type: string }) {
                 </transition>
             </div>
         </div>
-    </AppLayoutStudent>
+    </AppLayout>
 </template>

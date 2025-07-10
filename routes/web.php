@@ -30,6 +30,11 @@ use App\Http\Controllers\PrincipalLessonPlanController;
 use App\Http\Controllers\ProficiencyQuestionController;
 use App\Http\Controllers\PrincipalProficiencyReportController;
 
+
+// use Google\Client;
+// use Google\Service\Sheets;
+// use Google\Service\Sheets\ValueRange;
+
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
@@ -80,7 +85,13 @@ Route::post('/proficiency-test/{proficiencyTest}/questions', [ProficiencyQuestio
 Route::get('/ict-dashboard', [IctDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:ict'])
     ->name('ict.dashboard');
+
 Route::get('/students-proficiency-result/export', [StudentsProficiencyResult::class, 'exportPdf']);
+
+Route::get('/students-proficiency/upload', [ProficiencyReportController::class, 'uploadToGoogleSheets'])
+    ->name('proficiency.upload');
+
+
 
 
 //teacher routes
@@ -157,6 +168,29 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/activities/{activity}/essay', [SubmissionController::class, 'takeEssay'])->name('essay.create');
 
 });
+
+
+
+// Route::get('/test-sheets', function () {
+//     $client = new Client();
+//     $client->setAuthConfig(storage_path('app/google/laravel-dev-457801-ecdd7adc14f8.json'));
+//     $client->addScope(Sheets::SPREADSHEETS);
+
+//     $service = new Sheets($client);
+
+//     $spreadsheetId = '1DK1lUySTTNl3mUPrsTIs-QXUESJWh109Hky_N2Zi6bk';
+//     $range = 'Sheet1!A1';
+
+//     $values = [['Hello from Laravel!', now()->toDateTimeString()]];
+
+//     $body = new ValueRange(['values' => $values]);
+//     $params = ['valueInputOption' => 'RAW'];
+
+//     $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+
+//     return '✅ Success! Data written to Google Sheet.';
+// });
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+
 import { router } from '@inertiajs/vue3';
 import { ArrowLeft, ArrowRight, BookOpen, Calendar, Check, Eye, FileText } from 'lucide-vue-next';
 import { computed, nextTick, reactive, ref, watch, watchEffect } from 'vue';
@@ -108,7 +110,7 @@ watch(selectedQuestionId, (id) => {
 </script>
 
 <template>
-    <AppLayoutStudent>
+    <AppLayout>
         <div class="container mx-auto min-h-screen max-w-6xl bg-gradient-to-b from-pink-50 via-white to-blue-50 px-6 py-8">
             <div class="mb-6">
                 <h1 class="mb-1 flex items-center gap-2 text-3xl font-bold text-indigo-900"><BookOpen class="h-6 w-6" /> {{ test.title }}</h1>
@@ -278,5 +280,5 @@ watch(selectedQuestionId, (id) => {
                 </section>
             </div>
         </div>
-    </AppLayoutStudent>
+    </AppLayout>
 </template>
