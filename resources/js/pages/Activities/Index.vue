@@ -122,9 +122,14 @@ function cancelDelete() {
                                             <FileText class="inline h-4 w-4" />
                                         </Link>
                                     </template>
+
                                     <template v-else>
                                         <Link :href="`/activities/${a.id}/questions/create`" class="text-pink-600 hover:text-pink-800">
                                             <PlusCircle class="inline h-4 w-4" />
+                                        </Link>
+
+                                        <Link :href="`/activities/${a.id}/essay-scores`" class="text-purple-600 hover:text-purple-800">
+                                            <FileText class="inline h-4 w-4" />
                                         </Link>
                                     </template>
                                 </div>

@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Activity;
 use App\Models\Submission;
 use Illuminate\Http\Request;
+use App\Models\StudentAnswer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,9 +39,20 @@ class SubmissionController extends Controller
     return redirect()->route('dashboard')->with('success', 'Essay submitted successfully!');
 }
 
+
+
 public function showEssaySubmissions(Request $request, Activity $activity)
 {
     $search = $request->input('search');
+
+    // Log the access event
+    Log::info('Viewing Essay Submissions', [
+        'user_id' => auth()->id(),
+        'user_name' => auth()->user()->name ?? 'Guest',
+        'activity_id' => $activity->id,
+        'activity_title' => $activity->title,
+        'search' => $search,
+    ]);
 
     $submissions = Submission::with('user')
         ->where('activity_id', $activity->id)
@@ -61,6 +73,95 @@ public function showEssaySubmissions(Request $request, Activity $activity)
         ],
     ]);
 }
+
+
+public function showEssayAnswers(Activity $activity)
+{
+    $studentAnswers = StudentAnswer::with(['user', 'question'])
+        ->where('activity_id', $activity->id)
+        ->get();
+
+    if ($studentAnswers->isNotEmpty()) {
+        \Log::info('✅ Essay Answers Found', [
+            'user_id' => auth()->id(),
+            'user_name' => auth()->user()->name,
+            'activity_id' => $activity->id,
+            'activity_title' => $activity->title,
+            'total_answers' => $studentAnswers->count(),
+            'sample' => $studentAnswers->take(1)->map(function ($a) {
+                return [
+                    'student' => $a->user->name ?? null,
+                    'question' => $a->question->question ?? null,
+                    'answer' => $a->answer,
+                    'score' => $a->score,
+                ];
+            }),
+        ]);
+    } else {
+        \Log::info('❌ No Essay Answers Found', [
+            'activity_id' => $activity->id,
+        ]);
+    }
+
+    return Inertia::render('Activities/EssayScoring', [
+        'activity' => $activity,
+        'answers' => $studentAnswers->map(fn ($a) => [
+            'id' => $a->id,
+            'student' => $a->user?->name ?? 'Unknown',
+            'question' => $a->question?->question ?? 'No question found',
+            'type' => $a->question?->type ?? 'unknown',
+            'answer' => $a->answer ?? 'No answer submitted.',
+            'score' => $a->score ?? 0,
+        ]),
+    ]);
+}
+
+
+
+
+
+
+
+public function storeEssayScores(Request $request, Activity $activity)
+{
+    // Update individual scores
+    foreach ($request->scores as $answerId => $score) {
+        StudentAnswer::where('id', $answerId)->update([
+            'score' => $score,
+        ]);
+    }
+
+    // Recalculate total scores per student
+    $studentScores = StudentAnswer::where('activity_id', $activity->id)
+        ->with('user')
+        ->get()
+        ->groupBy('user_id');
+
+    foreach ($studentScores as $userId => $answers) {
+        $totalScore = $answers->sum('score');
+      $totalPossible = $totalScore;  // Assuming each question is out of 10 points
+
+        \App\Models\StudentQuizResult::updateOrCreate(
+            [
+                'user_id' => $userId,
+                'activity_id' => $activity->id,
+            ],
+            [
+                'score' => $totalScore,
+                'total_points' => $totalPossible,
+            ]
+        );
+    }
+
+    \Log::info('✅ Essay Scores Saved and Results Updated', [
+        'activity_id' => $activity->id,
+        'scored_students' => $studentScores->keys(),
+    ]);
+
+    return back()->with('success', 'Essay scores and quiz results updated.');
+}
+
+
 
 
 public function updateScore(Request $request, Submission $submission)

@@ -12,15 +12,17 @@ class StudentAnswer extends Model
     'question_id',
     'answer',
     'is_correct',
+     'score',
     ];
 
     public function question()
     {
-        return $this->belongsTo(Question::class);
+        return $this->belongsTo(Question::class, 'question_id');
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
 }

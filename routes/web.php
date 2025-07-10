@@ -117,8 +117,11 @@ Route::middleware('role:teacher')->group(function () {
     Route::resource('students-proficiency', ProficiencyReportController::class)->only(['index']);
     Route::get('/students-proficiency/pdf', [ProficiencyReportController::class, 'exportPdf'])->name('students-proficiency.pdf');
 
-});
+    Route::get('/activities/{activity}/essay-scores', [SubmissionController::class, 'showEssayAnswers']);
+    Route::post('/activities/{activity}/essay-scores', [SubmissionController::class, 'storeEssayScores']);
 
+
+});
 
 Route::middleware(['auth', 'role:principal'])->group(function () {
     Route::get('/principal-students-proficiency', [PrincipalProficiencyReportController::class, 'index'])->name('principal.proficiency.index');
