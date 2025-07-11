@@ -75,12 +75,17 @@ public function showEssaySubmissions(Request $request, Activity $activity)
 }
 
 
-public function showEssayScoringForm(Activity $activity)
+public function showEssayScoringForm(Activity $activity, $userId = null)
 {
-    $studentAnswers = StudentAnswer::with(['user', 'question'])
+    $query = StudentAnswer::with(['user', 'question'])
         ->where('activity_id', $activity->id)
-        ->whereHas('question', fn($q) => $q->where('type', 'essay'))
-        ->get();
+        ->whereHas('question', fn($q) => $q->where('type', 'essay'));
+
+    if ($userId) {
+        $query->where('user_id', $userId);
+    }
+
+    $studentAnswers = $query->get();
 
     return Inertia::render('Activities/EssayScoring', [
         'activity' => $activity,
@@ -94,6 +99,7 @@ public function showEssayScoringForm(Activity $activity)
         ]),
     ]);
 }
+
 
 public function showEssayAnswerTable(Request $request, Activity $activity)
     {
@@ -134,17 +140,17 @@ public function showEssayAnswerTable(Request $request, Activity $activity)
                 'score' => $score,
             ]);
         }
-    
+
         // Recalculate total scores per student
         $studentScores = StudentAnswer::where('activity_id', $activity->id)
             ->with('user')
             ->get()
             ->groupBy('user_id');
-    
+
         foreach ($studentScores as $userId => $answers) {
             $totalScore = $answers->sum('score');
             $totalPossible = $totalScore;
-    
+
             \App\Models\StudentQuizResult::updateOrCreate(
                 [
                     'user_id' => $userId,
@@ -156,18 +162,18 @@ public function showEssayAnswerTable(Request $request, Activity $activity)
                 ]
             );
         }
-    
+
         \Log::info('✅ Essay Scores Saved and Results Updated', [
             'activity_id' => $activity->id,
             'scored_students' => $studentScores->keys(),
         ]);
-    
+
         // 🔁 Redirect back to the table page
         return redirect()
             ->route('activities.essay.answers', $activity->id)
             ->with('success', 'Essay scores saved and student results updated.');
     }
-    
+
 
 
 

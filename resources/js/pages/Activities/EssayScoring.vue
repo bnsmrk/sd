@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
+import { ArrowLeft } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
@@ -21,7 +22,6 @@ props.answers.forEach((answer) => {
     scores.value[answer.id] = answer.score ?? 0;
 });
 
-// Only show type === 'essay'
 const essayAnswers = computed(() => props.answers.filter((a) => a.type === 'essay'));
 
 function submitScores() {
@@ -33,9 +33,16 @@ function submitScores() {
 
 <template>
     <AppLayout>
-        <div class="mx-auto max-w-5xl px-4 py-6">
-            <h1 class="mb-6 text-2xl font-bold text-[#01006c]">📝 Score Essay Answers – {{ activity.title }}</h1>
-
+        <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
+            <div class="flex items-center justify-between">
+                <h1 class="mb-6 text-2xl font-bold text-[#01006c]">📝 Score Essay Answers – {{ activity.title }}</h1>
+                <Link
+                    :href="route('activities.essay.answers', activity.id)"
+                    class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] shadow hover:bg-[#ffc60b]"
+                >
+                    <ArrowLeft class="h-4 w-4 text-[#ff69b4]" /> Back
+                </Link>
+            </div>
             <div v-if="essayAnswers.length === 0" class="text-center text-gray-500">No essay submissions yet.</div>
 
             <div v-else class="space-y-6">

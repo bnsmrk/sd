@@ -122,8 +122,10 @@ Route::get('/activities/{activity}/essay-answers', [SubmissionController::class,
 ->name('activities.essay.answers');
 
 // View: Essay Scoring Form (full scoring form)
-Route::get('/activities/{activity}/essay-scores', [SubmissionController::class, 'showEssayScoringForm'])
-->name('activities.essay.scoring.form');
+// Add an optional user parameter
+Route::get('/activities/{activity}/essay-scores/{user?}', [SubmissionController::class, 'showEssayScoringForm'])
+    ->name('activities.essay.scoring.form');
+
 
 // POST: Save scores
 Route::post('/activities/{activity}/essay-scores', [SubmissionController::class, 'storeEssayScores']);

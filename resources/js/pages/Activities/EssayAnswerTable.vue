@@ -75,8 +75,11 @@ watch(search, (val) => {
                             <td class="px-6 py-3">
                                 <template v-if="submission.score !== null">
                                     <span class="font-semibold text-green-700">{{ submission.score }}</span>
-                                    <Link :href="route('activities.essay.scoring.form', props.activity.id)"> Score All Essays </Link>
+                                    <Link :href="route('activities.essay.scoring.form', [props.activity.id, submission.user.id])">
+                                        Add Essay Score
+                                    </Link>
                                 </template>
+
                                 <template v-else>
                                     <Link
                                         :href="route('submissions.show', submission.id)"
