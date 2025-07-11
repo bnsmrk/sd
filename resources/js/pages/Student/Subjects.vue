@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
+import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+// import AppLayout from '@/layouts/AppLayout.vue';
 
 import { router } from '@inertiajs/vue3';
 import { BookOpen, User2 } from 'lucide-vue-next';
@@ -19,7 +19,7 @@ function goToSubject(id: number) {
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayoutStudent>
         <div class="min-h-screen space-y-6 bg-pink-50 px-6 py-8">
             <h1 class="flex items-center gap-2 text-3xl font-bold text-[#01006c]">
                 <BookOpen class="h-6 w-6 text-[#01006c]" /> My Enrolled Subjects
@@ -60,5 +60,5 @@ function goToSubject(id: number) {
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </AppLayoutStudent>
 </template>

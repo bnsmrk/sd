@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
+import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+// import AppLayout from '@/layouts/AppLayout.vue';
 
 import { router } from '@inertiajs/vue3';
 import { ArrowLeft, ArrowRight, Check, Eye } from 'lucide-vue-next';
@@ -100,8 +100,8 @@ watch(selectedQuestionId, (id) => {
 </script>
 
 <template>
-    <AppLayout>
-        <div class="container mx-auto max-w-6xl px-6 py-8">
+    <AppLayoutStudent>
+        <div class="min-h-screen space-y-6 bg-pink-50 px-6 py-8">
             <div class="mb-6">
                 <h1 class="mb-2 text-3xl font-bold text-primary">{{ quiz.title }}</h1>
                 <p class="text-sm text-gray-600">
@@ -272,5 +272,5 @@ watch(selectedQuestionId, (id) => {
                 </section>
             </div>
         </div>
-    </AppLayout>
+    </AppLayoutStudent>
 </template>

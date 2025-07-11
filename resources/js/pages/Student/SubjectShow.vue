@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 
 import { router } from '@inertiajs/vue3';
 
@@ -26,8 +25,8 @@ const goTo = (activity: { id: number; type: string }) => {
 </script>
 
 <template>
-    <AppLayout>
-        <div class="space-y-6 p-6">
+    <AppLayoutStudent>
+        <div class="min-h-screen space-y-6 bg-pink-50 px-6 py-8">
             <h1 class="text-2xl font-bold">{{ subject.name }}</h1>
 
             <div v-for="mod in modules" :key="mod.id" class="space-y-2 rounded-xl border p-4">
@@ -40,5 +39,5 @@ const goTo = (activity: { id: number; type: string }) => {
                 </ul>
             </div>
         </div>
-    </AppLayout>
+    </AppLayoutStudent>
 </template>

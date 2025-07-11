@@ -163,7 +163,7 @@ const mainNavItems: NavItem[] = [...groupedNavItems.common, ...(role && groupedN
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('dashboard')">
+                        <Link class="bg-white" :href="route('dashboard')">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>

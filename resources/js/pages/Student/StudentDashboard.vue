@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
+import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
+// import AppLayout from '@/layouts/AppLayout.vue';
 
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
@@ -30,7 +30,7 @@ function isTaken(testId: number): boolean {
 <template>
     <Head title="Dashboard" />
 
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <AppLayoutStudent :breadcrumbs="breadcrumbs">
         <div class="min-h-screen space-y-6 bg-pink-50 px-6 py-8">
             <h1 class="flex items-center gap-2 text-3xl font-bold text-[#01006c]"><Target class="h-6 w-6 text-[#01006c]" /> Student Dashboard</h1>
 
@@ -85,5 +85,5 @@ function isTaken(testId: number): boolean {
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </AppLayoutStudent>
 </template>
