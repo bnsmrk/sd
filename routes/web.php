@@ -117,18 +117,14 @@ Route::middleware('role:teacher')->group(function () {
     Route::resource('students-proficiency', ProficiencyReportController::class)->only(['index']);
     Route::get('/students-proficiency/pdf', [ProficiencyReportController::class, 'exportPdf'])->name('students-proficiency.pdf');
 
-   // View: Essay Answer Table (paginated list)
-Route::get('/activities/{activity}/essay-answers', [SubmissionController::class, 'showEssayAnswerTable'])
-->name('activities.essay.answers');
 
-// View: Essay Scoring Form (full scoring form)
-// Add an optional user parameter
-Route::get('/activities/{activity}/essay-scores/{user?}', [SubmissionController::class, 'showEssayScoringForm'])
-    ->name('activities.essay.scoring.form');
+    Route::get('/activities/{activity}/essay-answers', [SubmissionController::class, 'showEssayAnswerTable'])
+    ->name('activities.essay.answers');
 
+    Route::get('/activities/{activity}/essay-scores/{user?}', [SubmissionController::class, 'showEssayScoringForm'])
+        ->name('activities.essay.scoring.form');
 
-// POST: Save scores
-Route::post('/activities/{activity}/essay-scores', [SubmissionController::class, 'storeEssayScores']);
+    Route::post('/activities/{activity}/essay-scores', [SubmissionController::class, 'storeEssayScores']);
 
 
 });

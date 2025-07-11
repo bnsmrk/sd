@@ -49,7 +49,7 @@ watch(
 <template>
     <Head title="Create Module" />
     <AppLayout>
-        <div class="mx-auto w-full max-w-4xl space-y-6 px-6 py-4">
+        <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
             <!-- Header -->
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-[#01006c]">Create Module</h1>
@@ -71,7 +71,7 @@ watch(
                     </label>
                     <input
                         v-model="form.name"
-                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                         required
                     />
                     <div v-if="form.errors.name" class="text-sm text-red-600">{{ form.errors.name }}</div>
@@ -84,7 +84,7 @@ watch(
                     </label>
                     <select
                         v-model="form.year_level_id"
-                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                         required
                     >
                         <option value="">Select Year Level</option>
@@ -100,7 +100,7 @@ watch(
                     </label>
                     <select
                         v-model="form.section_id"
-                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                         required
                     >
                         <option value="">Select Section</option>
@@ -116,7 +116,7 @@ watch(
                     </label>
                     <select
                         v-model="form.subject_id"
-                        class="w-full rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                         required
                     >
                         <option value="">Select Subject</option>

@@ -38,7 +38,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
 <template>
     <Head title="Create Activity" />
     <AppLayout>
-        <div class="mx-auto max-w-4xl space-y-6 p-6">
+        <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
             <!-- Page Header -->
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-[#01006c]">Create Activity</h1>
@@ -61,7 +61,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                         </label>
                         <input
                             v-model="form.title"
-                            class="w-full rounded border px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                            class="border-[#01006c]bg-white w-full rounded border border-[#01006c] bg-white px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                             required
                         />
                     </div>
@@ -72,7 +72,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                         </label>
                         <select
                             v-model="form.type"
-                            class="w-full rounded border px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                            class="border-[#01006c]bg-white w-full rounded border border-[#01006c] bg-white px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                             required
                         >
                             <option value="quiz">Quiz</option>
@@ -87,7 +87,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                         </label>
                         <select
                             v-model="form.module_id"
-                            class="w-full rounded border px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                            class="border-[#01006c]bg-white w-full rounded border border-[#01006c] bg-white px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                             required
                         >
                             <option value="">-- Choose Module --</option>
@@ -100,19 +100,19 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3" v-if="selectedModule">
                     <div>
                         <label class="ttext-[#ff69b4] block text-sm font-medium">Year Level</label>
-                        <select disabled class="w-full rounded border bg-gray-100 px-3 py-2 text-gray-600">
+                        <select disabled class="border-[#01006c]bg-gray-100 w-full rounded border border-[#01006c] bg-white px-3 py-2 text-gray-600">
                             <option>{{ selectedModule.year_level.name }}</option>
                         </select>
                     </div>
                     <div>
                         <label class="ttext-[#ff69b4] block text-sm font-medium">Section</label>
-                        <select disabled class="w-full rounded border bg-gray-100 px-3 py-2 text-gray-600">
+                        <select disabled class="border-[#01006c]bg-gray-100 w-full rounded border border-[#01006c] bg-white px-3 py-2 text-gray-600">
                             <option>{{ selectedModule.section.name }}</option>
                         </select>
                     </div>
                     <div>
                         <label class="ttext-[#ff69b4] block text-sm font-medium">Subject</label>
-                        <select disabled class="w-full rounded border bg-gray-100 px-3 py-2 text-gray-600">
+                        <select disabled class="border-[#01006c]bg-gray-100 w-full rounded border border-[#01006c] bg-white px-3 py-2 text-gray-600">
                             <option>{{ selectedModule.subject.name }}</option>
                         </select>
                     </div>
@@ -127,7 +127,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                         <input
                             type="datetime-local"
                             v-model="form.scheduled_at"
-                            class="w-full rounded border px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                            class="border-[#01006c]bg-white w-full rounded border border-[#01006c] bg-white px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                             required
                         />
                     </div>
@@ -138,7 +138,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                         <input
                             type="datetime-local"
                             v-model="form.due_date"
-                            class="w-full rounded border px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                            class="border-[#01006c]bg-white w-full rounded border border-[#01006c] bg-white px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                         />
                     </div>
                 </div>
@@ -152,17 +152,17 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                         <textarea
                             v-model="form.description"
                             rows="4"
-                            class="w-full rounded border px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                            class="border-[#01006c]bg-white w-full rounded border border-[#01006c] bg-white px-3 py-2 focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
                         />
                     </div>
-                    <div>
-                        <label class="ttext-[#ff69b4] flex items-center gap-1 text-sm font-medium">
+                    <div class="rounded border border-[#01006c] bg-white p-4">
+                        <label class="mb-2 flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                             <FileUp class="h-4 w-4 text-[#ff69b4]" /> Attach File
                         </label>
                         <input
                             type="file"
                             @change="(e) => (form.file = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
-                            class="text-sm text-[#ff69b4]"
+                            class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-[#01006c] file:mr-4 file:rounded file:border-0 file:bg-[#ffc60b] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#01006c] hover:file:bg-yellow-400 focus:border-[#ffc60b] focus:ring-[#ffc60b]"
                         />
                     </div>
                 </div>

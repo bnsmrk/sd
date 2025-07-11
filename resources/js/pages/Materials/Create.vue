@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { FileUp } from 'lucide-vue-next';
+import { ArrowLeft, FileUp } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
 interface Module {
@@ -113,7 +113,7 @@ function submitForm() {
                     <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Type</label>
                     <select
                         v-model="selectedType"
-                        class="w-full rounded border border-[#01006c] p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                     >
                         <option value="material">Material</option>
                         <option value="lesson_plan">Lesson Plan</option>
@@ -126,7 +126,7 @@ function submitForm() {
                         <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Module</label>
                         <select
                             v-model="selectedModuleId"
-                            class="w-full rounded border border-[#01006c] p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Module</option>
                             <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
@@ -137,7 +137,7 @@ function submitForm() {
                         <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Year Level</label>
                         <select
                             disabled
-                            class="w-full rounded border bg-gray-100 p-2 text-sm text-gray-700 focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-gray-100 bg-white p-2 text-sm text-gray-700 focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option v-if="selectedModule">{{ selectedModule.year_level.name }}</option>
                             <option v-else>Select Module First</option>
@@ -148,7 +148,7 @@ function submitForm() {
                         <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Subject</label>
                         <select
                             disabled
-                            class="w-full rounded border bg-gray-100 p-2 text-sm text-gray-700 focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-gray-100 bg-white p-2 text-sm text-gray-700 focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option v-if="selectedModule">{{ selectedModule.subject.name }}</option>
                             <option v-else>Select Module First</option>
@@ -162,7 +162,7 @@ function submitForm() {
                         <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Year Level</label>
                         <select
                             v-model="selectedYearLevelId"
-                            class="w-full rounded border border-[#01006c] p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Year Level</option>
                             <option v-for="yl in props.yearLevels" :key="yl.id" :value="yl.id">{{ yl.name }}</option>
@@ -173,7 +173,7 @@ function submitForm() {
                         <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Section</label>
                         <select
                             v-model="selectedSectionId"
-                            class="w-full rounded border border-[#01006c] p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Section</option>
                             <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -184,7 +184,7 @@ function submitForm() {
                         <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Subject</label>
                         <select
                             v-model="selectedSubjectId"
-                            class="w-full rounded border border-[#01006c] p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Subject</option>
                             <option v-for="s in filteredSubjects" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -199,14 +199,18 @@ function submitForm() {
                 <input
                     v-model="form.title"
                     type="text"
-                    class="w-full rounded border border-[#01006c] p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                    class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                 />
             </div>
 
             <!-- Description -->
             <div>
                 <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Description</label>
-                <textarea v-model="form.description" rows="3" class="w-full rounded border p-2 text-sm focus:border-[#ffc60b] focus:outline-none" />
+                <textarea
+                    v-model="form.description"
+                    rows="3"
+                    class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                />
             </div>
 
             <!-- File Upload -->

@@ -123,7 +123,7 @@ function submitForm() {
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="inline-flex items-center gap-2 rounded-md bg-[#ff69b4] px-6 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                        class="inline-flex items-center gap-2 rounded-md bg-[#01006c] px-6 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
                     >
                         <Save class="h-4 w-4" /> Update Assignment
                     </button>
