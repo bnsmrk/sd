@@ -20,95 +20,95 @@ class QuestionController extends Controller
 
 
     public function create(Activity $activity)
-{
-    $activity->load([
-        'module.yearLevel',
-        'module.section',
-        'module.subject',
-    ]);
+    {
+        $activity->load([
+            'module.yearLevel',
+            'module.section',
+            'module.subject',
+        ]);
 
-    $questions = $activity->questions()->get();
+        $questions = $activity->questions()->get();
 
-    return Inertia::render('Questions/Create', [
-        'activity' => [
-            'id' => $activity->id,
-            'title' => $activity->title,
-            'type' => $activity->type,
-            'scheduled_at' => $activity->scheduled_at->format('Y-m-d H:i'),
-            'module' => [
-                'name' => $activity->module->name,
-                'year_level' => [
-                    'name' => $activity->module->yearLevel->name,
-                ],
-                'section' => [
-                    'name' => $activity->module->section->name,
-                ],
-                'subject' => [
-                    'name' => $activity->module->subject->name,
+        return Inertia::render('Questions/Create', [
+            'activity' => [
+                'id' => $activity->id,
+                'title' => $activity->title,
+                'type' => $activity->type,
+                'scheduled_at' => $activity->scheduled_at->format('Y-m-d H:i'),
+                'module' => [
+                    'name' => $activity->module->name,
+                    'year_level' => [
+                        'name' => $activity->module->yearLevel->name,
+                    ],
+                    'section' => [
+                        'name' => $activity->module->section->name,
+                    ],
+                    'subject' => [
+                        'name' => $activity->module->subject->name,
+                    ],
                 ],
             ],
-        ],
-        'existingQuestions' => $questions->map(function ($q) {
-            return [
-                'id' => $q->id,
-                'question' => $q->question,
-                'type' => $q->type,
-                'options' => $q->options,
-                'answer_key' => $q->answer_key,
-            ];
-        }),
-    ]);
-}
-
-
- public function store(Request $request, Activity $activity)
-{
-    $data = $request->all();
-
-    $validator = Validator::make($data, [
-        'questions' => 'required|array|min:1',
-        'questions.*.id' => 'nullable|integer|exists:questions,id',
-        'questions.*.question' => 'required|string',
-        'questions.*.type' => 'required|in:multiple_choice,checkboxes,true_false,essay,fill_in_blank',
-        'questions.*.options' => 'nullable|array',
-        'questions.*.answer_key' => 'nullable',
-    ]);
-
-    $validator->validate();
-
-    $existingIds = $activity->questions()->pluck('id')->toArray();
-    $submittedIds = [];
-
-    foreach ($data['questions'] as $q) {
-        $answerKey = is_array($q['answer_key']) ? json_encode($q['answer_key']) : $q['answer_key'];
-        $options = isset($q['options']) ? json_encode($q['options']) : null;
-
-        if (isset($q['id'])) {
-            $submittedIds[] = $q['id'];
-            $question = Question::find($q['id']);
-            $question->update([
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $options,
-                'answer_key' => $answerKey,
-            ]);
-        } else {
-            $new = Question::create([
-                'activity_id' => $activity->id,
-                'question' => $q['question'],
-                'type' => $q['type'],
-                'options' => $options,
-                'answer_key' => $answerKey,
-            ]);
-            $submittedIds[] = $new->id;
-        }
+            'existingQuestions' => $questions->map(function ($q) {
+                return [
+                    'id' => $q->id,
+                    'question' => $q->question,
+                    'type' => $q->type,
+                    'options' => $q->options,
+                    'answer_key' => $q->answer_key,
+                ];
+            }),
+        ]);
     }
 
-    $toDelete = array_diff($existingIds, $submittedIds);
-    Question::destroy($toDelete);
 
-    return redirect()->route('activities.index')->with('success', 'Questions updated successfully.');
-}
+    public function store(Request $request, Activity $activity)
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'questions' => 'required|array|min:1',
+            'questions.*.id' => 'nullable|integer|exists:questions,id',
+            'questions.*.question' => 'required|string',
+            'questions.*.type' => 'required|in:multiple_choice,checkboxes,true_false,essay,fill_in_blank',
+            'questions.*.options' => 'nullable|array',
+            'questions.*.answer_key' => 'nullable',
+        ]);
+
+        $validator->validate();
+
+        $existingIds = $activity->questions()->pluck('id')->toArray();
+        $submittedIds = [];
+
+        foreach ($data['questions'] as $q) {
+            $answerKey = is_array($q['answer_key']) ? json_encode($q['answer_key']) : $q['answer_key'];
+            $options = isset($q['options']) ? json_encode($q['options']) : null;
+
+            if (isset($q['id'])) {
+                $submittedIds[] = $q['id'];
+                $question = Question::find($q['id']);
+                $question->update([
+                    'question' => $q['question'],
+                    'type' => $q['type'],
+                    'options' => $options,
+                    'answer_key' => $answerKey,
+                ]);
+            } else {
+                $new = Question::create([
+                    'activity_id' => $activity->id,
+                    'question' => $q['question'],
+                    'type' => $q['type'],
+                    'options' => $options,
+                    'answer_key' => $answerKey,
+                ]);
+                $submittedIds[] = $new->id;
+            }
+        }
+
+        $toDelete = array_diff($existingIds, $submittedIds);
+        Question::destroy($toDelete);
+
+        return redirect()->route('activities.index')->with('success', 'Questions updated successfully.');
+    }
 
 
 

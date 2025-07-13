@@ -31,7 +31,6 @@ const filteredSubjects = computed(() => {
     <Head title="Assign Teacher" />
     <AppLayout>
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
-            <!-- Back Button -->
             <div class="mb-6">
                 <Link
                     href="/teacher-assignments"
@@ -41,13 +40,10 @@ const filteredSubjects = computed(() => {
                 </Link>
             </div>
 
-            <!-- Title -->
             <h1 class="mb-6 text-2xl font-bold text-[#01006c]">📋 Assign Teacher</h1>
 
-            <!-- Form -->
             <form @submit.prevent="form.post('/teacher-assignments')" class="space-y-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-                    <!-- Teacher -->
                     <div>
                         <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]"> <User class="h-4 w-4" /> Teacher </label>
                         <select
@@ -61,7 +57,6 @@ const filteredSubjects = computed(() => {
                         <p v-if="form.errors.user_id" class="mt-1 text-sm text-red-600">{{ form.errors.user_id }}</p>
                     </div>
 
-                    <!-- Year Level -->
                     <div>
                         <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]">
                             <Layers class="h-4 w-4" /> Year Level
@@ -77,7 +72,6 @@ const filteredSubjects = computed(() => {
                         <p v-if="form.errors.year_level_id" class="mt-1 text-sm text-red-600">{{ form.errors.year_level_id }}</p>
                     </div>
 
-                    <!-- Section -->
                     <div>
                         <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]"> <Layout class="h-4 w-4" /> Section </label>
                         <select
@@ -91,7 +85,6 @@ const filteredSubjects = computed(() => {
                         <p v-if="form.errors.section_id" class="mt-1 text-sm text-red-600">{{ form.errors.section_id }}</p>
                     </div>
 
-                    <!-- Subject -->
                     <div>
                         <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]">
                             <BookOpen class="h-4 w-4" /> Subject
@@ -108,7 +101,6 @@ const filteredSubjects = computed(() => {
                     </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex justify-end pt-4">
                     <button
                         type="submit"

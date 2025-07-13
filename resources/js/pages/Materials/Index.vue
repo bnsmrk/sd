@@ -70,7 +70,6 @@ function cancelDelete() {
     <Head title="My Materials" />
     <AppLayout>
         <div class="space-y-6 p-6">
-            <!-- Header -->
             <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
                 <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
                     <BookOpen class="h-6 w-6 text-[#01006c]" /> My Uploaded Materials
@@ -93,7 +92,6 @@ function cancelDelete() {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
                 <table class="min-w-full table-auto text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
@@ -160,7 +158,6 @@ function cancelDelete() {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="mt-6 flex flex-wrap justify-center gap-2">
                 <template v-for="(link, i) in materials.links" :key="i">
                     <span
@@ -183,7 +180,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded border border-[#01006c] bg-white p-6 shadow-lg">
                 <h2 class="mb-4 text-lg font-semibold text-[#01006c]">Confirm Deletion</h2>

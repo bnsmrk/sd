@@ -19,7 +19,7 @@ class PrincipalProficiencyReportController extends Controller
         $sectionId   = $request->input('section_id');
         $subjectId   = $request->input('subject_id');
         $moduleId    = $request->input('module_id');
-        $type        = $request->input('type', 'quiz', );
+        $type        = $request->input('type', 'quiz',);
 
         $yearLevels = YearLevel::select('id', 'name')->get();
         $sections   = Section::select('id', 'name', 'year_level_id')->get();
@@ -31,7 +31,7 @@ class PrincipalProficiencyReportController extends Controller
         if ($sectionId) {
             $subjectQuery->where(function ($q) use ($sectionId) {
                 $q->where('section_id', $sectionId)
-                ->orWhereNull('section_id');
+                    ->orWhereNull('section_id');
             });
         }
         $subjects = $subjectQuery->get();
@@ -40,7 +40,9 @@ class PrincipalProficiencyReportController extends Controller
         if ($subjectId && $type) {
             $modules = Module::where('subject_id', $subjectId)
                 ->when($yearLevelId, fn($q) => $q->where('year_level_id', $yearLevelId))
-                ->when($sectionId, fn($q) =>
+                ->when(
+                    $sectionId,
+                    fn($q) =>
                     $q->where(function ($sub) use ($sectionId) {
                         $sub->where('section_id', $sectionId)
                             ->orWhereNull('section_id');
@@ -111,7 +113,7 @@ class PrincipalProficiencyReportController extends Controller
                     if ($sectionId) {
                         $q->where(function ($subQuery) use ($sectionId) {
                             $subQuery->where('section_id', $sectionId)
-                                     ->orWhereNull('section_id');
+                                ->orWhereNull('section_id');
                         });
                     }
                 })

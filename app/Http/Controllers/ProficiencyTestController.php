@@ -46,7 +46,6 @@ class ProficiencyTestController extends Controller
         ProficiencyTest::create($validated);
 
         return redirect()->route('proficiency-test.index')->with('success', 'Test created successfully.');
-
     }
 
     public function edit(string $id)
@@ -54,17 +53,17 @@ class ProficiencyTestController extends Controller
         $test = ProficiencyTest::findOrFail($id);
 
         return Inertia::render('Head/ProficiencyTestEdit', [
-           'test' => [
-        'id' => $test->id,
-        'title' => $test->title,
-        'type' => $test->type,
-        'year_level_id' => $test->year_level_id,
-        'scheduled_at' => $test->scheduled_at->format('Y-m-d\TH:i'),
-        'due_date' => $test->due_date?->format('Y-m-d\TH:i'),
+            'test' => [
+                'id' => $test->id,
+                'title' => $test->title,
+                'type' => $test->type,
+                'year_level_id' => $test->year_level_id,
+                'scheduled_at' => $test->scheduled_at->format('Y-m-d\TH:i'),
+                'due_date' => $test->due_date?->format('Y-m-d\TH:i'),
 
-        'description' => $test->description,
-    ],
-    'yearLevels' => YearLevel::all(['id', 'name']),
+                'description' => $test->description,
+            ],
+            'yearLevels' => YearLevel::all(['id', 'name']),
         ]);
     }
 
@@ -93,7 +92,7 @@ class ProficiencyTestController extends Controller
         return redirect()->route('proficiency-test.index')->with('success', 'Test deleted.');
     }
 
-   public function submit(Request $request, $testId)
+    public function submit(Request $request, $testId)
     {
         $user = Auth::user();
         $answers = $request->input('answers', []);
@@ -190,5 +189,4 @@ class ProficiencyTestController extends Controller
             'test' => $test,
         ]);
     }
-
 }

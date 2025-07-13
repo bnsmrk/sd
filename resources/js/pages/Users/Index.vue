@@ -91,7 +91,6 @@ const destroyItem = () => {
     <Head title="Users" />
     <AppLayout>
         <div class="p-4">
-            <!-- Header -->
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h1 class="text-xl font-bold text-[#01006c]">👥 Users</h1>
                 <div class="flex flex-wrap items-center gap-2">
@@ -110,7 +109,6 @@ const destroyItem = () => {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-hidden rounded-lg border border-gray-200 shadow">
                 <table class="min-w-full divide-y divide-[#01006c] text-sm">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white">
@@ -142,7 +140,6 @@ const destroyItem = () => {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="mt-6 flex flex-wrap justify-center gap-2">
                 <template v-for="(link, i) in props.users.links" :key="i">
                     <span
@@ -164,7 +161,6 @@ const destroyItem = () => {
                 </template>
             </div>
 
-            <!-- Create Modal -->
             <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
                 <div class="w-full max-w-md rounded bg-white p-6 shadow">
                     <h2 class="mb-4 text-lg font-bold text-[#01006c]">Create User</h2>
@@ -232,7 +228,6 @@ const destroyItem = () => {
                 </div>
             </div>
 
-            <!-- Edit Modal -->
             <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
                 <div class="w-full max-w-md rounded bg-white p-6 shadow">
                     <h2 class="mb-4 text-lg font-bold text-[#01006c]">Edit User</h2>
@@ -279,7 +274,6 @@ const destroyItem = () => {
                 </div>
             </div>
 
-            <!-- Delete Modal -->
             <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur">
                 <div class="w-full max-w-sm rounded bg-white p-6 shadow">
                     <h2 class="mb-4 text-lg font-bold text-[#01006c]">Confirm Deletion</h2>

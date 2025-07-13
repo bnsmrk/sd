@@ -97,7 +97,6 @@ const applyFilters = () => {
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
             <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><FileText class="h-6 w-6" /> Teachers Lesson Plans</h1>
 
-            <!-- Filter Bar -->
             <div class="flex flex-wrap items-center gap-4 rounded-lg border bg-white p-4">
                 <select
                     v-model="selectedYearLevel"
@@ -124,7 +123,6 @@ const applyFilters = () => {
                 </button>
             </div>
 
-            <!-- Lesson Plans Table -->
             <div v-if="filtersApplied && props.lessonPlans.length > 0" class="overflow-x-auto">
                 <table class="min-w-full border border-[#01006c] text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
@@ -181,7 +179,6 @@ const applyFilters = () => {
                 </table>
             </div>
 
-            <!-- No Results -->
             <div v-else-if="filtersApplied" class="text-center text-gray-500 italic">No lesson plans found for selected filters.</div>
         </div>
     </AppLayout>

@@ -139,7 +139,6 @@ watch(search, (value) => {
     <Head title="Subjects" />
     <AppLayout>
         <div class="p-4">
-            <!-- Header -->
             <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <h2 class="text-xl font-bold text-[#01006c]">📘 Subjects</h2>
                 <div class="flex items-center gap-2">
@@ -158,7 +157,6 @@ watch(search, (value) => {
                     </button>
                 </div>
             </div>
-            <!-- Table -->
             <div class="overflow-x-auto rounded-lg border border-[#01006c] shadow">
                 <table class="min-w-full table-auto text-sm text-[#01006c]">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white uppercase">
@@ -209,7 +207,6 @@ watch(search, (value) => {
                 </Link>
             </template>
         </div>
-        <!-- 🌸 Add Subject Modal -->
         <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-xl rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">➕ Add Subject</h2>
@@ -277,7 +274,6 @@ watch(search, (value) => {
                 </div>
             </div>
         </div>
-        <!-- 🌸 Edit Subject Modal -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">✏️ Edit Subject</h2>
@@ -319,7 +315,6 @@ watch(search, (value) => {
                 </div>
             </div>
         </div>
-        <!-- 🌸 Delete Subject Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-sm rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h2 class="mb-4 text-xl font-bold text-[#ff69b4]">🗑️ Confirm Deletion</h2>

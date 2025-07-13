@@ -11,31 +11,32 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Mail\TestMail;
 use Illuminate\Support\Facades\Mail;
+
 class EnrollStudentController extends Controller
 {
-   public function index(Request $request)
-{
-    $search = $request->input('search');
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
 
-    $subQuery = \App\Models\Student::selectRaw('MIN(id) as id')
-        ->groupBy('user_id');
+        $subQuery = \App\Models\Student::selectRaw('MIN(id) as id')
+            ->groupBy('user_id');
 
-    $enrollments = \App\Models\Student::with(['user:id,name', 'yearLevel:id,name', 'section:id,name'])
-        ->whereIn('id', $subQuery)
-        ->when($search, function ($query, $search) {
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
-            });
-        })
-        ->orderByDesc('id')
-        ->paginate(10)
-        ->withQueryString();
+        $enrollments = \App\Models\Student::with(['user:id,name', 'yearLevel:id,name', 'section:id,name'])
+            ->whereIn('id', $subQuery)
+            ->when($search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
 
-    return Inertia::render('EnrollStudent/Index', [
-        'enrollments' => $enrollments,
-        'filters' => ['search' => $search],
-    ]);
-}
+        return Inertia::render('EnrollStudent/Index', [
+            'enrollments' => $enrollments,
+            'filters' => ['search' => $search],
+        ]);
+    }
 
     public function create()
     {
@@ -56,47 +57,47 @@ class EnrollStudentController extends Controller
         ]);
     }
 
-   public function store(Request $request)
-{
-    $validated = $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'year_level_id' => 'required|exists:year_levels,id',
-        'section_id' => 'required|exists:sections,id',
-    ]);
-
-    $alreadyEnrolled = Student::where('user_id', $validated['user_id'])
-        ->where('year_level_id', $validated['year_level_id'])
-        ->exists();
-
-    if ($alreadyEnrolled) {
-        return back()->withErrors([
-            'user_id' => 'Student is already enrolled in the selected year level.',
-        ])->withInput();
-    }
-
-    $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
-
-    if ($subjects->isEmpty()) {
-        return back()->withErrors(['year_level_id' => 'No subjects found for selected year level.']);
-    }
-
-    foreach ($subjects as $subject) {
-        Student::create([
-            'user_id' => $validated['user_id'],
-            'year_level_id' => $validated['year_level_id'],
-            'section_id' => $validated['section_id'],
-            'subject_id' => $subject->id,
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'section_id' => 'required|exists:sections,id',
         ]);
+
+        $alreadyEnrolled = Student::where('user_id', $validated['user_id'])
+            ->where('year_level_id', $validated['year_level_id'])
+            ->exists();
+
+        if ($alreadyEnrolled) {
+            return back()->withErrors([
+                'user_id' => 'Student is already enrolled in the selected year level.',
+            ])->withInput();
+        }
+
+        $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
+
+        if ($subjects->isEmpty()) {
+            return back()->withErrors(['year_level_id' => 'No subjects found for selected year level.']);
+        }
+
+        foreach ($subjects as $subject) {
+            Student::create([
+                'user_id' => $validated['user_id'],
+                'year_level_id' => $validated['year_level_id'],
+                'section_id' => $validated['section_id'],
+                'subject_id' => $subject->id,
+            ]);
+        }
+
+        $student = User::find($validated['user_id']);
+        $yearLevel = YearLevel::find($validated['year_level_id']);
+        $section = Section::find($validated['section_id']);
+
+        Mail::to($student->email)->send(new TestMail($student, $yearLevel, $section, $subjects));
+
+        return redirect()->route('enroll.index')->with('success', 'Student enrolled successfully.');
     }
-
-    $student = User::find($validated['user_id']);
-    $yearLevel = YearLevel::find($validated['year_level_id']);
-    $section = Section::find($validated['section_id']);
-
-    Mail::to($student->email)->send(new TestMail($student, $yearLevel, $section, $subjects));
-
-    return redirect()->route('enroll.index')->with('success', 'Student enrolled successfully.');
-}
 
 
     public function edit(Student $enroll)

@@ -23,7 +23,7 @@ class SendDueNotifications extends Command
     {
         $today = Carbon::today();
 
-        // ✅ Notify due Activities (not yet taken)
+
         Activity::with('module')->whereDate('due_date', $today)->get()->each(function ($activity) {
             $studentUserIds = Student::where('year_level_id', $activity->module->year_level_id)
                 ->where('section_id', $activity->module->section_id)
@@ -43,7 +43,7 @@ class SendDueNotifications extends Command
             }
         });
 
-        // ✅ Notify due Proficiency Tests (not yet taken)
+      
         ProficiencyTest::whereDate('due_date', $today)->get()->each(function ($test) {
             $studentUserIds = Student::where('year_level_id', $test->year_level_id)
                 ->pluck('user_id');

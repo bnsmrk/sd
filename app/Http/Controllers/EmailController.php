@@ -10,8 +10,8 @@ class EmailController extends Controller
 {
     public function index()
     {
-       Mail::to("vnsmrkdlwn@gmail.com")->send(New TestMail());
+        Mail::to("vnsmrkdlwn@gmail.com")->send(new TestMail());
 
-       dd('Mail sent successfully!');
+        dd('Mail sent successfully!');
     }
 }

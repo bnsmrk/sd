@@ -27,7 +27,7 @@ class StudentsProficiencyResult extends Controller
 
         if ($yearLevelId && $type) {
             $studentsQuery = Student::with(['user', 'section'])
-                ->whereHas('user', fn ($q) => $q->where('role', 'student'))
+                ->whereHas('user', fn($q) => $q->where('role', 'student'))
                 ->where('year_level_id', $yearLevelId);
 
             if ($sectionId) {
@@ -58,7 +58,7 @@ class StudentsProficiencyResult extends Controller
                 ];
             })->values();
 
-            $sectionsAvg = $individuals->groupBy(fn ($item) => $item['student']['section']['id'] ?? null)
+            $sectionsAvg = $individuals->groupBy(fn($item) => $item['student']['section']['id'] ?? null)
                 ->map(function ($group) {
                     $section = $group->first()['student']['section'] ?? ['id' => null, 'name' => 'N/A'];
                     $avg = round($group->avg('average'), 2);
@@ -94,7 +94,7 @@ class StudentsProficiencyResult extends Controller
 
         if ($yearLevelId && $type) {
             $studentsQuery = Student::with(['user', 'section'])
-                ->whereHas('user', fn ($q) => $q->where('role', 'student'))
+                ->whereHas('user', fn($q) => $q->where('role', 'student'))
                 ->where('year_level_id', $yearLevelId);
 
             if ($sectionId) {
@@ -125,7 +125,7 @@ class StudentsProficiencyResult extends Controller
                 ];
             })->values();
 
-            $sectionsAvg = $individuals->groupBy(fn ($item) => $item['student']['section']['id'] ?? null)
+            $sectionsAvg = $individuals->groupBy(fn($item) => $item['student']['section']['id'] ?? null)
                 ->map(function ($group) {
                     $section = $group->first()['student']['section'] ?? ['id' => null, 'name' => 'N/A'];
                     $avg = round($group->avg('average'), 2);

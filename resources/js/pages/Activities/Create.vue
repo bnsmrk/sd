@@ -39,7 +39,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
     <Head title="Create Activity" />
     <AppLayout>
         <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
-            <!-- Page Header -->
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-[#01006c]">Create Activity</h1>
                 <Link
@@ -51,9 +50,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                 </Link>
             </div>
 
-            <!-- Form -->
             <form @submit.prevent="form.post('/activities', { forceFormData: true })" class="space-y-6">
-                <!-- Title, Type, Module -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
                         <label class="ttext-[#ff69b4] flex items-center gap-1 text-sm font-medium">
@@ -96,7 +93,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Module Details -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3" v-if="selectedModule">
                     <div>
                         <label class="ttext-[#ff69b4] block text-sm font-medium">Year Level</label>
@@ -118,7 +114,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Schedule & Due Date -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                         <label class="ttext-[#ff69b4] flex items-center gap-1 text-sm font-medium">
@@ -143,7 +138,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Essay Fields -->
                 <div v-if="form.type === 'essay'" class="space-y-4">
                     <div>
                         <label class="ttext-[#ff69b4] flex items-center gap-1 text-sm font-medium">
@@ -167,7 +161,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Save Button -->
                 <button
                     class="mt-4 inline-flex items-center justify-center gap-2 rounded bg-[#01006c] px-6 py-2 text-white transition hover:bg-[#ffc60b] hover:text-[#01006c]"
                     :disabled="form.processing"

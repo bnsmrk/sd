@@ -30,7 +30,6 @@ function saveScore() {
         <Head :title="`View Essay - ${props.submission.user.name}`" />
 
         <div class="mx-auto w-full max-w-screen-2xl space-y-6 p-6">
-            <!-- Header -->
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-semibold text-[#01006c]">
                     Essay by {{ props.submission.user.name }} – {{ props.submission.activity.title }}
@@ -44,7 +43,6 @@ function saveScore() {
                 </a>
             </div>
 
-            <!-- Status -->
             <div class="flex items-center gap-2 text-sm font-medium text-gray-700">
                 Status:
                 <span
@@ -59,13 +57,11 @@ function saveScore() {
                 </span>
             </div>
 
-            <!-- Essay Content -->
             <div v-if="submission.content" class="rounded bg-gray-50 p-4 whitespace-pre-wrap text-gray-800 shadow-sm">
                 {{ submission.content }}
             </div>
             <div v-else class="text-gray-500 italic">No essay content submitted.</div>
 
-            <!-- Attached File -->
             <div v-if="submission.file_path">
                 <a
                     :href="`/storage/${submission.file_path}`"
@@ -76,7 +72,6 @@ function saveScore() {
                 </a>
             </div>
 
-            <!-- Score Section -->
             <div class="mt-6 w-full max-w-md rounded-lg border p-4 shadow-sm">
                 <label class="mb-2 flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                     <Medal class="h-4 w-4 text-[#ff69b4]" /> Score

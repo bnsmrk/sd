@@ -9,28 +9,30 @@ use Inertia\Inertia;
 
 class SectionController extends Controller
 {
-   public function index(Request $request)
-{
-    $search = $request->input('search');
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
 
-    $sections = Section::with('yearLevel')
-        ->when($search, fn ($query) =>
-            $query->where('name', 'like', "%{$search}%")
-        )
-        ->orderBy('id')
-        ->paginate(5)
-        ->withQueryString();
+        $sections = Section::with('yearLevel')
+            ->when(
+                $search,
+                fn($query) =>
+                $query->where('name', 'like', "%{$search}%")
+            )
+            ->orderBy('id')
+            ->paginate(5)
+            ->withQueryString();
 
-    $yearLevels = YearLevel::all();
+        $yearLevels = YearLevel::all();
 
-    return Inertia::render('Section/Index', [
-        'sections' => $sections,
-        'yearLevels' => $yearLevels,
-        'filters' => [
-            'search' => $search,
-        ],
-    ]);
-}
+        return Inertia::render('Section/Index', [
+            'sections' => $sections,
+            'yearLevels' => $yearLevels,
+            'filters' => [
+                'search' => $search,
+            ],
+        ]);
+    }
     public function create()
     {
         $yearLevels = YearLevel::all();

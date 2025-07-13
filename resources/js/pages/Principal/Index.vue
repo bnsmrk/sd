@@ -148,10 +148,8 @@ const pdfUrl = computed(() => {
     <Head title="Proficiency Report" />
     <AppLayout>
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
-            <!-- Header -->
             <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><BarChart2 class="h-6 w-6" /> Proficiency Reports</h1>
 
-            <!-- Filters -->
             <div class="flex flex-wrap gap-4 rounded-lg border bg-white p-4">
                 <div class="relative min-w-[180px] flex-grow">
                     <Layers class="absolute top-2.5 left-3 h-4 w-4 text-[#01006c]" />
@@ -208,7 +206,6 @@ const pdfUrl = computed(() => {
                     </select>
                 </div>
 
-                <!-- Generate Button -->
                 <div class="flex-shrink-0">
                     <button
                         @click="applyFilters"
@@ -219,7 +216,6 @@ const pdfUrl = computed(() => {
                 </div>
             </div>
 
-            <!-- PDF Button -->
             <div v-if="canGeneratePdf" class="mt-4 flex justify-end">
                 <a
                     :href="pdfUrl"
@@ -230,7 +226,6 @@ const pdfUrl = computed(() => {
                 </a>
             </div>
 
-            <!-- Results Table -->
             <div v-if="props.resultsByActivity.length > 0" class="mt-6 space-y-8">
                 <div v-for="group in props.resultsByActivity" :key="group.activity_title">
                     <h2 class="text-lg font-semibold text-[#01006c]">{{ group.activity_title }}</h2>
@@ -255,7 +250,6 @@ const pdfUrl = computed(() => {
                 </div>
             </div>
 
-            <!-- No Results -->
             <div v-else class="mt-8 text-center text-gray-400 italic">No data to show</div>
         </div>
     </AppLayout>

@@ -34,9 +34,7 @@ const submitForm = () => {
     <Head title="Edit Enrollment" />
     <AppLayout :breadcrumbs="[{ title: 'Enrollments', href: '/enroll' }]">
         <div class="grid grid-cols-1 gap-8 p-6 md:grid-cols-2">
-            <!-- Form Section -->
             <div class="space-y-6">
-                <!-- Back -->
                 <div>
                     <Link
                         href="/enroll"
@@ -46,10 +44,8 @@ const submitForm = () => {
                     </Link>
                 </div>
 
-                <!-- Title -->
                 <h2 class="text-xl font-bold text-[#01006c]">📝 Edit Student Enrollment</h2>
 
-                <!-- Year Level -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🎓 Year Level</label>
                     <select
@@ -62,7 +58,6 @@ const submitForm = () => {
                     <p class="text-sm text-red-500" v-if="form.errors.year_level_id">{{ form.errors.year_level_id }}</p>
                 </div>
 
-                <!-- Section -->
                 <div v-if="filteredSections.length">
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🏫 Section</label>
                     <select
@@ -75,7 +70,6 @@ const submitForm = () => {
                     <p class="text-sm text-red-500" v-if="form.errors.section_id">{{ form.errors.section_id }}</p>
                 </div>
 
-                <!-- Submit -->
                 <button
                     @click="submitForm"
                     :disabled="form.processing"
@@ -85,7 +79,6 @@ const submitForm = () => {
                 </button>
             </div>
 
-            <!-- Subjects Panel -->
             <div class="rounded border border-[#01006c] bg-white p-4 shadow">
                 <h3 class="mb-3 text-lg font-semibold text-[#01006c]">📚 Subjects in Selected Year Level</h3>
                 <ul v-if="filteredSubjects.length" class="ml-4 list-disc space-y-1 text-sm text-gray-700">

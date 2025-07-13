@@ -54,7 +54,6 @@ function cancelDelete() {
     <Head title="Teacher Assignments" />
     <AppLayout>
         <div class="p-6">
-            <!-- Header -->
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <h1 class="text-xl font-bold text-[#01006c]">👩‍🏫 Teacher Assignments</h1>
                 <div class="flex items-center gap-2">
@@ -73,7 +72,6 @@ function cancelDelete() {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-hidden rounded border border-[#01006c] shadow">
                 <table class="min-w-full divide-y divide-[#01006c]">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white">
@@ -111,7 +109,6 @@ function cancelDelete() {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.assignments.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -130,7 +127,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h2 class="mb-4 text-lg font-bold text-[#ff69b4]">🗑️ Confirm Deletion</h2>

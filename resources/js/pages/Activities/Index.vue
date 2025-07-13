@@ -59,7 +59,6 @@ function cancelDelete() {
     <Head title="Activities" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="space-y-4 p-6">
-            <!-- Search + Create -->
             <div class="mb-4 flex flex-wrap justify-between gap-2 sm:items-center sm:justify-between">
                 <h1 class="text-2xl font-bold text-[#01006c]">Activities</h1>
                 <div class="flex w-full justify-end gap-2 sm:w-auto">
@@ -79,7 +78,6 @@ function cancelDelete() {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
                 <table class="min-w-full table-auto text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
@@ -139,7 +137,6 @@ function cancelDelete() {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.activities.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />
@@ -158,7 +155,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-xl dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-[#01006c] dark:text-white">Confirm Deletion</h2>

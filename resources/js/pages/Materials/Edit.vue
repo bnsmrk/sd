@@ -131,7 +131,6 @@ function submitForm() {
                 </Link>
             </div>
 
-            <!-- Selection Grid -->
             <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">Type</label>
@@ -144,7 +143,6 @@ function submitForm() {
                     </select>
                 </div>
 
-                <!-- MATERIAL -->
                 <div v-if="selectedType === 'material'" class="col-span-3 grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
                         <label class="mb-1 block text-sm font-medium text-[#ff69b4]">Module</label>
@@ -174,7 +172,6 @@ function submitForm() {
                     </div>
                 </div>
 
-                <!-- LESSON PLAN -->
                 <div v-else class="col-span-3 grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
                         <label class="mb-1 block text-sm font-medium text-[#ff69b4]">Year Level</label>
@@ -211,7 +208,6 @@ function submitForm() {
                 </div>
             </div>
 
-            <!-- Title -->
             <div>
                 <label class="block text-sm font-medium text-[#ff69b4]">Title</label>
                 <input
@@ -221,7 +217,6 @@ function submitForm() {
                 />
             </div>
 
-            <!-- Description -->
             <div>
                 <label class="block text-sm font-medium text-[#ff69b4]">Description</label>
                 <textarea
@@ -231,7 +226,6 @@ function submitForm() {
                 />
             </div>
 
-            <!-- File Upload -->
             <div>
                 <label class="mb-1 block flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                     <FileUp class="h-4 w-4 text-[#ff69b4]" />
@@ -250,7 +244,6 @@ function submitForm() {
                 </div>
             </div>
 
-            <!-- Submit -->
             <button
                 @click="submitForm"
                 class="w-full rounded bg-[#01006c] py-2 text-white transition hover:bg-[#0d1282] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"

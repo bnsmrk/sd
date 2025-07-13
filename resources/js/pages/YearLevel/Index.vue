@@ -143,7 +143,6 @@ const deleteYearLevel = () => {
             </div>
         </div>
 
-        <!-- 🌸 Add Modal -->
         <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">➕ Add Year Level</h3>
@@ -179,7 +178,6 @@ const deleteYearLevel = () => {
             </div>
         </div>
 
-        <!-- 🌸 Edit Modal (same style as Add) -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">✏️ Edit Year Level</h3>
@@ -214,7 +212,6 @@ const deleteYearLevel = () => {
             </div>
         </div>
 
-        <!-- 🌸 Delete Modal (same color theme) -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">⚠️ Confirm Deletion</h3>

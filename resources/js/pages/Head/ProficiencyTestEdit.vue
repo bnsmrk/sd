@@ -45,7 +45,6 @@ function cancelEdit() {
             </div>
 
             <form @submit.prevent="form.put(`/proficiency-test/${props.test.id}`)" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <!-- Title -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <FileText class="h-4 w-4 text-[#ff69b4]" />
@@ -59,7 +58,6 @@ function cancelEdit() {
                     />
                 </div>
 
-                <!-- Type -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <ListChecks class="h-4 w-4 text-[#ff69b4]" />
@@ -75,7 +73,6 @@ function cancelEdit() {
                     </select>
                 </div>
 
-                <!-- Year Level -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <BookOpen class="h-4 w-4 text-[#ff69b4]" />
@@ -91,7 +88,6 @@ function cancelEdit() {
                     </select>
                 </div>
 
-                <!-- Scheduled At -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <CalendarClock class="h-4 w-4 text-[#ff69b4]" />
@@ -105,7 +101,6 @@ function cancelEdit() {
                     />
                 </div>
 
-                <!-- Due Date -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <CalendarDays class="h-4 w-4 text-[#ff69b4]" />
@@ -118,7 +113,6 @@ function cancelEdit() {
                     />
                 </div>
 
-                <!-- Description -->
                 <div class="col-span-full">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <FileText class="h-4 w-4 text-[#ff69b4]" />
@@ -131,7 +125,6 @@ function cancelEdit() {
                     ></textarea>
                 </div>
 
-                <!-- Actions -->
                 <div class="col-span-full flex justify-end gap-4 pt-4">
                     <button
                         type="button"

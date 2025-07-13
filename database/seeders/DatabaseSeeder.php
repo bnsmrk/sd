@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Admin User',
-            'email' => 'admin@gmail.com',
+            'email' => 'amigo.marineth@dnsc.edu.ph',
             'role' => 'admin',
             'password' => bcrypt('password'),
         ]);
@@ -29,23 +29,23 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory()->create([
             'name' => 'Teacher User',
-            'email' => 'teacher@gmail.com',
+            'email' => 'caliao.mickyjean@dnsc.edu.ph',
             'role' => 'teacher',
             'password' => bcrypt('password'),
         ]);
         User::factory()->create([
             'name' => 'ICT User',
-            'email' => 'ict@gmail.com',
+            'email' => 'mayola.giamae@dnsc.edu.ph',
             'role' => 'ict',
             'password' => bcrypt('password'),
         ]);
         User::factory()->create([
             'name' => 'Year Level Head',
-            'email' => 'head@gmail.com',
+            'email' => 'otaza.princessalesanra@dnsc.edu.ph',
             'role' => 'head',
             'password' => bcrypt('password'),
         ]);
-         User::factory()->create([
+        User::factory()->create([
             'name' => 'Principal User',
             'email' => 'principal@gmail.com',
             'role' => 'principal',
@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-         User::factory()->create([
+        User::factory()->create([
             'name' => 'vins mark 0214',
             'email' => 'vinsmark.adlawan0214@gmail.com',
             'role' => 'student',

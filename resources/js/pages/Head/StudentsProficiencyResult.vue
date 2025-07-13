@@ -137,7 +137,6 @@ const pdfUrl = computed(() => {
             </div>
 
             <div v-if="filtersApplied && props.individuals.length > 0" class="space-y-8">
-                <!-- Individual Averages Table -->
                 <div>
                     <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-[#01006c]">
                         <BookOpen class="h-5 w-5 text-green-600" /> Individual Averages
@@ -160,7 +159,6 @@ const pdfUrl = computed(() => {
                     </table>
                 </div>
 
-                <!-- Section Averages Table -->
                 <div>
                     <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-[#01006c]">
                         <ListChecks class="h-5 w-5 text-indigo-600" /> Section Averages
@@ -181,7 +179,6 @@ const pdfUrl = computed(() => {
                     </table>
                 </div>
 
-                <!-- Year Level Average -->
                 <div class="mt-2 flex items-center gap-2 text-lg font-bold text-[#01006c]">
                     <CalendarClock class="h-5 w-5 text-yellow-500" />
                     Year Level Average:
@@ -189,7 +186,6 @@ const pdfUrl = computed(() => {
                 </div>
             </div>
 
-            <!-- No Results -->
             <div v-else-if="filtersApplied" class="mt-8 text-center text-sm text-gray-500 italic">
                 <p>No results available for the selected filters.</p>
             </div>

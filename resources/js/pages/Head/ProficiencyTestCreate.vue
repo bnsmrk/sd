@@ -38,7 +38,6 @@ const form = useForm({
             </div>
 
             <form @submit.prevent="form.post('/proficiency-test')" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <!-- Title -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <FileText class="h-4 w-4 text-[#ff69b4]" />
@@ -51,7 +50,6 @@ const form = useForm({
                     />
                 </div>
 
-                <!-- Type -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <ListChecks class="h-4 w-4 text-[#ff69b4]" />
@@ -66,7 +64,6 @@ const form = useForm({
                     </select>
                 </div>
 
-                <!-- Year Level -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <BookOpen class="h-4 w-4 text-[#ff69b4]" />
@@ -83,7 +80,6 @@ const form = useForm({
                     </select>
                 </div>
 
-                <!-- Scheduled At -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <CalendarClock class="h-4 w-4 text-[#ff69b4]" />
@@ -96,7 +92,6 @@ const form = useForm({
                     />
                 </div>
 
-                <!-- Due Date -->
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <CalendarDays class="h-4 w-4 text-[#ff69b4]" />
@@ -109,7 +104,6 @@ const form = useForm({
                     />
                 </div>
 
-                <!-- Description -->
                 <div class="col-span-full">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <FileText class="h-4 w-4 text-[#ff69b4]" />
@@ -122,7 +116,6 @@ const form = useForm({
                     ></textarea>
                 </div>
 
-                <!-- Submit -->
                 <div class="col-span-full">
                     <button
                         type="submit"

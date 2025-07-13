@@ -56,7 +56,6 @@ watch(
     <Head title="Edit Module" />
     <AppLayout>
         <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
-            <!-- Header -->
             <div class="flex items-center justify-between">
                 <h1 class="inline-flex items-center gap-2 text-2xl font-semibold text-[#01006c]">
                     <Pencil class="h-5 w-5 text-[#01006c]" />
@@ -71,9 +70,7 @@ watch(
                 </Link>
             </div>
 
-            <!-- Form -->
             <form @submit.prevent="form.put(`/modules/${props.module.id}`)" class="space-y-6">
-                <!-- Module Name -->
                 <div>
                     <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                         <FileSignature class="h-4 w-4 text-[#ff69b4]" />
@@ -87,7 +84,6 @@ watch(
                     <div v-if="form.errors.name" class="text-sm text-red-600">{{ form.errors.name }}</div>
                 </div>
 
-                <!-- Year Level -->
                 <div>
                     <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                         <School class="h-4 w-4 text-[#ff69b4]" />
@@ -104,7 +100,6 @@ watch(
                     <div v-if="form.errors.year_level_id" class="text-sm text-red-600">{{ form.errors.year_level_id }}</div>
                 </div>
 
-                <!-- Section -->
                 <div v-if="availableSections.length > 0">
                     <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                         <Users class="h-4 w-4 text-[#ff69b4]" />
@@ -123,7 +118,6 @@ watch(
                     <div v-if="form.errors.section_id" class="text-sm text-red-600">{{ form.errors.section_id }}</div>
                 </div>
 
-                <!-- Subject -->
                 <div v-if="filteredSubjects.length > 0">
                     <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                         <BookText class="h-4 w-4 text-[#ff69b4]" />
@@ -142,7 +136,6 @@ watch(
                     <div v-if="form.errors.subject_id" class="text-sm text-red-600">{{ form.errors.subject_id }}</div>
                 </div>
 
-                <!-- Submit -->
                 <div>
                     <button class="w-full rounded bg-[#01006c] py-2 text-white transition hover:bg-[#0d1282]" :disabled="form.processing">
                         Update

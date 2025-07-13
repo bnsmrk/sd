@@ -27,12 +27,12 @@ class PrincipalLessonPlanController extends Controller
                 ->latest()
                 ->get();
         }
-            $lessonPlans = Material::with([
-                'uploader:id,name',
-                'yearLevel:id,name',
-                'section:id,name',
-                'comments.user:id,name'
-            ])
+        $lessonPlans = Material::with([
+            'uploader:id,name',
+            'yearLevel:id,name',
+            'section:id,name',
+            'comments.user:id,name'
+        ])
             ->where('type', 'lesson_plan')
             ->where('year_level_id', $yearLevelId)
             ->where('section_id', $sectionId)
@@ -50,18 +50,18 @@ class PrincipalLessonPlanController extends Controller
     }
 
     public function storeComment(Request $request)
-{
-    $validated = $request->validate([
-        'material_id' => 'required|exists:materials,id',
-        'comment' => 'required|string|max:1000',
-    ]);
+    {
+        $validated = $request->validate([
+            'material_id' => 'required|exists:materials,id',
+            'comment' => 'required|string|max:1000',
+        ]);
 
-    LessonPlanComment::create([
-        'material_id' => $validated['material_id'],
-        'user_id' => auth()->id(),
-        'comment' => $validated['comment'],
-    ]);
+        LessonPlanComment::create([
+            'material_id' => $validated['material_id'],
+            'user_id' => auth()->id(),
+            'comment' => $validated['comment'],
+        ]);
 
-    return back()->with('success', 'Comment added.');
-}
+        return back()->with('success', 'Comment added.');
+    }
 }

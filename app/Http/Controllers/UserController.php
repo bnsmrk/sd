@@ -11,25 +11,25 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
 
-public function index(Request $request)
-{
-    $query = User::query()->whereIn('role', ['teacher', 'ict', 'head']);
+    public function index(Request $request)
+    {
+        $query = User::query()->whereIn('role', ['teacher', 'ict', 'head']);
 
-    if ($request->filled('search')) {
-        $search = $request->input('search');
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%");
-        });
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->latest()->paginate(5)->withQueryString();
+
+        return Inertia::render('Users/Index', [
+            'users' => $users,
+            'filters' => $request->only('search'),
+        ]);
     }
-
-    $users = $query->latest()->paginate(5)->withQueryString();
-
-    return Inertia::render('Users/Index', [
-        'users' => $users,
-        'filters' => $request->only('search'),
-    ]);
-}
 
 
     public function create()

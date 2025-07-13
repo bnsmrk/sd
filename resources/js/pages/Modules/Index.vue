@@ -52,7 +52,6 @@ function cancelDelete() {
     <Head title="Modules" />
     <AppLayout>
         <div class="space-y-6 p-6">
-            <!-- Header Actions -->
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
                     <Layers class="h-6 w-6 text-[#01006c]" />
@@ -75,7 +74,6 @@ function cancelDelete() {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow">
                 <table class="min-w-full text-sm text-gray-700">
                     <thead class="bg-[#01006c] text-white">
@@ -116,7 +114,6 @@ function cancelDelete() {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="mt-6 flex flex-wrap justify-center gap-2">
                 <template v-for="(link, i) in props.modules.links" :key="i">
                     <span
@@ -139,7 +136,6 @@ function cancelDelete() {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
             <div class="w-full max-w-md rounded bg-white p-6 shadow-lg dark:bg-gray-800">
                 <h2 class="mb-4 text-lg font-semibold text-[#01006c]">Confirm Deletion</h2>

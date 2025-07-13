@@ -12,26 +12,26 @@ use Inertia\Inertia;
 class ModuleController extends Controller
 {
     public function index(Request $request)
-{
-    $user = Auth::user();
-    $assignments = $user->teacherAssignments()->get();
+    {
+        $user = Auth::user();
+        $assignments = $user->teacherAssignments()->get();
 
-    $query = Module::with(['yearLevel', 'subject', 'section'])
-        ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
-        ->whereIn('section_id', $assignments->pluck('section_id'))
-        ->whereIn('subject_id', $assignments->pluck('subject_id'));
+        $query = Module::with(['yearLevel', 'subject', 'section'])
+            ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
+            ->whereIn('section_id', $assignments->pluck('section_id'))
+            ->whereIn('subject_id', $assignments->pluck('subject_id'));
 
-    if ($request->filled('search')) {
-        $query->where('name', 'like', '%' . $request->search . '%');
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $modules = $query->latest()->paginate(5)->withQueryString();
+
+        return Inertia::render('Modules/Index', [
+            'modules' => $modules,
+            'filters' => $request->only('search'),
+        ]);
     }
-
-    $modules = $query->latest()->paginate(5)->withQueryString();
-
-    return Inertia::render('Modules/Index', [
-        'modules' => $modules,
-        'filters' => $request->only('search'),
-    ]);
-}
 
     public function create()
     {
@@ -71,7 +71,7 @@ class ModuleController extends Controller
 
     public function store(Request $request)
     {
-            $validated = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'year_level_id' => 'required|exists:year_levels,id',
             'section_id' => 'required|exists:sections,id',
@@ -82,85 +82,85 @@ class ModuleController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-            $isAssigned = Auth::user()->teacherAssignments()
-                ->where('year_level_id', $validated['year_level_id'])
-                ->where('section_id', $validated['section_id'])
-                ->where('subject_id', $validated['subject_id'])
-                ->exists();
+        $isAssigned = Auth::user()->teacherAssignments()
+            ->where('year_level_id', $validated['year_level_id'])
+            ->where('section_id', $validated['section_id'])
+            ->where('subject_id', $validated['subject_id'])
+            ->exists();
 
-            if (!$isAssigned) {
-                abort(403, 'You are not assigned to this year level, section, and subject.');
-            }
+        if (!$isAssigned) {
+            abort(403, 'You are not assigned to this year level, section, and subject.');
+        }
 
-            Module::create($validated);
+        Module::create($validated);
 
 
         return redirect()->route('modules.index')->with('success', 'Module created successfully.');
     }
 
- public function edit(Module $module)
-{
-    $user = Auth::user();
+    public function edit(Module $module)
+    {
+        $user = Auth::user();
 
-    $assignments = $user->teacherAssignments()
-        ->with(['yearLevel', 'section', 'subject'])
-        ->get();
+        $assignments = $user->teacherAssignments()
+            ->with(['yearLevel', 'section', 'subject'])
+            ->get();
 
-    $grouped = $assignments->groupBy(fn($a) => $a->yearLevel->id)->map(function ($items, $yearLevelId) {
-        $yearLevel = $items->first()->yearLevel;
+        $grouped = $assignments->groupBy(fn($a) => $a->yearLevel->id)->map(function ($items, $yearLevelId) {
+            $yearLevel = $items->first()->yearLevel;
 
-        return [
-            'id' => $yearLevel->id,
-            'name' => $yearLevel->name,
-            'sections' => $items->pluck('section')->unique('id')->values()->map(fn($s) => [
-                'id' => $s->id,
-                'name' => $s->name,
-            ]),
-            'subjects' => $items->pluck('subject')->unique('id')->values()->map(function ($subject) use ($items) {
-                $sectionIds = $items->filter(fn($i) => $i->subject_id === $subject->id)
-                    ->pluck('section.id')->unique()->values();
+            return [
+                'id' => $yearLevel->id,
+                'name' => $yearLevel->name,
+                'sections' => $items->pluck('section')->unique('id')->values()->map(fn($s) => [
+                    'id' => $s->id,
+                    'name' => $s->name,
+                ]),
+                'subjects' => $items->pluck('subject')->unique('id')->values()->map(function ($subject) use ($items) {
+                    $sectionIds = $items->filter(fn($i) => $i->subject_id === $subject->id)
+                        ->pluck('section.id')->unique()->values();
 
-                return [
-                    'id' => $subject->id,
-                    'name' => $subject->name,
-                    'section_ids' => $sectionIds,
-                ];
-            }),
-        ];
-    })->values();
+                    return [
+                        'id' => $subject->id,
+                        'name' => $subject->name,
+                        'section_ids' => $sectionIds,
+                    ];
+                }),
+            ];
+        })->values();
 
-    return Inertia::render('Modules/Edit', [
-        'module' => $module,
-        'assignments' => $grouped,
-    ]);
-}
-
-
-public function update(Request $request, Module $module)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'year_level_id' => 'required|exists:year_levels,id',
-        'section_id' => 'required|exists:sections,id',
-        'subject_id' => 'required|exists:subjects,id',
-    ]);
-
-    $user = Auth::user();
-
-    $isAssigned = $user->teacherAssignments()
-        ->where('year_level_id', $validated['year_level_id'])
-        ->where('section_id', $validated['section_id'])
-        ->where('subject_id', $validated['subject_id'])
-        ->exists();
-
-    if (! $isAssigned) {
-        abort(403, 'You are not assigned to this year level, section, and subject.');
+        return Inertia::render('Modules/Edit', [
+            'module' => $module,
+            'assignments' => $grouped,
+        ]);
     }
 
-    $module->update($validated);
 
-    return redirect()->route('modules.index')->with('success', 'Module updated successfully.');
-}
+    public function update(Request $request, Module $module)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'section_id' => 'required|exists:sections,id',
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
+
+        $user = Auth::user();
+
+        $isAssigned = $user->teacherAssignments()
+            ->where('year_level_id', $validated['year_level_id'])
+            ->where('section_id', $validated['section_id'])
+            ->where('subject_id', $validated['subject_id'])
+            ->exists();
+
+        if (! $isAssigned) {
+            abort(403, 'You are not assigned to this year level, section, and subject.');
+        }
+
+        $module->update($validated);
+
+        return redirect()->route('modules.index')->with('success', 'Module updated successfully.');
+    }
 
 
 

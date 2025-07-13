@@ -49,7 +49,6 @@ watch(search, (value) => {
         <Head :title="`Essay Submissions - ${props.activity.title}`" />
 
         <div class="mx-auto w-full max-w-screen-2xl space-y-6 p-6">
-            <!-- Page Header -->
             <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                 <h1 class="text-2xl font-semibold text-[#01006c]">Essay Submissions – {{ props.activity.title }}</h1>
 
@@ -69,12 +68,10 @@ watch(search, (value) => {
                 </div>
             </div>
 
-            <!-- No Submissions Message -->
             <div v-if="props.submissions.data.length === 0" class="rounded-lg bg-yellow-50 px-4 py-3 text-yellow-700 shadow-sm">
                 No students have submitted yet.
             </div>
 
-            <!-- Submission Table -->
             <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
                 <table class="min-w-full table-auto text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
@@ -119,7 +116,6 @@ watch(search, (value) => {
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="mt-6 flex justify-center gap-2">
                 <template v-for="(link, i) in props.submissions.links" :key="i">
                     <span v-if="!link.url" class="px-3 py-1 text-sm text-gray-400" v-html="link.label" />

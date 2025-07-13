@@ -53,7 +53,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
             </div>
 
             <form @submit.prevent="form.post(`/activities/${props.activity.id}`, { forceFormData: true })" class="space-y-6">
-                <!-- Title, Type, Module -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
                         <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
@@ -96,7 +95,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Read-only Details -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3" v-if="selectedModule">
                     <div>
                         <label class="text-sm font-medium text-[#ff69b4]">Year Level</label>
@@ -118,7 +116,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Schedule / Due Date -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                         <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
@@ -143,7 +140,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Essay fields -->
                 <div v-if="form.type === 'essay'" class="space-y-4">
                     <div>
                         <label class="flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
@@ -177,7 +173,6 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                     </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex justify-end">
                     <button
                         class="mt-4 inline-flex items-center gap-2 rounded bg-[#01006c] px-6 py-2 text-white transition hover:bg-[#ffc60b] hover:text-[#01006c]"

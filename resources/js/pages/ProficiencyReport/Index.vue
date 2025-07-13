@@ -129,12 +129,10 @@ const canGeneratePdf = computed(() => {
 <template>
     <AppLayout>
         <div class="mx-auto max-w-full space-y-6 px-6 py-8">
-            <!-- Header -->
             <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
                 <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">📊 Proficiency Report</h1>
             </div>
 
-            <!-- Filters -->
             <div class="grid grid-cols-1 items-end gap-4 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
                 <div>
                     <label class="flex items-center gap-1 text-sm font-semibold text-[#01006c]"> <GraduationCap class="h-4 w-4" /> Year Level </label>
@@ -198,7 +196,6 @@ const canGeneratePdf = computed(() => {
                 </div>
             </div>
 
-            <!-- PDF Export -->
             <div v-if="canGeneratePdf" class="mt-4 flex justify-end gap-2">
                 <a
                     :href="pdfUrl"
@@ -218,7 +215,6 @@ const canGeneratePdf = computed(() => {
                 -->
             </div>
 
-            <!-- Results Table -->
             <div v-if="props.resultsByActivity.length > 0" class="mt-8 space-y-10">
                 <div v-for="group in props.resultsByActivity" :key="group.activity_title">
                     <h2 class="text-xl font-semibold text-[#01006c]">{{ group.activity_title }}</h2>
@@ -245,7 +241,6 @@ const canGeneratePdf = computed(() => {
                 </div>
             </div>
 
-            <!-- Empty State -->
             <div v-else class="mt-10 text-center text-gray-500 italic">No data to show.</div>
         </div>
     </AppLayout>

@@ -104,7 +104,6 @@ const confirmDelete = () => {
     <Head title="Sections" />
     <AppLayout>
         <div class="p-4">
-            <!-- Header -->
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <h2 class="text-xl font-bold text-[#01006c]">🏫 Sections</h2>
                 <div class="flex items-center gap-2">
@@ -123,7 +122,6 @@ const confirmDelete = () => {
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="overflow-x-auto rounded-lg border border-[#01006c] shadow">
                 <table class="min-w-full table-auto text-left text-sm text-[#01006c]">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white uppercase">
@@ -178,7 +176,6 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <!-- 🌸 Add Section Modal -->
         <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">➕ Add Section</h3>
@@ -224,7 +221,6 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <!-- 🌸 Edit Section Modal -->
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">✏️ Edit Section</h3>
@@ -270,7 +266,6 @@ const confirmDelete = () => {
             </div>
         </div>
 
-        <!-- 🌸 Delete Section Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
                 <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">🗑️ Confirm Deletion</h3>

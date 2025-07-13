@@ -13,7 +13,7 @@ class Question extends Model
 
     protected $fillable = [
         'activity_id',
-        'question',       // ✅ make sure this is included
+        'question', 
         'type',
         'options',
         'answer_key',

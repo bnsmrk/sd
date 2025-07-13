@@ -61,9 +61,7 @@ function saveForm() {
     <Head title="Enroll Student" />
     <AppLayout :breadcrumbs="[{ title: 'Enroll', href: '/enroll' }]">
         <div class="grid grid-cols-1 gap-8 p-6 md:grid-cols-2">
-            <!-- Form Column -->
             <div class="space-y-6">
-                <!-- Back Button -->
                 <div>
                     <Link
                         href="/enroll"
@@ -73,10 +71,8 @@ function saveForm() {
                     </Link>
                 </div>
 
-                <!-- Title -->
                 <h2 class="text-xl font-bold text-[#01006c]">📝 Enroll a Student</h2>
 
-                <!-- Student -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">👤 Student</label>
                     <select
@@ -89,7 +85,6 @@ function saveForm() {
                     <p v-if="errors.student" class="text-sm text-red-500">{{ errors.student }}</p>
                 </div>
 
-                <!-- Year Level -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🎓 Year Level</label>
                     <select
@@ -102,7 +97,6 @@ function saveForm() {
                     <p v-if="errors.yearLevel" class="text-sm text-red-500">{{ errors.yearLevel }}</p>
                 </div>
 
-                <!-- Section -->
                 <div v-if="filteredSections.length">
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🏫 Section</label>
                     <select
@@ -115,7 +109,6 @@ function saveForm() {
                     <p v-if="errors.section" class="text-sm text-red-500">{{ errors.section }}</p>
                 </div>
 
-                <!-- Submit Button -->
                 <button
                     class="inline-flex w-full items-center justify-center gap-2 rounded bg-[#01006c] py-2 text-white transition hover:bg-[#0d1282]"
                     @click="saveForm"
@@ -124,7 +117,6 @@ function saveForm() {
                 </button>
             </div>
 
-            <!-- Subjects Column -->
             <div v-if="filteredSubjects.length" class="space-y-3 rounded border border-[#01006c] bg-white p-4 shadow">
                 <h3 class="text-lg font-semibold text-[#01006c]">📚 Subjects in Selected Year Level</h3>
                 <ul class="ml-4 list-disc text-sm text-gray-700">
