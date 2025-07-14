@@ -21,12 +21,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'password' => bcrypt('password'),
         ]);
-        User::factory()->create([
-            'name' => 'Vins Mark vnsmrk',
-            'email' => 'vnsmrkdlwn@gmail.com',
-            'role' => 'student',
-            'password' => bcrypt('password'),
-        ]);
+
         User::factory()->create([
             'name' => 'Teacher User',
             'email' => 'caliao.mickyjean@dnsc.edu.ph',
@@ -76,22 +71,39 @@ class DatabaseSeeder extends Seeder
             'role' => 'teacher',
             'password' => bcrypt('password'),
         ]);
-
         User::factory()->create([
-            'name' => 'vins mark 0214',
-            'email' => 'vinsmark.adlawan0214@gmail.com',
+            'name' => 'Student72012!',
+            'email' => 'sdstud.seven@gmail.com',
             'role' => 'student',
             'password' => bcrypt('password'),
         ]);
         User::factory()->create([
-            'name' => 'Dimple Jess',
-            'email' => 'dmpljssdlwn@gmail.com',
+            'name' => 'Student82011!',
+            'email' => 'sdstud.eight@gmail.com',
             'role' => 'student',
             'password' => bcrypt('password'),
         ]);
         User::factory()->create([
-            'name' => 'Vinstoi kun',
-            'email' => 'vintoikun@gmail.com',
+            'name' => 'Student92010!',
+            'email' => 'sdstud.nine@gmail.com',
+            'role' => 'student',
+            'password' => bcrypt('password'),
+        ]);
+        User::factory()->create([
+            'name' => 'Student102009!',
+            'email' => 'sdstud.ten@gmail.com',
+            'role' => 'student',
+            'password' => bcrypt('password'),
+        ]);
+         User::factory()->create([
+            'name' => 'Student112008!',
+            'email' => 'sdstud.eleven@gmail.com',
+            'role' => 'student',
+            'password' => bcrypt('password'),
+        ]);
+        User::factory()->create([
+            'name' => 'Student122007!',
+            'email' => 'sdstud.twelve@gmail.com',
             'role' => 'student',
             'password' => bcrypt('password'),
         ]);
