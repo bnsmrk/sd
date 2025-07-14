@@ -5,6 +5,14 @@ import debounce from 'lodash/debounce';
 import { Pencil, Save, Trash2, UserPlus, XCircle } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
+import { computed } from 'vue';
+
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
+// const showFlash = ref(false);
+
 const props = defineProps<{
     users: {
         data: Array<{ id: number; name: string; email: string; role: string }>;
@@ -48,9 +56,15 @@ const openCreateModal = () => {
 };
 
 const submitCreate = () => {
+    isCreating.value = true;
     createForm.post('/users', {
         onSuccess: () => {
             showCreateModal.value = false;
+        },
+        onFinish: () => {
+            setTimeout(() => {
+                isCreating.value = false;
+            }, 2000);
         },
     });
 };
@@ -65,9 +79,15 @@ const openEditModal = (user: any) => {
 
 const submitEdit = () => {
     if (!editForm.id) return;
+    isUpdating.value = true;
     editForm.put(`/users/${editForm.id}`, {
         onSuccess: () => {
             showEditModal.value = false;
+        },
+        onFinish: () => {
+            setTimeout(() => {
+                isUpdating.value = false;
+            }, 2000);
         },
     });
 };
@@ -79,9 +99,15 @@ const confirmDelete = (id: number) => {
 
 const destroyItem = () => {
     if (deleteId.value !== null) {
+        isDeleting.value = true;
         router.delete(`/users/${deleteId.value}`, {
             onSuccess: () => {
                 showDeleteModal.value = false;
+            },
+            onFinish: () => {
+                setTimeout(() => {
+                    isDeleting.value = false;
+                }, 2000);
             },
         });
     }
@@ -90,6 +116,23 @@ const destroyItem = () => {
 <template>
     <Head title="Users" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
+
         <div class="p-4">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <h1 class="text-xl font-bold text-[#01006c]">👥 Users</h1>
@@ -291,3 +334,28 @@ const destroyItem = () => {
         </div>
     </AppLayout>
 </template>
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>

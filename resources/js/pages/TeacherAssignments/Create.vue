@@ -2,7 +2,14 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ArrowLeft, BookOpen, Layers, Layout, Send, User } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
+// const showFlash = ref(false);
+
 const props = defineProps<{
     teachers: Array<{ id: number; name: string }>;
     yearLevels: Array<{ id: number; name: string }>;
@@ -25,11 +32,40 @@ const filteredSubjects = computed(() => {
 
     return props.subjects.filter((subject) => subject.year_level_id === ylId && (subject.section_id === null || subject.section_id === secId));
 });
+function submitForm() {
+    isCreating.value = true;
+
+    form.post('/teacher-assignments', {
+        onSuccess: () => {},
+        onFinish: () => {
+            setTimeout(() => {
+                isCreating.value = false;
+            }, 1000);
+        },
+    });
+}
 </script>
 
 <template>
     <Head title="Assign Teacher" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
+
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
             <div class="mb-6">
                 <Link
@@ -42,7 +78,7 @@ const filteredSubjects = computed(() => {
 
             <h1 class="mb-6 text-2xl font-bold text-[#01006c]">📋 Assign Teacher</h1>
 
-            <form @submit.prevent="form.post('/teacher-assignments')" class="space-y-6">
+            <form @submit.prevent="submitForm" class="space-y-6">
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                     <div>
                         <label class="mb-2 flex items-center gap-1 text-sm font-semibold text-[#ff69b4]"> <User class="h-4 w-4" /> Teacher </label>
@@ -114,3 +150,29 @@ const filteredSubjects = computed(() => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>
