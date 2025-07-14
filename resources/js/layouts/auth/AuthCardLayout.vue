@@ -17,7 +17,7 @@ defineProps<{
                 <Card class="rounded-xl">
                     <CardHeader class="px-10 pt-6 pb-0 text-center">
                         <div class="mb-2 flex justify-center">
-                            <img src="/images/lmslogoo.png" alt="Login Banner" class="h-16 w-auto object-contain" />
+                            <img src="/images/lmslogoo.png" alt="Login Banner" class="h-36 w-auto object-contain" />
                         </div>
                         <CardTitle class="text-xl">{{ title }}</CardTitle>
                         <CardDescription>
