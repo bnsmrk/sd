@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,27 +28,31 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'name' => 'required|string|max:255|unique:users,name',
-        'email' => 'required|string|lowercase|email|max:255|unique:users,email',
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ], [
-        'name.unique' => 'This name is already registered.',
-        'email.unique' => 'This email is already registered.',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:users,name',
+            'email' => 'required|string|lowercase|email|max:255|unique:users,email',
+            'password' => [
+                'required',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/',
+            ],
+        ], [
+            'name.unique' => 'This name is already registered.',
+            'email.unique' => 'This email is already registered.',
+            'password.regex' => 'Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a special character.',
+        ]);
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-    event(new Registered($user));
+        event(new Registered($user));
 
-    Auth::login($user);
+        Auth::login($user);
 
-    return to_route('dashboard');
-}
-
+        return to_route('dashboard');
+    }
 }
