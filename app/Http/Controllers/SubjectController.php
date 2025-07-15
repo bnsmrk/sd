@@ -7,6 +7,7 @@ use App\Models\YearLevel;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Validation\ValidationException;
 
 class SubjectController extends Controller
 {
@@ -46,7 +47,21 @@ class SubjectController extends Controller
             'major_subjects.*' => 'nullable|string|max:255',
         ]);
 
-        foreach (array_filter($request->shared_subjects ?? []) as $name) {
+        $sharedSubjects = array_filter($request->shared_subjects ?? []);
+        $majorSubjects = array_filter($request->major_subjects ?? []);
+        $allSubjects = array_merge($sharedSubjects, $majorSubjects);
+
+        $existingSubjects = Subject::whereIn('name', $allSubjects)
+            ->pluck('name')
+            ->toArray();
+
+        if (!empty($existingSubjects)) {
+            throw ValidationException::withMessages([
+                'shared_subjects' => ['The following subject(s) already exist: ' . implode(', ', $existingSubjects)],
+            ]);
+        }
+
+        foreach ($sharedSubjects as $name) {
             Subject::create([
                 'name' => $name,
                 'year_level_id' => $request->year_level_id,
@@ -54,7 +69,7 @@ class SubjectController extends Controller
             ]);
         }
 
-        foreach (array_filter($request->major_subjects ?? []) as $name) {
+        foreach ($majorSubjects as $name) {
             Subject::create([
                 'name' => $name,
                 'year_level_id' => $request->year_level_id,
@@ -81,19 +96,14 @@ class SubjectController extends Controller
             'year_level_id' => 'required|exists:year_levels,id',
         ]);
 
-        $yearLevel = YearLevel::findOrFail($request->year_level_id);
-        $isSHS = in_array($yearLevel->name, ['Grade 11', 'Grade 12']);
+        $exists = Subject::where('name', $request->name)
+            ->where('id', '!=', $subject->id)
+            ->exists();
 
-        if (!$isSHS) {
-            $exists = Subject::where('year_level_id', $request->year_level_id)
-                ->whereNull('section_id')
-                ->where('name', $request->name)
-                ->where('id', '!=', $subject->id)
-                ->exists();
-
-            if ($exists) {
-                return back()->withErrors(['name' => 'Subject already exists for this year level.']);
-            }
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'name' => ['Subject name already exists.'],
+            ]);
         }
 
         $subject->update([
@@ -103,6 +113,7 @@ class SubjectController extends Controller
 
         return redirect()->route('subjects.index')->with('warning', 'Subject updated.');
     }
+
 
     public function destroy(Subject $subject)
     {

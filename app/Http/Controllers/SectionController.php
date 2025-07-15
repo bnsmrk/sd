@@ -44,8 +44,8 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'year_level_id' => 'required|exists:year_levels,id',
+        'name' => 'required|string|max:255|unique:sections,name',
+        'year_level_id' => 'required|exists:year_levels,id',
         ]);
 
         Section::create($validated);
@@ -65,8 +65,8 @@ class SectionController extends Controller
     public function update(Request $request, Section $section)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'year_level_id' => 'required|exists:year_levels,id',
+        'name' => 'required|string|max:255|unique:sections,name,' . $section->id,
+        'year_level_id' => 'required|exists:year_levels,id',
         ]);
 
         $section->update($validated);

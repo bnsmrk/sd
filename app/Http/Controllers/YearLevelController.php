@@ -33,7 +33,7 @@ class YearLevelController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+        'name' => 'required|string|max:255|unique:year_levels,name',
         ]);
 
         YearLevel::create($validated);
@@ -51,7 +51,8 @@ class YearLevelController extends Controller
     public function update(Request $request, YearLevel $yearLevel)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+        'name' => 'required|string|max:255|unique:year_levels,name,' . $yearLevel->id,
+
         ]);
 
         $yearLevel->update($validated);

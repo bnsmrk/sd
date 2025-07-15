@@ -7,7 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Validation\Rules\Password;
 class UserController extends Controller
 {
 
@@ -43,7 +43,15 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'role' => ['required', Rule::in(['teacher', 'ict', 'head'])],
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => [
+        'required',
+        'confirmed',
+        Password::min(8)
+            ->mixedCase()
+            ->letters()
+            ->numbers()
+            ->symbols()
+    ],
         ]);
 
         User::create([
