@@ -3,6 +3,14 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ArrowLeft, BookOpen, CalendarClock, CalendarDays, FileText, ListChecks, Send } from 'lucide-vue-next';
 
+import { computed, ref } from 'vue';
+
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
+// const showFlash = ref(false);
+
 const props = defineProps<{
     test: {
         id: number;
@@ -24,6 +32,18 @@ const form = useForm({
     due_date: props.test.due_date,
     description: props.test.description ?? '',
 });
+
+const submitUpdateForm = () => {
+    isUpdating.value = true;
+    form.put(`/proficiency-test/${props.test.id}`, {
+        onFinish: () => {
+            setTimeout(() => {
+                isUpdating.value = false;
+            }, 1500); // Delay for visual feedback
+        },
+    });
+};
+
 function cancelEdit() {
     router.get('/proficiency-test');
 }
@@ -32,6 +52,23 @@ function cancelEdit() {
 <template>
     <Head title="Edit Proficiency Test" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
+
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-[#01006c]">Edit Proficiency Test</h1>
@@ -44,7 +81,7 @@ function cancelEdit() {
                 </button>
             </div>
 
-            <form @submit.prevent="form.put(`/proficiency-test/${props.test.id}`)" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <form @submit.prevent="submitUpdateForm" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div class="col-span-1">
                     <label class="mb-1 block flex items-center gap-2 text-sm font-medium text-[#ff69b4]">
                         <FileText class="h-4 w-4 text-[#ff69b4]" />
@@ -142,3 +179,29 @@ function cancelEdit() {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>

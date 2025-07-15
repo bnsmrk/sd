@@ -4,6 +4,15 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 import { ArrowLeft, CalendarClock, ClipboardList, FileText, FileUp, Layers, Tag } from 'lucide-vue-next';
+
+import { ref } from 'vue';
+
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
+// const showFlash = ref(false);
+
 const props = defineProps<{
     modules: Array<{
         id: number;
@@ -31,6 +40,18 @@ const form = useForm<{
     description: '',
     file: null,
 });
+const createActivity = () => {
+    isCreating.value = true;
+
+    form.post('/activities', {
+        forceFormData: true,
+        onFinish: () => {
+            setTimeout(() => {
+                isCreating.value = false;
+            }, 1500);
+        },
+    });
+};
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === Number(form.module_id)));
 </script>
@@ -38,6 +59,22 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
 <template>
     <Head title="Create Activity" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
         <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-[#01006c]">Create Activity</h1>
@@ -50,7 +87,7 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
                 </Link>
             </div>
 
-            <form @submit.prevent="form.post('/activities', { forceFormData: true })" class="space-y-6">
+            <form @submit.prevent="createActivity" class="space-y-6">
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
                         <label class="ttext-[#ff69b4] flex items-center gap-1 text-sm font-medium">
@@ -172,3 +209,29 @@ const selectedModule = computed(() => props.modules.find((m) => m.id === Number(
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>

@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
 import { Book, GraduationCap, Layers, ListChecks, Users } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
+const isLoading = ref(false);
 
 interface YearLevel {
     id: number;
@@ -99,7 +100,9 @@ watch(
 );
 
 const applyFilters = () => {
+    isLoading.value = true;
     filtersApplied.value = false;
+
     router.get(
         '/students-proficiency',
         {
@@ -112,7 +115,14 @@ const applyFilters = () => {
         {
             preserveScroll: true,
             preserveState: true,
-            onSuccess: () => (filtersApplied.value = true),
+            onSuccess: () => {
+                filtersApplied.value = true;
+            },
+            onFinish: () => {
+                setTimeout(() => {
+                    isLoading.value = false;
+                }, 2000);
+            },
         },
     );
 };
@@ -128,7 +138,23 @@ const canGeneratePdf = computed(() => {
 
 <template>
     <AppLayout>
-        <div class="mx-auto max-w-full space-y-6 px-6 py-8">
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
+        <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
             <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
                 <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">📊 Proficiency Report</h1>
             </div>
@@ -245,3 +271,29 @@ const canGeneratePdf = computed(() => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>

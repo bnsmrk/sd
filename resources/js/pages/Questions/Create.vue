@@ -3,6 +3,15 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ArrowLeft, BookOpen, BookText, CalendarClock, FileText, ListChecks, NotebookPen, PlusCircle, Send, Trash2, Users } from 'lucide-vue-next';
 import { ref } from 'vue';
+
+import { computed } from 'vue';
+
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
+// const showFlash = ref(false);
+
 type QuestionForm = {
     id?: number;
     question: string;
@@ -77,15 +86,44 @@ function onTypeChange(idx: number) {
 }
 
 function submit() {
-    router.post(`/activities/${props.activity.id}/questions`, {
-        questions: questions.value,
-    });
+    isCreating.value = true;
+    router.post(
+        `/activities/${props.activity.id}/questions`,
+        {
+            questions: questions.value,
+        },
+        {
+            onSuccess: () => {},
+            onFinish: () => {
+                setTimeout(() => {
+                    isCreating.value = false;
+                }, 1000);
+            },
+        },
+    );
 }
 </script>
 
 <template>
     <Head title="Add Questions" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
+
         <div class="p-8">
             <div class="mb-6">
                 <Link
@@ -257,3 +295,29 @@ function submit() {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>

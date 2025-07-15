@@ -4,6 +4,12 @@ import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ArrowLeft, FileUp } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
+// const showFlash = ref(false);
+
 interface Module {
     id: number;
     name: string;
@@ -64,12 +70,13 @@ watch(selectedType, (newType) => {
     selectedSubjectId.value = null;
     selectedSectionId.value = null;
 });
-
 function submitForm() {
     if (!form.title || !form.file) {
         alert('Title and file are required.');
         return;
     }
+
+    isCreating.value = true;
 
     const data = new FormData();
     data.append('title', form.title);
@@ -84,13 +91,46 @@ function submitForm() {
         data.append('section_id', selectedSectionId.value.toString());
     }
 
-    router.post('/materials', data);
+    router.post('/materials', data, {
+        forceFormData: true,
+        onSuccess: () => {
+            form.title = '';
+            form.description = '';
+            form.file = null;
+            showCreateModal.value = false;
+            selectedModuleId.value = '';
+            selectedSectionId.value = '';
+            selectedSubjectId.value = '';
+        },
+        onFinish: () => {
+            setTimeout(() => {
+                isCreating.value = false;
+            }, 2000);
+        },
+    });
 }
 </script>
 
 <template>
     <Head title="Upload Material" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
+
         <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
             <div class="flex items-center justify-between">
                 <h2 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
@@ -223,3 +263,29 @@ function submitForm() {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>
