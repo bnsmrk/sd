@@ -81,16 +81,23 @@ const openCreateModal = () => {
 const submitCreate = () => {
     createForm.processing = true;
     isCreating.value = true;
+    createForm.errors = {};
+
     router.post('/subjects', createForm, {
-        onFinish: () => {
-            createForm.processing = false;
+        preserveScroll: true,
+        onSuccess: () => {
             showCreateModal.value = false;
-            setTimeout(() => {
-                isCreating.value = false;
-            }, 2000);
         },
         onError: (errors) => {
+            // console.error('Validation errors:', errors);
             createForm.errors = errors;
+        },
+
+        onFinish: () => {
+            createForm.processing = false;
+            setTimeout(() => {
+                isCreating.value = false;
+            }, 500);
         },
     });
 };
@@ -107,6 +114,7 @@ const submitEdit = () => {
     if (!editForm.id) return;
     editForm.processing = true;
     isUpdating.value = true;
+
     router.put(
         `/subjects/${editForm.id}`,
         {
@@ -114,15 +122,21 @@ const submitEdit = () => {
             year_level_id: editForm.year_level_id,
         },
         {
+            preserveScroll: true,
+            onError: (errors) => {
+                // console.error('Validation errors:', errors);
+                editForm.errors = errors;
+            },
             onFinish: () => {
                 editForm.processing = false;
-                showEditModal.value = false;
+
+                if (!Object.keys(editForm.errors).length) {
+                    showEditModal.value = false;
+                }
+
                 setTimeout(() => {
                     isUpdating.value = false;
-                }, 2000);
-            },
-            onError: (errors) => {
-                editForm.errors = errors;
+                }, 500);
             },
         },
     );
@@ -141,7 +155,7 @@ const destroyItem = () => {
                 showDeleteModal.value = false;
                 setTimeout(() => {
                     isDeleting.value = false;
-                }, 2000);
+                }, 800);
             },
         });
     }
@@ -300,6 +314,24 @@ const sortedSubjects = computed(() => {
                             v-model="createForm.shared_subjects[index]"
                             class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 focus:border-[#ffc60b] focus:outline-none"
                         />
+                        <div class="text-sm text-red-600">
+                            <div v-if="createForm.errors['shared_subjects']">{{ createForm.errors['shared_subjects'] }}</div>
+                            <div v-for="(subject, index) in createForm.shared_subjects" :key="index">
+                                <span v-if="createForm.errors[`shared_subjects.${index}`]">
+                                    {{ createForm.errors[`shared_subjects.${index}`] }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="text-sm text-red-600" v-if="isSHS">
+                            <div v-if="createForm.errors['major_subjects']">{{ createForm.errors['major_subjects'] }}</div>
+                            <div v-for="(subject, index) in createForm.major_subjects" :key="index">
+                                <span v-if="createForm.errors[`major_subjects.${index}`]">
+                                    {{ createForm.errors[`major_subjects.${index}`] }}
+                                </span>
+                            </div>
+                        </div>
+
                         <button
                             @click.prevent="removeFrom(createForm.shared_subjects, index)"
                             v-if="createForm.shared_subjects.length > 1"
@@ -317,6 +349,24 @@ const sortedSubjects = computed(() => {
                             v-model="createForm.major_subjects[index]"
                             class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 focus:border-[#ffc60b]"
                         />
+                        <div class="text-sm text-red-600">
+                            <div v-if="createForm.errors['shared_subjects']">{{ createForm.errors['shared_subjects'] }}</div>
+                            <div v-for="(subject, index) in createForm.shared_subjects" :key="index">
+                                <span v-if="createForm.errors[`shared_subjects.${index}`]">
+                                    {{ createForm.errors[`shared_subjects.${index}`] }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="text-sm text-red-600" v-if="isSHS">
+                            <div v-if="createForm.errors['major_subjects']">{{ createForm.errors['major_subjects'] }}</div>
+                            <div v-for="(subject, index) in createForm.major_subjects" :key="index">
+                                <span v-if="createForm.errors[`major_subjects.${index}`]">
+                                    {{ createForm.errors[`major_subjects.${index}`] }}
+                                </span>
+                            </div>
+                        </div>
+
                         <button
                             @click.prevent="removeFrom(createForm.major_subjects, index)"
                             v-if="createForm.major_subjects.length > 1"
