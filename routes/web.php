@@ -17,6 +17,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\PrincipalDashboard;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ClassListController;
 use App\Http\Controllers\YearLevelController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\EnrollStudentController;
@@ -41,28 +42,28 @@ Route::get('/', function () {
 
 Route::get('dashboard', [AdminDashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role:admin'])
-->name('dashboard');
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/notifications', function () {
         return response()->json(Auth::user()->notifications);
-});
+    });
 
-Route::post('/notifications/mark-as-read', function () {
-    Auth::user()->unreadNotifications->markAsRead();
-    return response()->json(['status' => 'ok']);
+    Route::post('/notifications/mark-as-read', function () {
+        Auth::user()->unreadNotifications->markAsRead();
+        return response()->json(['status' => 'ok']);
     });
 });
 
 Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
-->middleware(['auth', 'verified', 'role:teacher'])
-->name('teacher.dashboard');
+    ->middleware(['auth', 'verified', 'role:teacher'])
+    ->name('teacher.dashboard');
 
 
 
 Route::get('principal-dashboard', [PrincipalDashboard::class, 'index'])
-->middleware(['auth', 'verified', 'role:principal'])
-->name('principal.dashboard');
+    ->middleware(['auth', 'verified', 'role:principal'])
+    ->name('principal.dashboard');
 
 
 
@@ -100,13 +101,13 @@ Route::middleware('role:teacher')->group(function () {
     Route::resource('activities', ActivityController::class);
     Route::get('/activities/{activity}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
     Route::prefix('activities/{activity}')->group(function () {
-    Route::get('questions/create', [QuestionController::class, 'create'])->name('questions.create');
-    Route::post('questions', [QuestionController::class, 'store'])->name('questions.store');
+        Route::get('questions/create', [QuestionController::class, 'create'])->name('questions.create');
+        Route::post('questions', [QuestionController::class, 'store'])->name('questions.store');
     });
 
     Route::post('/activities/{activity}/essay', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::get('/activities/{activity}/essay-submissions', [SubmissionController::class, 'showEssaySubmissions'])
-    ->name('activities.essay.view');
+        ->name('activities.essay.view');
 
     Route::post('/submissions/{submission}/score', [SubmissionController::class, 'updateScore'])->name('submissions.score');
     Route::get('/submissions/{submission}', [SubmissionController::class, 'show'])->name('submissions.show');
@@ -116,17 +117,16 @@ Route::middleware('role:teacher')->group(function () {
     Route::resource('modules', ModuleController::class);
     Route::resource('students-proficiency', ProficiencyReportController::class)->only(['index']);
     Route::get('/students-proficiency/pdf', [ProficiencyReportController::class, 'exportPdf'])->name('students-proficiency.pdf');
+    Route::resource('class-lists', ClassListController::class);
 
 
     Route::get('/activities/{activity}/essay-answers', [SubmissionController::class, 'showEssayAnswerTable'])
-    ->name('activities.essay.answers');
+        ->name('activities.essay.answers');
 
     Route::get('/activities/{activity}/essay-scores/{user?}', [SubmissionController::class, 'showEssayScoringForm'])
         ->name('activities.essay.scoring.form');
 
     Route::post('/activities/{activity}/essay-scores', [SubmissionController::class, 'storeEssayScores']);
-
-
 });
 
 Route::middleware(['auth', 'role:principal'])->group(function () {
@@ -175,7 +175,6 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 
     Route::post('/activities/{activity}/essay', [SubmissionController::class, 'submitEssay']);
     Route::get('/activities/{activity}/essay', [SubmissionController::class, 'takeEssay'])->name('essay.create');
-
 });
 
 
@@ -201,5 +200,5 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 // });
 
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

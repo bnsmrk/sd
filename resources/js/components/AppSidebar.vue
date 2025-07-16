@@ -14,6 +14,7 @@ import {
     FileUpIcon,
     Layers,
     LayoutDashboardIcon,
+    ListCheck,
     LucideFileChartColumnIncreasing,
     LucideTestTube2,
     PuzzleIcon,
@@ -105,6 +106,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             href: '/students-proficiency',
             icon: ActivitySquareIcon,
         },
+        {
+            title: 'Class List',
+            href: '/class-lists',
+            icon: ListCheck,
+        },
     ],
     principal: [
         {
@@ -163,7 +169,7 @@ const mainNavItems: NavItem[] = [...groupedNavItems.common, ...(role && groupedN
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link class="bg-white" :href="route('dashboard')">
+                        <Link :href="route('dashboard')">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>

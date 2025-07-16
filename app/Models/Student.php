@@ -11,28 +11,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Student extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
+        'name',
         'year_level_id',
         'section_id',
         'subject_id',
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function yearLevel() {
+    public function yearLevel()
+    {
         return $this->belongsTo(YearLevel::class);
     }
 
-    public function section() {
+    public function section()
+    {
         return $this->belongsTo(Section::class);
     }
 
-    public function subject() {
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
     }
 }
