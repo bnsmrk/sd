@@ -9,7 +9,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     yearLevels: {
@@ -101,6 +100,33 @@ const deleteYearLevel = () => {
         });
     }
 };
+type SortKey = 'id' | 'name';
+
+const sortKey = ref<SortKey>('id');
+const sortAsc = ref(true);
+
+const toggleSort = (key: SortKey) => {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const sortedYearLevels = computed(() => {
+    return [...props.yearLevels.data].sort((a, b) => {
+        let aVal = a[sortKey.value];
+        let bVal = b[sortKey.value];
+
+        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
@@ -143,13 +169,18 @@ const deleteYearLevel = () => {
                 <table class="min-w-full divide-y divide-[#01006c]">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white">
                         <tr>
-                            <th class="px-6 py-3 text-center">ID</th>
-                            <th class="px-6 py-3 text-left">Name</th>
+                            <th @click="toggleSort('id')" class="cursor-pointer px-6 py-3 text-center">
+                                ID <span v-if="sortKey === 'id'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('name')" class="cursor-pointer px-6 py-3 text-left">
+                                Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-[#01006c] bg-white text-sm">
-                        <tr v-for="level in props.yearLevels.data" :key="level.id" class="hover:bg-gray-50">
+                        <tr v-for="level in sortedYearLevels" :key="level.id" class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-center font-medium text-[#01006c]">{{ level.id }}</td>
                             <td class="px-6 py-4 text-left text-[#01006c]">{{ level.name }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">

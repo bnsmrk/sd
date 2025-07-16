@@ -40,7 +40,7 @@ const submitForm = () => {
         onFinish: () => {
             setTimeout(() => {
                 isUpdating.value = false;
-            }, 1000);
+            }, 800);
         },
     });
 };

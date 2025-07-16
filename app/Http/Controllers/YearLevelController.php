@@ -10,7 +10,7 @@ class YearLevelController extends Controller
 {
     public function index(Request $request)
     {
-        $query = \App\Models\YearLevel::query();
+        $query = YearLevel::query();
 
         if ($request->filled('search')) {
             $search = $request->input('search');

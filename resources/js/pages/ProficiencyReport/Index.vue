@@ -121,7 +121,7 @@ const applyFilters = () => {
             onFinish: () => {
                 setTimeout(() => {
                     isLoading.value = false;
-                }, 2000);
+                }, 800);
             },
         },
     );
@@ -134,6 +134,34 @@ const pdfUrl = computed(() => {
 const canGeneratePdf = computed(() => {
     return filtersApplied.value && !!selectedSubject.value && !!selectedModule.value && props.resultsByActivity.length > 0;
 });
+
+const sortBy = ref<'student' | 'score' | 'total' | 'average'>('student');
+const sortAsc = ref(true);
+
+const toggleSort = (key: 'student' | 'score' | 'total' | 'average') => {
+    if (sortBy.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortBy.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const getSortedEntries = (entries: ResultEntry[]) => {
+    return [...entries].sort((a, b) => {
+        let aVal = a[sortBy.value];
+        let bVal = b[sortBy.value];
+
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+            aVal = aVal.toLowerCase();
+            bVal = bVal.toLowerCase();
+        }
+
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+};
 </script>
 
 <template>
@@ -156,7 +184,7 @@ const canGeneratePdf = computed(() => {
         </div>
         <div class="mx-auto w-full max-w-screen-xl space-y-6 px-6 py-8">
             <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
-                <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">📊 Proficiency Report</h1>
+                <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">📊 Students Activities Results</h1>
             </div>
 
             <div class="grid grid-cols-1 items-end gap-4 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
@@ -248,14 +276,23 @@ const canGeneratePdf = computed(() => {
                         <table class="min-w-full table-auto text-left text-sm">
                             <thead class="bg-[#01006c] text-white">
                                 <tr>
-                                    <th class="p-3">Student</th>
-                                    <th class="p-3">Score</th>
-                                    <th class="p-3">Total</th>
-                                    <th class="p-3">Average (%)</th>
+                                    <th class="cursor-pointer p-3" @click="toggleSort('student')">
+                                        Student <span v-if="sortBy === 'student'">{{ sortAsc ? '↑' : '↓' }}</span>
+                                    </th>
+                                    <th class="cursor-pointer p-3" @click="toggleSort('score')">
+                                        Score <span v-if="sortBy === 'score'">{{ sortAsc ? '↑' : '↓' }}</span>
+                                    </th>
+                                    <th class="cursor-pointer p-3" @click="toggleSort('total')">
+                                        Total <span v-if="sortBy === 'total'">{{ sortAsc ? '↑' : '↓' }}</span>
+                                    </th>
+                                    <th class="cursor-pointer p-3" @click="toggleSort('average')">
+                                        Average (%) <span v-if="sortBy === 'average'">{{ sortAsc ? '↑' : '↓' }}</span>
+                                    </th>
                                 </tr>
                             </thead>
+
                             <tbody class="text-sm text-gray-700">
-                                <tr v-for="entry in group.entries" :key="entry.student" class="border-t hover:bg-gray-50">
+                                <tr v-for="entry in getSortedEntries(group.entries)" :key="entry.student" class="border-t hover:bg-gray-50">
                                     <td class="p-3 align-top text-[#01006c]">{{ entry.student }}</td>
                                     <td class="p-3 align-top">{{ entry.score }}</td>
                                     <td class="p-3 align-top">{{ entry.total }}</td>

@@ -8,7 +8,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     subjects: {
@@ -153,6 +152,39 @@ const search = ref(props.filters.search || '');
 watch(search, (value) => {
     router.get('/subjects', { search: value }, { preserveState: true, replace: true });
 });
+
+type SortableSubjectKey = 'name' | 'year_level';
+
+const sortKey = ref<SortableSubjectKey>('name');
+const sortAsc = ref(true);
+
+const toggleSort = (key: SortableSubjectKey) => {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const sortedSubjects = computed(() => {
+    return [...props.subjects.data].sort((a, b) => {
+        let aValue: string = '';
+        let bValue: string = '';
+
+        if (sortKey.value === 'year_level') {
+            aValue = a.year_level?.name?.toLowerCase() || '';
+            bValue = b.year_level?.name?.toLowerCase() || '';
+        } else {
+            aValue = (a as any)[sortKey.value]?.toLowerCase?.() || '';
+            bValue = (b as any)[sortKey.value]?.toLowerCase?.() || '';
+        }
+
+        if (aValue < bValue) return sortAsc.value ? -1 : 1;
+        if (aValue > bValue) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 <template>
     <Head title="Subjects" />
@@ -196,13 +228,18 @@ watch(search, (value) => {
                 <table class="min-w-full table-auto text-sm text-[#01006c]">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white uppercase">
                         <tr>
-                            <th class="px-4 py-2 text-left">Name</th>
-                            <th class="px-4 py-2 text-left">Year Level</th>
+                            <th @click="toggleSort('name')" class="cursor-pointer px-4 py-2 text-left">
+                                Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('year_level')" class="cursor-pointer px-4 py-2 text-left">
+                                Year Level <span v-if="sortKey === 'year_level'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-4 py-2 text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-[#01006c] bg-white">
-                        <tr v-for="subject in props.subjects.data" :key="subject.id" class="transition hover:bg-gray-50">
+                        <tr v-for="subject in sortedSubjects" :key="subject.id" class="transition hover:bg-gray-50">
                             <td class="px-4 py-2">{{ subject.name }}</td>
                             <td class="px-4 py-2">{{ subject.year_level?.name ?? '—' }}</td>
                             <td class="space-x-2 px-4 py-2 text-center">

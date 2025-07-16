@@ -11,7 +11,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     assignments: {
@@ -67,6 +66,42 @@ function cancelDelete() {
     showDeleteModal.value = false;
     deleteId.value = null;
 }
+
+type SortableAssignmentKey = 'teacher' | 'year_level' | 'subject';
+
+const sortKey = ref<SortableAssignmentKey>('teacher');
+const sortAsc = ref(true);
+
+const toggleSort = (key: SortableAssignmentKey) => {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const sortedAssignments = computed(() => {
+    return [...props.assignments.data].sort((a, b) => {
+        let aVal = '';
+        let bVal = '';
+
+        if (sortKey.value === 'teacher') {
+            aVal = a.teacher.name.toLowerCase();
+            bVal = b.teacher.name.toLowerCase();
+        } else if (sortKey.value === 'year_level') {
+            aVal = a.year_level.name.toLowerCase();
+            bVal = b.year_level.name.toLowerCase();
+        } else if (sortKey.value === 'subject') {
+            aVal = a.subject.name.toLowerCase();
+            bVal = b.subject.name.toLowerCase();
+        }
+
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
@@ -112,14 +147,24 @@ function cancelDelete() {
                 <table class="min-w-full divide-y divide-[#01006c]">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white">
                         <tr>
-                            <th class="px-4 py-3 text-left">Teacher</th>
-                            <th class="px-4 py-3 text-left">Year Level</th>
-                            <th class="px-4 py-3 text-left">Subject</th>
+                            <th @click="toggleSort('teacher')" class="cursor-pointer px-4 py-3 text-left">
+                                Teacher
+                                <span v-if="sortKey === 'teacher'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('year_level')" class="cursor-pointer px-4 py-3 text-left">
+                                Year Level
+                                <span v-if="sortKey === 'year_level'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('subject')" class="cursor-pointer px-4 py-3 text-left">
+                                Subject
+                                <span v-if="sortKey === 'subject'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-4 py-3 text-left">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-[#01006c] bg-white text-sm">
-                        <tr v-for="a in props.assignments.data" :key="a.id" class="hover:bg-gray-50">
+                        <tr v-for="a in sortedAssignments" :key="a.id" class="hover:bg-gray-50">
                             <td class="px-4 py-2 text-[#01006c]">{{ a.teacher.name }}</td>
                             <td class="px-4 py-2 text-[#01006c]">{{ a.year_level.name }}</td>
                             <td class="px-4 py-2 text-[#01006c]">{{ a.subject.name }}</td>

@@ -8,7 +8,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     teachers: Array<{ id: number; name: string }>;

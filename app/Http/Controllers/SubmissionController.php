@@ -45,14 +45,6 @@ class SubmissionController extends Controller
     {
         $search = $request->input('search');
 
-        // Log the access event
-        Log::info('Viewing Essay Submissions', [
-            'user_id' => auth()->id(),
-            'user_name' => auth()->user()->name ?? 'Guest',
-            'activity_id' => $activity->id,
-            'activity_title' => $activity->title,
-            'search' => $search,
-        ]);
 
         $submissions = Submission::with('user')
             ->where('activity_id', $activity->id)
@@ -134,14 +126,12 @@ class SubmissionController extends Controller
 
     public function storeEssayScores(Request $request, Activity $activity)
     {
-        // Update individual scores
         foreach ($request->scores as $answerId => $score) {
             StudentAnswer::where('id', $answerId)->update([
                 'score' => $score,
             ]);
         }
 
-        // Recalculate total scores per student
         $studentScores = StudentAnswer::where('activity_id', $activity->id)
             ->with('user')
             ->get()
@@ -163,12 +153,7 @@ class SubmissionController extends Controller
             );
         }
 
-        \Log::info('✅ Essay Scores Saved and Results Updated', [
-            'activity_id' => $activity->id,
-            'scored_students' => $studentScores->keys(),
-        ]);
 
-        // 🔁 Redirect back to the table page
         return redirect()
             ->route('activities.essay.answers', $activity->id)
             ->with('success', 'Essay scores saved and student results updated.');

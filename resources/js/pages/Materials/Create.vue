@@ -8,7 +8,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 interface Module {
     id: number;
@@ -97,15 +96,15 @@ function submitForm() {
             form.title = '';
             form.description = '';
             form.file = null;
-            showCreateModal.value = false;
-            selectedModuleId.value = '';
-            selectedSectionId.value = '';
-            selectedSubjectId.value = '';
+
+            selectedModuleId.value = null;
+            selectedSectionId.value = null;
+            selectedSubjectId.value = null;
         },
         onFinish: () => {
             setTimeout(() => {
                 isCreating.value = false;
-            }, 2000);
+            }, 800);
         },
     });
 }

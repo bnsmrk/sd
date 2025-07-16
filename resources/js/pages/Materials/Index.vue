@@ -10,7 +10,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     materials: {
@@ -70,7 +69,7 @@ function destroyMaterial() {
             onFinish: () => {
                 setTimeout(() => {
                     isDeleting.value = false;
-                }, 2000);
+                }, 800);
             },
         });
     }
@@ -80,6 +79,51 @@ function cancelDelete() {
     showDeleteModal.value = false;
     deleteId.value = null;
 }
+
+type SortKey = 'title' | 'type' | 'year_level' | 'section' | 'subject';
+const sortKey = ref<SortKey>('title');
+const sortAsc = ref(true);
+
+const toggleSort = (key: SortKey) => {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const sortedMaterials = computed(() => {
+    return [...props.materials.data].sort((a, b) => {
+        let aVal: any;
+        let bVal: any;
+
+        switch (sortKey.value) {
+            case 'year_level':
+                aVal = a.year_level?.name || '';
+                bVal = b.year_level?.name || '';
+                break;
+            case 'section':
+                aVal = a.section?.name || '';
+                bVal = b.section?.name || '';
+                break;
+            case 'subject':
+                aVal = a.subject?.name || '';
+                bVal = b.subject?.name || '';
+                break;
+            default:
+                aVal = a[sortKey.value] || '';
+                bVal = b[sortKey.value] || '';
+        }
+
+        aVal = aVal.toString().toLowerCase();
+        bVal = bVal.toString().toLowerCase();
+
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
@@ -129,17 +173,28 @@ function cancelDelete() {
                 <table class="min-w-full table-auto text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
                         <tr>
-                            <th class="p-3">Title</th>
-                            <th class="p-3">Type</th>
-                            <th class="p-3">Year Level</th>
-                            <th class="p-3">Section</th>
-                            <th class="p-3">Subject</th>
+                            <th @click="toggleSort('title')" class="cursor-pointer p-3">
+                                Title <span v-if="sortKey === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('type')" class="cursor-pointer p-3">
+                                Type <span v-if="sortKey === 'type'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('year_level')" class="cursor-pointer p-3">
+                                Year Level <span v-if="sortKey === 'year_level'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('section')" class="cursor-pointer p-3">
+                                Section <span v-if="sortKey === 'section'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('subject')" class="cursor-pointer p-3">
+                                Subject <span v-if="sortKey === 'subject'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="p-3">File</th>
                             <th class="p-3 text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="text-sm text-gray-700">
-                        <template v-for="material in props.materials.data" :key="material.id">
+                        <template v-for="material in sortedMaterials" :key="material.id">
                             <tr class="border-t hover:bg-gray-50">
                                 <td class="p-3 align-top text-[#01006c]">{{ material.title }}</td>
                                 <td class="p-3 align-top capitalize">{{ material.type.replace('_', ' ') }}</td>

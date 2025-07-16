@@ -8,7 +8,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 interface Module {
     id: number;
@@ -118,13 +117,11 @@ function submitForm() {
 
     router.post(`/materials/${props.material.id}`, data, {
         forceFormData: true,
-        onSuccess: () => {
-            showEditModal.value = false;
-        },
+        onSuccess: () => {},
         onFinish: () => {
             setTimeout(() => {
                 isUpdating.value = false;
-            }, 2000);
+            }, 800);
         },
     });
 }

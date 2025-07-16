@@ -8,7 +8,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     activity: {
@@ -49,7 +48,7 @@ const editActivity = () => {
         onFinish: () => {
             setTimeout(() => {
                 isUpdating.value = false;
-            }, 1500);
+            }, 800);
         },
     });
 };

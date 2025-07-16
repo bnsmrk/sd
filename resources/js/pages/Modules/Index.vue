@@ -12,7 +12,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     modules: {
@@ -63,6 +62,41 @@ function cancelDelete() {
     showDeleteModal.value = false;
     deleteId.value = null;
 }
+
+type SortKey = 'name' | 'year' | 'subject';
+const sortKey = ref<SortKey>('name');
+const sortAsc = ref(true);
+
+const toggleSort = (key: SortKey) => {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const sortedModules = computed(() => {
+    return [...props.modules.data].sort((a, b) => {
+        let aVal = '';
+        let bVal = '';
+
+        if (sortKey.value === 'name') {
+            aVal = a.name.toLowerCase();
+            bVal = b.name.toLowerCase();
+        } else if (sortKey.value === 'year') {
+            aVal = a.year_level.name.toLowerCase();
+            bVal = b.year_level.name.toLowerCase();
+        } else if (sortKey.value === 'subject') {
+            aVal = a.subject.name.toLowerCase();
+            bVal = b.subject.name.toLowerCase();
+        }
+
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
@@ -111,15 +145,22 @@ function cancelDelete() {
                 <table class="min-w-full text-sm text-gray-700">
                     <thead class="bg-[#01006c] text-white">
                         <tr>
-                            <th class="px-6 py-3 text-left">Name</th>
-                            <th class="px-6 py-3 text-left">Year</th>
-                            <th class="px-6 py-3 text-left">Subject</th>
+                            <th @click="toggleSort('name')" class="cursor-pointer px-6 py-3 text-left">
+                                Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('year')" class="cursor-pointer px-6 py-3 text-left">
+                                Year <span v-if="sortKey === 'year'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('subject')" class="cursor-pointer px-6 py-3 text-left">
+                                Subject <span v-if="sortKey === 'subject'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <tr
-                            v-for="m in props.modules.data"
+                            v-for="m in sortedModules"
                             :key="m.id"
                             class="border-b transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
                         >

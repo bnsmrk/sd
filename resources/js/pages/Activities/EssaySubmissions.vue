@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ArrowLeft, CheckCircle2, Eye, XCircle } from 'lucide-vue-next';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
     activity: { id: number; title: string };
@@ -43,7 +43,35 @@ watch(search, (value) => {
         );
     }, 300);
 });
+
+const sortKey = ref<'student' | 'score'>('student');
+const sortAsc = ref(true);
+
+function toggleSort(key: typeof sortKey.value) {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+}
+
+const sortedSubmissions = computed(() => {
+    return [...props.submissions.data].sort((a, b) => {
+        if (sortKey.value === 'student') {
+            const aName = a.user.name.toLowerCase();
+            const bName = b.user.name.toLowerCase();
+            if (aName < bName) return sortAsc.value ? -1 : 1;
+            if (aName > bName) return sortAsc.value ? 1 : -1;
+            return 0;
+        } else if (sortKey.value === 'score') {
+            return sortAsc.value ? (a.score ?? -1) - (b.score ?? -1) : (b.score ?? -1) - (a.score ?? -1);
+        }
+        return 0;
+    });
+});
 </script>
+
 <template>
     <AppLayout>
         <Head :title="`Essay Submissions - ${props.activity.title}`" />
@@ -76,14 +104,18 @@ watch(search, (value) => {
                 <table class="min-w-full table-auto text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
                         <tr>
-                            <th class="px-6 py-3">Student</th>
+                            <th class="cursor-pointer px-6 py-3" @click="toggleSort('student')">
+                                Student <span v-if="sortKey === 'student'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-6 py-3">Graded</th>
-                            <th class="px-6 py-3">Score</th>
+                            <th class="cursor-pointer px-6 py-3" @click="toggleSort('score')">
+                                Score <span v-if="sortKey === 'score'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-6 py-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y">
-                        <tr v-for="submission in props.submissions.data" :key="submission.id" class="hover:bg-gray-50">
+                        <tr v-for="submission in sortedSubmissions" :key="submission.id" class="hover:bg-gray-50">
                             <td class="px-6 py-3 font-medium">{{ submission.user.name }}</td>
 
                             <td class="px-6 py-3">

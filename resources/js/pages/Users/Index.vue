@@ -18,7 +18,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     users: {
@@ -119,6 +118,35 @@ const destroyItem = () => {
         });
     }
 };
+type SortableKey = 'name' | 'email' | 'role';
+const sortKey = ref<SortableKey>('name');
+
+const sortAsc = ref(true);
+
+const sortedUsers = computed(() => {
+    return [...props.users.data].sort((a, b) => {
+        const fieldA = a[sortKey.value]?.toString().toLowerCase() ?? '';
+        const fieldB = b[sortKey.value]?.toString().toLowerCase() ?? '';
+
+        if (fieldA < fieldB) return sortAsc.value ? -1 : 1;
+        if (fieldA > fieldB) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
+
+function toggleSort(key: SortableKey) {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+}
+
+function sortIcon(key: string) {
+    if (sortKey.value !== key) return '';
+    return sortAsc.value ? '▲' : '▼';
+}
 </script>
 <template>
     <Head title="Users" />
@@ -163,21 +191,32 @@ const destroyItem = () => {
                 <table class="min-w-full divide-y divide-[#01006c] text-sm">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white">
                         <tr>
-                            <th class="px-6 py-3 text-left">Name</th>
-                            <th class="px-6 py-3 text-left">Email</th>
-                            <th class="px-6 py-3 text-left">Role</th>
+                            <th class="cursor-pointer px-6 py-3 text-left" @click="toggleSort('name')">
+                                Name <span class="ml-1">{{ sortIcon('name') }}</span>
+                            </th>
+                            <th class="cursor-pointer px-6 py-3 text-left" @click="toggleSort('email')">
+                                Email <span class="ml-1">{{ sortIcon('email') }}</span>
+                            </th>
+                            <th class="cursor-pointer px-6 py-3 text-left" @click="toggleSort('role')">
+                                Role <span class="ml-1">{{ sortIcon('role') }}</span>
+                            </th>
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#01006c] bg-white">
-                        <tr v-for="user in props.users.data" :key="user.id" class="transition hover:bg-gray-50">
+                        <tr v-for="user in sortedUsers" :key="user.id" class="transition hover:bg-gray-50">
                             <td class="px-6 py-4 text-gray-800">{{ user.name }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ user.email }}</td>
                             <td class="px-6 py-4 text-gray-700 capitalize">{{ user.role }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
-                                <button @click="openEditModal(user)" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                                <button
+                                    @click="openEditModal(user)"
+                                    class="inline-flex items-center gap-1 text-blue-400 hover:underline disabled:opacity-50"
+                                    :disabled="user.role === 'student'"
+                                >
                                     <Pencil class="h-4 w-4" /> Edit
                                 </button>
+
                                 <button @click="confirmDelete(user.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
                                     <Trash2 class="h-4 w-4" /> Delete
                                 </button>

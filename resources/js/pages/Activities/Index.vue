@@ -12,7 +12,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     activities: {
@@ -57,7 +56,7 @@ function deleteActivity() {
             onFinish: () => {
                 setTimeout(() => {
                     isDeleting.value = false;
-                }, 2000);
+                }, 800);
                 showDeleteModal.value = false;
                 deleteId.value = null;
             },
@@ -69,6 +68,29 @@ function cancelDelete() {
     showDeleteModal.value = false;
     deleteId.value = null;
 }
+
+type SortKey = 'title' | 'type' | 'scheduled_at' | 'due_date';
+const sortKey = ref<SortKey>('scheduled_at');
+const sortAsc = ref(true);
+
+const toggleSort = (key: SortKey) => {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const sortedActivities = computed(() => {
+    return [...props.activities.data].sort((a, b) => {
+        let aVal = a[sortKey.value]?.toString().toLowerCase() || '';
+        let bVal = b[sortKey.value]?.toString().toLowerCase() || '';
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 <template>
     <Head title="Activities" />
@@ -114,16 +136,25 @@ function cancelDelete() {
                 <table class="min-w-full table-auto text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
                         <tr>
-                            <th class="px-6 py-3">Title</th>
-                            <th class="px-6 py-3">Type</th>
-                            <th class="px-6 py-3">Scheduled At</th>
-                            <th class="px-6 py-3">Due Date</th>
+                            <th @click="toggleSort('title')" class="cursor-pointer px-6 py-3">
+                                Title <span v-if="sortKey === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('type')" class="cursor-pointer px-6 py-3">
+                                Type <span v-if="sortKey === 'type'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('scheduled_at')" class="cursor-pointer px-6 py-3">
+                                Scheduled At <span v-if="sortKey === 'scheduled_at'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('due_date')" class="cursor-pointer px-6 py-3">
+                                Due Date <span v-if="sortKey === 'due_date'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <tr
-                            v-for="a in props.activities.data"
+                            v-for="a in sortedActivities"
                             :key="a.id"
                             class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
                         >

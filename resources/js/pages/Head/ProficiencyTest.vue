@@ -12,7 +12,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     tests: Array<{
@@ -42,7 +41,7 @@ function destroyTest() {
             onFinish: () => {
                 setTimeout(() => {
                     isDeleting.value = false;
-                }, 2000);
+                }, 800);
             },
         });
 
@@ -55,6 +54,37 @@ function cancelDelete() {
     showDeleteModal.value = false;
     deleteId.value = null;
 }
+
+const sortBy = ref<'title' | 'type' | 'scheduled_at' | 'due_date' | 'year_level'>('title');
+const sortAsc = ref(true);
+
+function toggleSort(key: typeof sortBy.value) {
+    if (sortBy.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortBy.value = key;
+        sortAsc.value = true;
+    }
+}
+
+const sortedTests = computed(() => {
+    return [...props.tests].sort((a, b) => {
+        let aVal: any = a[sortBy.value];
+        let bVal: any = b[sortBy.value];
+
+        if (sortBy.value === 'year_level') {
+            aVal = a.year_level.name.toLowerCase();
+            bVal = b.year_level.name.toLowerCase();
+        }
+
+        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
@@ -93,16 +123,27 @@ function cancelDelete() {
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-[#01006c] text-white">
                         <tr>
-                            <th class="px-4 py-2 text-left font-semibold">Title</th>
-                            <th class="px-4 py-2 text-left font-semibold">Type</th>
-                            <th class="px-4 py-2 text-left font-semibold">Scheduled At</th>
-                            <th class="px-4 py-2 text-left font-semibold">Due Date</th>
-                            <th class="px-4 py-2 text-left font-semibold">Year Level</th>
+                            <th class="cursor-pointer px-4 py-2 text-left font-semibold" @click="toggleSort('title')">
+                                Title <span v-if="sortBy === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th class="cursor-pointer px-4 py-2 text-left font-semibold" @click="toggleSort('type')">
+                                Type <span v-if="sortBy === 'type'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th class="cursor-pointer px-4 py-2 text-left font-semibold" @click="toggleSort('scheduled_at')">
+                                Scheduled At <span v-if="sortBy === 'scheduled_at'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th class="cursor-pointer px-4 py-2 text-left font-semibold" @click="toggleSort('due_date')">
+                                Due Date <span v-if="sortBy === 'due_date'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th class="cursor-pointer px-4 py-2 text-left font-semibold" @click="toggleSort('year_level')">
+                                Year Level <span v-if="sortBy === 'year_level'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-4 py-2 text-left font-semibold">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        <tr v-for="test in props.tests" :key="test.id" class="border-b">
+                        <tr v-for="test in sortedTests" :key="test.id" class="border-b">
                             <td class="flex items-center gap-2 px-4 py-2">
                                 <BookOpen class="h-4 w-4 text-blue-500" />
                                 {{ test.title }}

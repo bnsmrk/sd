@@ -11,7 +11,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     enrollments: {
@@ -60,7 +59,7 @@ const destroyItem = () => {
             onFinish: () => {
                 setTimeout(() => {
                     isDeleting.value = false;
-                }, 1000);
+                }, 800);
             },
         });
     }
@@ -70,6 +69,42 @@ const cancelDelete = () => {
     showDeleteModal.value = false;
     deleteId.value = null;
 };
+
+type SortableEnrollKey = 'user' | 'year_level' | 'section';
+
+const sortKey = ref<SortableEnrollKey>('user');
+const sortAsc = ref(true);
+
+const toggleSort = (key: SortableEnrollKey) => {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+};
+
+const sortedEnrollments = computed(() => {
+    return [...props.enrollments.data].sort((a, b) => {
+        let aValue = '';
+        let bValue = '';
+
+        if (sortKey.value === 'user') {
+            aValue = a.user.name.toLowerCase();
+            bValue = b.user.name.toLowerCase();
+        } else if (sortKey.value === 'year_level') {
+            aValue = a.year_level.name.toLowerCase();
+            bValue = b.year_level.name.toLowerCase();
+        } else if (sortKey.value === 'section') {
+            aValue = a.section?.name?.toLowerCase?.() || '';
+            bValue = b.section?.name?.toLowerCase?.() || '';
+        }
+
+        if (aValue < bValue) return sortAsc.value ? -1 : 1;
+        if (aValue > bValue) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
@@ -114,14 +149,24 @@ const cancelDelete = () => {
                 <table class="min-w-full text-left text-sm text-[#01006c]">
                     <thead class="bg-[#01006c] text-xs text-white uppercase">
                         <tr>
-                            <th class="px-6 py-3">Student</th>
-                            <th class="px-6 py-3">Year Level</th>
-                            <th class="px-6 py-3">Section</th>
+                            <th @click="toggleSort('user')" class="cursor-pointer px-6 py-3">
+                                Student
+                                <span v-if="sortKey === 'user'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('year_level')" class="cursor-pointer px-6 py-3">
+                                Year Level
+                                <span v-if="sortKey === 'year_level'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th @click="toggleSort('section')" class="cursor-pointer px-6 py-3">
+                                Section
+                                <span v-if="sortKey === 'section'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-[#01006c] bg-white">
-                        <tr v-for="enroll in enrollments.data" :key="enroll.id" class="transition hover:bg-gray-50">
+                        <tr v-for="enroll in sortedEnrollments" :key="enroll.id" class="transition hover:bg-gray-50">
                             <td class="px-6 py-4 font-medium">{{ enroll.user.name }}</td>
                             <td class="px-6 py-4">{{ enroll.year_level.name }}</td>
                             <td class="px-6 py-4">{{ enroll.section?.name ?? '—' }}</td>

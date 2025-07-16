@@ -66,7 +66,7 @@ const applyFilters = () => {
             onFinish: () => {
                 setTimeout(() => {
                     isLoading.value = false;
-                }, 1000);
+                }, 800);
             },
         },
     );
@@ -78,6 +78,66 @@ const pdfUrl = computed(() => {
     const section = selectedSection.value ?? '';
     const type = selectedType.value;
     return `/students-proficiency-result/export?year_level_id=${year}&section_id=${section}&type=${type}`;
+});
+
+const sortKeyIndividual = ref<'name' | 'section' | 'average'>('name');
+const sortAscIndividual = ref(true);
+
+function toggleSortIndividual(key: typeof sortKeyIndividual.value) {
+    if (sortKeyIndividual.value === key) {
+        sortAscIndividual.value = !sortAscIndividual.value;
+    } else {
+        sortKeyIndividual.value = key;
+        sortAscIndividual.value = true;
+    }
+}
+
+const sortedIndividuals = computed(() => {
+    return [...props.individuals].sort((a, b) => {
+        let aVal: any, bVal: any;
+
+        switch (sortKeyIndividual.value) {
+            case 'name':
+                aVal = a.student.name.toLowerCase();
+                bVal = b.student.name.toLowerCase();
+                break;
+            case 'section':
+                aVal = a.student.section?.name?.toLowerCase() ?? '';
+                bVal = b.student.section?.name?.toLowerCase() ?? '';
+                break;
+            case 'average':
+                aVal = a.average;
+                bVal = b.average;
+                break;
+        }
+
+        if (aVal < bVal) return sortAscIndividual.value ? -1 : 1;
+        if (aVal > bVal) return sortAscIndividual.value ? 1 : -1;
+        return 0;
+    });
+});
+
+const sortKeySection = ref<'section' | 'average'>('section');
+const sortAscSection = ref(true);
+
+function toggleSortSection(key: typeof sortKeySection.value) {
+    if (sortKeySection.value === key) {
+        sortAscSection.value = !sortAscSection.value;
+    } else {
+        sortKeySection.value = key;
+        sortAscSection.value = true;
+    }
+}
+
+const sortedSections = computed(() => {
+    return [...props.sectionsAvg].sort((a, b) => {
+        let aVal: any = sortKeySection.value === 'section' ? a.section.name.toLowerCase() : a.average;
+        let bVal: any = sortKeySection.value === 'section' ? b.section.name.toLowerCase() : b.average;
+
+        if (aVal < bVal) return sortAscSection.value ? -1 : 1;
+        if (aVal > bVal) return sortAscSection.value ? 1 : -1;
+        return 0;
+    });
 });
 </script>
 
@@ -168,13 +228,20 @@ const pdfUrl = computed(() => {
                     <table class="w-full overflow-hidden rounded-md border border-[#01006c] text-sm">
                         <thead class="bg-[#01006c] text-white">
                             <tr>
-                                <th class="border border-[#01006c] px-4 py-2 text-left">Student</th>
-                                <th class="border border-[#01006c] px-4 py-2 text-left">Section</th>
-                                <th class="border border-[#01006c] px-4 py-2 text-left">Average (%)</th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('name')">
+                                    Student <span v-if="sortKeyIndividual === 'name'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
+                                </th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('section')">
+                                    Section <span v-if="sortKeyIndividual === 'section'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
+                                </th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('average')">
+                                    Average (%) <span v-if="sortKeyIndividual === 'average'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
+                                </th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            <tr v-for="i in props.individuals" :key="i.student.id" class="even:bg-gray-50">
+                            <tr v-for="i in sortedIndividuals" :key="i.student.id" class="even:bg-gray-50">
                                 <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ i.student.name }}</td>
                                 <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ i.student.section?.name ?? 'N/A' }}</td>
                                 <td class="border border-[#01006c] px-4 py-2 font-medium text-green-700">{{ i.average }}%</td>
@@ -190,12 +257,17 @@ const pdfUrl = computed(() => {
                     <table class="w-full overflow-hidden rounded-md border border-[#01006c] text-sm">
                         <thead class="bg-[#01006c] text-white">
                             <tr>
-                                <th class="border border-[#01006c] px-4 py-2 text-left">Section</th>
-                                <th class="border border-[#01006c] px-4 py-2 text-left">Average (%)</th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortSection('section')">
+                                    Section <span v-if="sortKeySection === 'section'">{{ sortAscSection ? '↑' : '↓' }}</span>
+                                </th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortSection('average')">
+                                    Average (%) <span v-if="sortKeySection === 'average'">{{ sortAscSection ? '↑' : '↓' }}</span>
+                                </th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            <tr v-for="s in props.sectionsAvg" :key="s.section.id" class="even:bg-gray-50">
+                            <tr v-for="s in sortedSections" :key="s.section.id" class="even:bg-gray-50">
                                 <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ s.section.name }}</td>
                                 <td class="border border-[#01006c] px-4 py-2 font-medium text-pink-600">{{ s.average }}%</td>
                             </tr>

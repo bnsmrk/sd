@@ -9,7 +9,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 const props = defineProps<{
     sections: {
         data: Array<{
@@ -123,6 +122,36 @@ const confirmDelete = () => {
         });
     }
 };
+type SortableKey = 'id' | 'name' | 'year_level';
+const sortKey = ref<SortableKey>('id');
+const sortAsc = ref(true);
+
+function toggleSort(key: SortableKey) {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+}
+const sortedSections = computed(() => {
+    return [...props.sections.data].sort((a, b) => {
+        let aValue: string | number = '';
+        let bValue: string | number = '';
+
+        if (sortKey.value === 'year_level') {
+            aValue = a.year_level.name.toLowerCase();
+            bValue = b.year_level.name.toLowerCase();
+        } else {
+            aValue = (a as any)[sortKey.value];
+            bValue = (b as any)[sortKey.value];
+        }
+
+        if (aValue < bValue) return sortAsc.value ? -1 : 1;
+        if (aValue > bValue) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
@@ -168,14 +197,24 @@ const confirmDelete = () => {
                 <table class="min-w-full table-auto text-left text-sm text-[#01006c]">
                     <thead class="bg-[#01006c] text-xs font-semibold text-white uppercase">
                         <tr>
-                            <th class="px-6 py-3">ID</th>
-                            <th class="px-6 py-3">Section Name</th>
-                            <th class="px-6 py-3">Year Level</th>
+                            <th @click="toggleSort('id')" class="cursor-pointer px-6 py-3">
+                                ID
+                                <span v-if="sortKey === 'id'"> {{ sortAsc ? '↑' : '↓' }} </span>
+                            </th>
+                            <th @click="toggleSort('name')" class="cursor-pointer px-6 py-3">
+                                Section Name
+                                <span v-if="sortKey === 'name'"> {{ sortAsc ? '↑' : '↓' }} </span>
+                            </th>
+                            <th @click="toggleSort('year_level')" class="cursor-pointer px-6 py-3">
+                                Year Level
+                                <span v-if="sortKey === 'year_level'"> {{ sortAsc ? '↑' : '↓' }} </span>
+                            </th>
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-[#01006c] bg-white">
-                        <tr v-for="section in sections.data" :key="section.id" class="hover:bg-gray-50">
+                        <tr v-for="section in sortedSections" :key="section.id" class="hover:bg-gray-50">
                             <td class="px-6 py-4">{{ section.id }}</td>
                             <td class="px-6 py-4">{{ section.name }}</td>
                             <td class="px-6 py-4">{{ section.year_level.name }}</td>

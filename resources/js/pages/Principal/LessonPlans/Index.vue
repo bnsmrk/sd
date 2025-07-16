@@ -3,6 +3,11 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { router } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
+
 import { FileText, Filter, Send } from 'lucide-vue-next';
 
 interface YearLevel {
@@ -42,6 +47,8 @@ const submitComment = (planId: number) => {
     const comment = newComments.value[planId]?.trim();
     if (!comment) return;
 
+    isCreating.value = true;
+
     router.post(
         '/principal-teachers-lesson-plans/comment',
         {
@@ -52,6 +59,11 @@ const submitComment = (planId: number) => {
             preserveScroll: true,
             onSuccess: () => {
                 newComments.value[planId] = '';
+            },
+            onFinish: () => {
+                setTimeout(() => {
+                    isCreating.value = false;
+                }, 800);
             },
         },
     );
@@ -76,7 +88,9 @@ const filtersApplied = ref(false);
 const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevel.value));
 
 const applyFilters = () => {
+    isCreating.value = true;
     filtersApplied.value = true;
+
     router.get(
         '/principal-teachers-lesson-plans',
         {
@@ -86,14 +100,77 @@ const applyFilters = () => {
         {
             preserveScroll: true,
             preserveState: true,
+            onFinish: () => {
+                setTimeout(() => {
+                    isCreating.value = false;
+                }, 800);
+            },
         },
     );
 };
+
+const sortKey = ref<'title' | 'teacher' | 'year_level' | 'section'>('title');
+const sortAsc = ref(true);
+
+function toggleSort(key: typeof sortKey.value) {
+    if (sortKey.value === key) {
+        sortAsc.value = !sortAsc.value;
+    } else {
+        sortKey.value = key;
+        sortAsc.value = true;
+    }
+}
+
+const sortedLessonPlans = computed(() => {
+    return [...props.lessonPlans].sort((a, b) => {
+        let aVal = '';
+        let bVal = '';
+
+        switch (sortKey.value) {
+            case 'title':
+                aVal = a.title.toLowerCase();
+                bVal = b.title.toLowerCase();
+                break;
+            case 'teacher':
+                aVal = a.uploader?.name?.toLowerCase() ?? '';
+                bVal = b.uploader?.name?.toLowerCase() ?? '';
+                break;
+            case 'year_level':
+                aVal = a.year_level?.name?.toLowerCase() ?? '';
+                bVal = b.year_level?.name?.toLowerCase() ?? '';
+                break;
+            case 'section':
+                aVal = a.section?.name?.toLowerCase() ?? '';
+                bVal = b.section?.name?.toLowerCase() ?? '';
+                break;
+        }
+
+        if (aVal < bVal) return sortAsc.value ? -1 : 1;
+        if (aVal > bVal) return sortAsc.value ? 1 : -1;
+        return 0;
+    });
+});
 </script>
 
 <template>
     <Head title="Teachers Lesson Plans" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
             <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><FileText class="h-6 w-6" /> Teachers Lesson Plans</h1>
 
@@ -127,15 +204,24 @@ const applyFilters = () => {
                 <table class="min-w-full border border-[#01006c] text-left text-sm">
                     <thead class="bg-[#01006c] text-white">
                         <tr>
-                            <th class="border px-4 py-2">Title</th>
-                            <th class="border px-4 py-2">Teacher</th>
-                            <th class="border px-4 py-2">Year Level</th>
-                            <th class="border px-4 py-2">Section</th>
+                            <th class="cursor-pointer border px-4 py-2" @click="toggleSort('title')">
+                                Title <span v-if="sortKey === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th class="cursor-pointer border px-4 py-2" @click="toggleSort('teacher')">
+                                Teacher <span v-if="sortKey === 'teacher'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th class="cursor-pointer border px-4 py-2" @click="toggleSort('year_level')">
+                                Year Level <span v-if="sortKey === 'year_level'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
+                            <th class="cursor-pointer border px-4 py-2" @click="toggleSort('section')">
+                                Section <span v-if="sortKey === 'section'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            </th>
                             <th class="border px-4 py-2">File & Comments</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        <tr v-for="plan in props.lessonPlans" :key="plan.id" class="bg-white hover:bg-gray-50">
+                        <tr v-for="plan in sortedLessonPlans" :key="plan.id" class="bg-white hover:bg-gray-50">
                             <td class="border px-4 py-2 text-[#01006c]">{{ plan.title }}</td>
                             <td class="border px-4 py-2 text-[#01006c]">{{ plan.uploader?.name ?? 'N/A' }}</td>
                             <td class="border px-4 py-2 text-[#01006c]">{{ plan.year_level?.name ?? '—' }}</td>
@@ -183,3 +269,29 @@ const applyFilters = () => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>

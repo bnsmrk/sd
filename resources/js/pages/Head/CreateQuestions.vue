@@ -9,7 +9,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 import { ArrowLeft, BookOpen, CalendarClock, FileText, ListChecks, PlusCircle, Send, Trash2 } from 'lucide-vue-next';
 type QuestionForm = {
@@ -81,14 +80,20 @@ function onTypeChange(idx: number) {
 
 function submit() {
     isCreating.value = true;
-    router.post(`/proficiency-test/${props.proficiencyTest.id}/questions`, {
-        questions: questions.value,
-        onFinish: () => {
-            setTimeout(() => {
-                isCreating.value = false;
-            }, 2000);
+
+    router.post(
+        `/proficiency-test/${props.proficiencyTest.id}/questions`,
+        {
+            questions: questions.value,
         },
-    });
+        {
+            onFinish: () => {
+                setTimeout(() => {
+                    isCreating.value = false;
+                }, 800);
+            },
+        },
+    );
 }
 </script>
 

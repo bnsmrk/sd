@@ -9,7 +9,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     test: {
@@ -39,7 +38,7 @@ const submitUpdateForm = () => {
         onFinish: () => {
             setTimeout(() => {
                 isUpdating.value = false;
-            }, 1500); // Delay for visual feedback
+            }, 800);
         },
     });
 };

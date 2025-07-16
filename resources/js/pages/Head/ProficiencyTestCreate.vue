@@ -8,7 +8,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     yearLevels: Array<{ id: number; name: string }>;
@@ -33,7 +32,7 @@ const submitTestForm = () => {
         onFinish: () => {
             setTimeout(() => {
                 isCreating.value = false;
-            }, 2000);
+            }, 800);
         },
     });
 };

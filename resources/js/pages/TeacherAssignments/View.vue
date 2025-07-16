@@ -17,7 +17,6 @@ const props = defineProps<{
     <Head title="View Assignment" />
     <AppLayout :breadcrumbs="[{ title: 'Assignments', href: '/teacher-assignments' }]">
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
-            <!-- Header -->
             <div class="flex items-center justify-between">
                 <h1 class="text-lg font-bold text-[#01006c]">📄 Teacher Assignment Details</h1>
                 <Link
@@ -28,21 +27,17 @@ const props = defineProps<{
                 </Link>
             </div>
 
-            <!-- Assignment Info Card -->
             <div class="grid grid-cols-1 gap-4 rounded-lg border-2 border-[#01006c] bg-white p-6 shadow-sm md:grid-cols-2">
-                <!-- Teacher -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">👤 Teacher</label>
                     <p class="text-lg font-semibold text-[#01006c]">{{ props.assignment.teacher.name }}</p>
                 </div>
 
-                <!-- Year Level -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🎓 Year Level</label>
                     <p class="text-lg font-semibold text-[#01006c]">{{ props.assignment.year_level.name }}</p>
                 </div>
 
-                <!-- Section -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">🏫 Section</label>
                     <p class="text-lg font-semibold text-[#01006c]">
@@ -50,7 +45,6 @@ const props = defineProps<{
                     </p>
                 </div>
 
-                <!-- Subject -->
                 <div>
                     <label class="mb-1 block text-sm font-medium text-[#ff69b4]">📘 Subject</label>
                     <p class="text-lg font-semibold text-[#01006c]">{{ props.assignment.subject.name }}</p>

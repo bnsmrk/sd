@@ -4,6 +4,10 @@ import { router } from '@inertiajs/vue3';
 import { BarChart2, BookOpen, ClipboardList, FileText, Layers, LayoutTemplate, Search } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
+const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
+const isCreating = ref(false);
+const isUpdating = ref(false);
+const isDeleting = ref(false);
 interface YearLevel {
     id: number;
     name: string;
@@ -116,7 +120,9 @@ console.log(
 );
 
 const applyFilters = () => {
+    isCreating.value = true;
     filtersApplied.value = false;
+
     router.get(
         '/principal-students-proficiency',
         {
@@ -132,6 +138,11 @@ const applyFilters = () => {
             onSuccess: () => {
                 filtersApplied.value = true;
             },
+            onFinish: () => {
+                setTimeout(() => {
+                    isCreating.value = false;
+                }, 1000);
+            },
         },
     );
 };
@@ -143,10 +154,57 @@ const canGeneratePdf = computed(() => {
 const pdfUrl = computed(() => {
     return `/principal-students-proficiency/pdf?year_level_id=${selectedYearLevel.value ?? ''}&section_id=${selectedSection.value ?? ''}&subject_id=${selectedSubject.value ?? ''}&module_id=${selectedModule.value ?? ''}&type=${selectedType.value}`;
 });
+
+const sortState = ref<Record<string, { key: keyof ResultEntry; asc: boolean }>>({});
+
+function toggleSort(activityTitle: string, key: keyof ResultEntry) {
+    const current = sortState.value[activityTitle] || { key, asc: true };
+
+    if (current.key === key) {
+        current.asc = !current.asc;
+    } else {
+        current.key = key;
+        current.asc = true;
+    }
+
+    sortState.value[activityTitle] = current;
+}
+
+function getSortedEntries(activity: GroupedResult): ResultEntry[] {
+    const sort = sortState.value[activity.activity_title];
+    if (!sort) return activity.entries;
+
+    return [...activity.entries].sort((a, b) => {
+        const aVal = a[sort.key];
+        const bVal = b[sort.key];
+
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return sort.asc ? aVal - bVal : bVal - aVal;
+        } else {
+            return sort.asc ? String(aVal).localeCompare(String(bVal)) : String(bVal).localeCompare(String(aVal));
+        }
+    });
+}
 </script>
 <template>
     <Head title="Proficiency Report" />
     <AppLayout>
+        <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+            <div class="flex flex-col items-center gap-4">
+                <div class="relative h-16 w-16">
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
+
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                </div>
+
+                <div class="text-center">
+                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
+                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                </div>
+            </div>
+        </div>
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
             <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><BarChart2 class="h-6 w-6" /> Proficiency Reports</h1>
 
@@ -232,14 +290,35 @@ const pdfUrl = computed(() => {
                     <table class="mt-2 min-w-full border text-sm">
                         <thead class="bg-[#01006c] text-left text-white">
                             <tr>
-                                <th class="border px-4 py-2">Student</th>
-                                <th class="border px-4 py-2">Score</th>
-                                <th class="border px-4 py-2">Total</th>
-                                <th class="border px-4 py-2">Average (%)</th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSort(group.activity_title, 'student')">
+                                    Student
+                                    <span v-if="sortState[group.activity_title]?.key === 'student'">
+                                        {{ sortState[group.activity_title]?.asc ? '↑' : '↓' }}
+                                    </span>
+                                </th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSort(group.activity_title, 'score')">
+                                    Score
+                                    <span v-if="sortState[group.activity_title]?.key === 'score'">
+                                        {{ sortState[group.activity_title]?.asc ? '↑' : '↓' }}
+                                    </span>
+                                </th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSort(group.activity_title, 'total')">
+                                    Total
+                                    <span v-if="sortState[group.activity_title]?.key === 'total'">
+                                        {{ sortState[group.activity_title]?.asc ? '↑' : '↓' }}
+                                    </span>
+                                </th>
+                                <th class="cursor-pointer border px-4 py-2" @click="toggleSort(group.activity_title, 'average')">
+                                    Average (%)
+                                    <span v-if="sortState[group.activity_title]?.key === 'average'">
+                                        {{ sortState[group.activity_title]?.asc ? '↑' : '↓' }}
+                                    </span>
+                                </th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            <tr v-for="entry in group.entries" :key="entry.student" class="bg-white">
+                            <tr v-for="entry in getSortedEntries(group)" :key="entry.student" class="bg-white">
                                 <td class="border px-4 py-2 text-[#01006c]">{{ entry.student }}</td>
                                 <td class="border px-4 py-2 text-[#01006c]">{{ entry.score }}</td>
                                 <td class="border px-4 py-2 text-[#01006c]">{{ entry.total }}</td>
@@ -254,3 +333,29 @@ const pdfUrl = computed(() => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+@keyframes spin-cw {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin-ccw {
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+.animate-spin-slow-cw {
+    animation: spin-cw 2s linear infinite;
+}
+
+.animate-spin-slow-ccw {
+    animation: spin-ccw 3s linear infinite;
+}
+
+.animate-spin-fast-cw {
+    animation: spin-cw 1s linear infinite;
+}
+</style>
