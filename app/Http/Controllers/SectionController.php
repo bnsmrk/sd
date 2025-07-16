@@ -20,7 +20,7 @@ class SectionController extends Controller
                 $query->where('name', 'like', "%{$search}%")
             )
             ->orderBy('id')
-            ->paginate(5)
+            ->paginate(10)
             ->withQueryString();
 
         $yearLevels = YearLevel::all();
@@ -44,8 +44,8 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-        'name' => 'required|string|max:255|unique:sections,name',
-        'year_level_id' => 'required|exists:year_levels,id',
+            'name' => 'required|string|max:255|unique:sections,name',
+            'year_level_id' => 'required|exists:year_levels,id',
         ]);
 
         Section::create($validated);
@@ -65,8 +65,8 @@ class SectionController extends Controller
     public function update(Request $request, Section $section)
     {
         $validated = $request->validate([
-        'name' => 'required|string|max:255|unique:sections,name,' . $section->id,
-        'year_level_id' => 'required|exists:year_levels,id',
+            'name' => 'required|string|max:255|unique:sections,name,' . $section->id,
+            'year_level_id' => 'required|exists:year_levels,id',
         ]);
 
         $section->update($validated);

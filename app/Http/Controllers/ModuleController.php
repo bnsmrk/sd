@@ -25,7 +25,7 @@ class ModuleController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $modules = $query->latest()->paginate(5)->withQueryString();
+        $modules = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Modules/Index', [
             'modules' => $modules,

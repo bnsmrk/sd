@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+
 class UserController extends Controller
 {
 
@@ -23,7 +24,7 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->latest()->paginate(5)->withQueryString();
+        $users = $query->latest()->paginate(10)->withQueryString();
 
         return Inertia::render('Users/Index', [
             'users' => $users,
@@ -44,14 +45,14 @@ class UserController extends Controller
             'role' => ['required', Rule::in(['teacher', 'ict', 'head'])],
             'email' => 'required|email|unique:users,email',
             'password' => [
-        'required',
-        'confirmed',
-        Password::min(8)
-            ->mixedCase()
-            ->letters()
-            ->numbers()
-            ->symbols()
-    ],
+                'required',
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase()
+                    ->letters()
+                    ->numbers()
+                    ->symbols()
+            ],
         ]);
 
         User::create([

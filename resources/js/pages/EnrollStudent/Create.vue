@@ -63,9 +63,14 @@ function saveForm() {
                 section_id: selectedSection.value,
             },
             {
+                onError: (serverErrors: any) => {
+                    errors.value.student = serverErrors.user_id || '';
+                    errors.value.yearLevel = serverErrors.year_level_id || '';
+                    errors.value.section = serverErrors.section_id || '';
+                },
                 onFinish: () => {
                     setTimeout(() => {
-                        isCreating.value = false; // ✅ Hide spinner after short delay
+                        isCreating.value = false;
                     }, 1000);
                 },
             },

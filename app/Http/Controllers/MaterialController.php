@@ -32,7 +32,7 @@ class MaterialController extends Controller
                 $query->where('title', 'like', '%' . $request->search . '%');
             })
             ->latest()
-            ->paginate(5)
+            ->paginate(10)
             ->withQueryString();
 
         return Inertia::render('Materials/Index', [

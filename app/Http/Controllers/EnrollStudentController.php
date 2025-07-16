@@ -18,10 +18,10 @@ class EnrollStudentController extends Controller
     {
         $search = $request->input('search');
 
-        $subQuery = \App\Models\Student::selectRaw('MIN(id) as id')
-            ->groupBy('user_id');
+        $subQuery = Student::selectRaw('MIN(id) as id')
+            ->groupBy('user_id', 'year_level_id');
 
-        $enrollments = \App\Models\Student::with(['user:id,name', 'yearLevel:id,name', 'section:id,name'])
+        $enrollments = Student::with(['user:id,name', 'yearLevel:id,name', 'section:id,name'])
             ->whereIn('id', $subQuery)
             ->when($search, function ($query, $search) {
                 $query->whereHas('user', function ($q) use ($search) {
@@ -48,15 +48,6 @@ class EnrollStudentController extends Controller
         ]);
     }
 
-    public function show(Student $enroll)
-    {
-        $enroll->load(['user:id,name', 'yearLevel:id,name', 'section:id,name', 'subject:id,name']);
-
-        return Inertia::render('EnrollStudent/Index', [
-            'enrollment' => $enroll,
-        ]);
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -78,7 +69,9 @@ class EnrollStudentController extends Controller
         $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
 
         if ($subjects->isEmpty()) {
-            return back()->withErrors(['year_level_id' => 'No subjects found for selected year level.']);
+            return back()->withErrors([
+                'year_level_id' => 'No subjects found for the selected year level.'
+            ]);
         }
 
         foreach ($subjects as $subject) {
@@ -98,7 +91,6 @@ class EnrollStudentController extends Controller
 
         return redirect()->route('enroll.index')->with('success', 'Student enrolled successfully.');
     }
-
 
     public function edit(Student $enroll)
     {
@@ -123,7 +115,20 @@ class EnrollStudentController extends Controller
             'section_id' => 'required|exists:sections,id',
         ]);
 
-        Student::where('user_id', $validated['user_id'])->delete();
+        $alreadyEnrolled = Student::where('user_id', $validated['user_id'])
+            ->where('year_level_id', $validated['year_level_id'])
+            ->where('id', '!=', $enroll->id)
+            ->exists();
+
+        if ($alreadyEnrolled) {
+            return back()->withErrors([
+                'year_level_id' => 'Student is already enrolled in the selected year level.',
+            ])->withInput();
+        }
+
+        Student::where('user_id', $validated['user_id'])
+            ->where('year_level_id', $validated['year_level_id'])
+            ->delete();
 
         $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
 
@@ -139,10 +144,14 @@ class EnrollStudentController extends Controller
         return redirect()->route('enroll.index')->with('success', 'Enrollment updated.');
     }
 
+
     public function destroy($id)
     {
         $student = Student::findOrFail($id);
-        Student::where('user_id', $student->user_id)->delete();
+
+        Student::where('user_id', $student->user_id)
+            ->where('year_level_id', $student->year_level_id)
+            ->delete();
 
         return redirect()->route('enroll.index')->with('success', 'Enrollment deleted.');
     }

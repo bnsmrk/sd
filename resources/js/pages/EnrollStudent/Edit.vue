@@ -10,7 +10,6 @@ const isLoading = computed(() => isCreating.value || isUpdating.value || isDelet
 const isCreating = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
-// const showFlash = ref(false);
 
 const props = defineProps<{
     enrollment: {
@@ -41,7 +40,7 @@ const submitForm = () => {
         onFinish: () => {
             setTimeout(() => {
                 isUpdating.value = false;
-            }, 1000); // Optional delay for smooth UX
+            }, 1000);
         },
     });
 };

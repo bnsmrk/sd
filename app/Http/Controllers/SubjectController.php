@@ -19,7 +19,7 @@ class SubjectController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $subjects = $query->paginate(5)->withQueryString();
+        $subjects = $query->paginate(10)->withQueryString();
 
         return Inertia::render('Subject/Index', [
             'subjects' => $subjects,

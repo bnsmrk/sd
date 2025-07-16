@@ -254,7 +254,6 @@ const destroyItem = () => {
                                 @focus="passwordFocused = true"
                                 @blur="passwordFocused = false"
                             />
-                            <!-- Password strength checklist -->
                             <div v-if="showPasswordChecklist" class="mt-2 space-y-1 text-sm">
                                 <div class="flex items-center gap-2" :class="hasUppercase ? 'text-green-600' : 'text-gray-400'">
                                     <component :is="hasUppercase ? CheckCircle : Circle" class="h-4 w-4" />
@@ -287,7 +286,6 @@ const destroyItem = () => {
                                 type="password"
                                 class="w-full rounded border border-[#01006c] p-2 focus:border-[#ffc60b] focus:outline-none"
                             />
-                            <!-- Password match check -->
                             <div v-if="!passwordMatch && createForm.password_confirmation.length > 0" class="text-sm text-red-600">
                                 Passwords do not match.
                             </div>
