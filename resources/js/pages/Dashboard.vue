@@ -108,7 +108,7 @@ onMounted(() => {
     <Head title="" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="min-h-screen space-y-10 bg-pink-50 px-6 py-8">
-            <h1 class="text-3xl font-bold text-[#01006c]">💻 ICT Dashboard</h1>
+            <h1 class="text-3xl font-bold text-[#01006c]">Dashboard</h1>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <div :class="getCardClasses(0)">
