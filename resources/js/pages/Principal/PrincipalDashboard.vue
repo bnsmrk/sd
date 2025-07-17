@@ -61,7 +61,7 @@ const statsKeys = Object.keys(props.counts) as (keyof typeof props.counts)[];
                                               : key === 'students'
                                                 ? 'Students'
                                                 : key === 'heads'
-                                                  ? 'Heads'
+                                                  ? 'Year Level Heads'
                                                   : key === 'ict'
                                                     ? 'ICT Personnel'
                                                     : key
