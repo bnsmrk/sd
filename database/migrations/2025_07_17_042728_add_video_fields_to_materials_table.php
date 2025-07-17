@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->unique('name', 'subjects_name_unique');
+        Schema::table('materials', function (Blueprint $table) {
+            $table->string('video_path')->nullable()->after('file_path');
+            $table->string('video_link')->nullable()->after('video_path');
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->dropUnique('subjects_name_unique');
+        Schema::table('materials', function (Blueprint $table) {
+            $table->dropColumn(['video_path', 'video_link']);
         });
     }
 };

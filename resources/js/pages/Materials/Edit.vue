@@ -44,6 +44,8 @@ const props = defineProps<{
         section_id?: number | null;
         module_id?: number | null;
         file_path?: string | null;
+        video_path?: string | null;
+        video_link?: string | null;
     };
     modules: Module[];
     subjects: Subject[];
@@ -71,6 +73,8 @@ const form = useForm({
     type: props.material.type,
     description: props.material.description ?? '',
     file: null as File | null,
+    video: null as File | null,
+    video_link: props.material.video_link ?? '',
 });
 
 watch(selectedType, (newType) => {
@@ -97,6 +101,12 @@ function submitForm() {
 
     if (form.file) {
         data.append('file', form.file as Blob);
+    }
+    if (form.video) {
+        data.append('video', form.video as Blob);
+    }
+    if (form.video_link) {
+        data.append('video_link', form.video_link);
     }
 
     if (form.type === 'material' && selectedModuleId.value) {
@@ -172,9 +182,9 @@ function submitForm() {
                     </select>
                 </div>
 
-                <div v-if="selectedType === 'material'" class="col-span-3 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div v-if="selectedType === 'material'" class="col-span-3 grid grid-cols-1 gap-4 md:grid-cols-4">
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-[#ff69b4]">Module</label>
+                        <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Module</label>
                         <select
                             v-model="selectedModuleId"
                             class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
@@ -185,16 +195,36 @@ function submitForm() {
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-[#ff69b4]">Year Level</label>
-                        <select disabled class="w-full rounded border bg-gray-100 p-2 text-sm text-gray-700">
+                        <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Year Level</label>
+                        <select
+                            disabled
+                            class="w-full rounded border border-[#01006c] bg-gray-100 p-2 text-sm text-gray-700 focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option v-if="selectedModule">{{ selectedModule.year_level.name }}</option>
                             <option v-else>Select Module First</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="mb-1 block text-sm font-medium text-[#ff69b4]">Subject</label>
-                        <select disabled class="w-full rounded border bg-gray-100 p-2 text-sm text-gray-700">
+                        <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Section</label>
+                        <select
+                            v-model="selectedSectionId"
+                            :disabled="!selectedModuleId"
+                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        >
+                            <option :value="null" disabled>Select Section</option>
+                            <option v-for="section in filteredSections" :key="section.id" :value="section.id">
+                                {{ section.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Subject</label>
+                        <select
+                            disabled
+                            class="w-full rounded border border-[#01006c] bg-gray-100 p-2 text-sm text-gray-700 focus:border-[#ffc60b] focus:outline-none"
+                        >
                             <option v-if="selectedModule">{{ selectedModule.subject.name }}</option>
                             <option v-else>Select Module First</option>
                         </select>
@@ -216,6 +246,7 @@ function submitForm() {
                     <div>
                         <label class="mb-1 block text-sm font-medium text-[#ff69b4]">Section</label>
                         <select
+                            disabled
                             v-model="selectedSectionId"
                             class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
@@ -253,6 +284,41 @@ function submitForm() {
                     rows="3"
                     class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                 />
+            </div>
+            <!-- Upload Video File -->
+            <div>
+                <label class="mb-1 block flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
+                    <FileUp class="h-4 w-4 text-[#ff69b4]" />
+                    Upload Video (Optional)
+                </label>
+                <input
+                    type="file"
+                    accept=".mp4,.avi,.mov,.mkv"
+                    @change="(e) => (form.video = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
+                    class="w-full rounded border border-[#01006c] p-2 text-[#ff69b4] file:mr-4 file:border-0 file:bg-[#ffc60b]/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#01006c] hover:file:bg-[#ffc60b]/40 focus:border-[#ffc60b] focus:outline-none"
+                />
+                <div v-if="props.material.video_path" class="mt-2 text-sm text-gray-700">
+                    <p>Current Video:</p>
+                    <video
+                        controls
+                        :src="`/storage/${props.material.video_path}`"
+                        class="mt-1 w-full max-w-md rounded border border-[#ffc60b]"
+                    ></video>
+                </div>
+            </div>
+
+            <!-- Optional Video Link -->
+            <div>
+                <label class="block text-sm font-medium text-[#ff69b4]">Video/Meeting Link (Optional)</label>
+                <input
+                    type="url"
+                    class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                    v-model="form.video_link"
+                    placeholder="https://youtube.com/..."
+                />
+                <div v-if="props.material.video_link" class="mt-1 text-sm text-blue-600 underline">
+                    <a :href="props.material.video_link" target="_blank">View Video Link</a>
+                </div>
             </div>
 
             <div>
