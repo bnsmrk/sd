@@ -44,7 +44,7 @@ class Material extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
     public function comments()
-{
-    return $this->hasMany(LessonPlanComment::class);
-}
+    {
+        return $this->hasMany(LessonPlanComment::class, 'material_id');
+    }
 }

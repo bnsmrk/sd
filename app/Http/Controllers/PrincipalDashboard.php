@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\YearLevel;
+use App\Models\Material;
 use App\Models\Section;
 use App\Models\Subject;
 use App\Models\User;
@@ -21,6 +21,10 @@ class PrincipalDashboard extends Controller
                 'students' => User::where('role', 'student')->count(),
                 'heads' => User::where('role', 'head')->count(),
                 'ict' => User::where('role', 'ict')->count(),
+
+                'lessonPlans' => Material::where('type', 'lesson_plan')->count(),
+                'noComments' => Material::where('type', 'lesson_plan')->doesntHave('comments')->count(),
+                'withComments' => Material::where('type', 'lesson_plan')->has('comments')->count(),
             ],
         ]);
     }

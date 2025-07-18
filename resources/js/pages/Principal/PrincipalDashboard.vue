@@ -12,6 +12,9 @@ const props = defineProps<{
         students: number;
         heads: number;
         ict: number;
+        lessonPlans: number;
+        noComments: number;
+        withComments: number;
     };
 }>();
 
@@ -27,7 +30,9 @@ function getTopBorderColor(index: number) {
     return topBorderColors[index % topBorderColors.length];
 }
 
-const statsKeys = Object.keys(props.counts) as (keyof typeof props.counts)[];
+const statsKeys = (Object.keys(props.counts) as (keyof typeof props.counts)[]).filter(
+    (key) => !['lessonPlans', 'noComments', 'withComments'].includes(key),
+);
 </script>
 
 <template>
@@ -68,6 +73,39 @@ const statsKeys = Object.keys(props.counts) as (keyof typeof props.counts)[];
                                 }}
                             </h2>
                             <p class="mt-2 text-4xl font-bold text-blue-800">{{ props.counts[key] }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="mt-10 mb-4 text-2xl font-bold text-[#01006c]">Lesson Plan</h2>
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div :class="getCardClasses(100)">
+                        <div class="absolute top-0 left-0 h-1 w-full bg-green-400"></div>
+                        <div class="flex h-full flex-col justify-between">
+                            <div class="pb-4">
+                                <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]">Total Lesson Plans</h2>
+                                <p class="mt-2 text-4xl font-bold text-blue-800">{{ props.counts.lessonPlans }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="getCardClasses(102)">
+                        <div class="absolute top-0 left-0 h-1 w-full bg-blue-400"></div>
+                        <div class="flex h-full flex-col justify-between">
+                            <div class="pb-4">
+                                <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]">Commented Lesson Plans</h2>
+                                <p class="mt-2 text-4xl font-bold text-blue-800">{{ props.counts.withComments }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="getCardClasses(101)">
+                        <div class="absolute top-0 left-0 h-1 w-full bg-red-400"></div>
+                        <div class="flex h-full flex-col justify-between">
+                            <div class="pb-4">
+                                <h2 class="flex items-center gap-2 text-lg font-semibold text-[#01006c]">No Comments Yet</h2>
+                                <p class="mt-2 text-4xl font-bold text-blue-800">{{ props.counts.noComments }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
