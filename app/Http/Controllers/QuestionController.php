@@ -6,9 +6,11 @@ use Inertia\Inertia;
 use App\Models\Activity;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Validator;
-
+use Symfony\Component\HttpFoundation\StreamedResponse;
 class QuestionController extends Controller
+
 {
 
     public function index()
@@ -110,6 +112,52 @@ class QuestionController extends Controller
         return redirect()->route('activities.index')->with('success', 'Questions updated successfully.');
     }
 
+
+    public function downloadCsv(Activity $activity)
+    {
+        $questions = $activity->questions()->get();
+
+        $filename = 'activity_' . $activity->id . '_questions.csv';
+        $headers = [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename={$filename}",
+        ];
+
+        $columns = ['Question #', 'Question', 'Type', 'Choices', 'Answer Key'];
+
+        $callback = function () use ($questions, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($questions as $index => $question) {
+                fputcsv($file, [
+                    $index + 1,
+                    $question->question,
+                    $question->type,
+                    $question->options ? implode('; ', json_decode($question->options, true)) : 'N/A',
+                    is_array(json_decode($question->answer_key, true))
+                        ? implode(', ', json_decode($question->answer_key, true))
+                        : $question->answer_key,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function downloadPdf(Activity $activity)
+    {
+        $questions = $activity->questions()->get();
+
+        $pdf = Pdf::loadView('pdf.questions', [
+            'activity' => $activity,
+            'questions' => $questions,
+        ]);
+
+        return $pdf->download('activity_' . $activity->id . '_questions.pdf');
+    }
 
 
     public function show(string $id)

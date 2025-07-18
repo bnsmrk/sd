@@ -108,6 +108,9 @@ Route::middleware('role:teacher')->group(function () {
         Route::get('questions/create', [QuestionController::class, 'create'])->name('questions.create');
         Route::post('questions', [QuestionController::class, 'store'])->name('questions.store');
     });
+    Route::get('/activities/{activity}/questions/download/csv', [QuestionController::class, 'downloadCsv'])->name('activities.questions.download.csv');
+    Route::get('/activities/{activity}/questions/download/pdf', [QuestionController::class, 'downloadPdf'])->name('activities.questions.download.pdf');
+
 
     Route::post('/activities/{activity}/essay', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::get('/activities/{activity}/essay-submissions', [SubmissionController::class, 'showEssaySubmissions'])

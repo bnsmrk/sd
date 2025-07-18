@@ -124,7 +124,7 @@ function submit() {
         </div>
 
         <div class="p-8">
-            <div class="mb-6">
+            <div class="mb-6 space-y-2">
                 <Link
                     href="/activities"
                     class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-white px-4 py-2 text-sm font-semibold text-[#01006c] shadow hover:bg-[#ffc60b]"
@@ -132,6 +132,24 @@ function submit() {
                     <ArrowLeft class="h-4 w-4 text-[#01006c]" />
                     Back to Activities
                 </Link>
+
+                <div class="flex gap-2">
+                    <a
+                        :href="`/activities/${props.activity.id}/questions/download/pdf`"
+                        class="inline-flex items-center gap-2 rounded border border-[#ff69b4] bg-white px-4 py-2 text-sm font-semibold text-[#ff69b4] shadow hover:bg-[#ffe4f1]"
+                    >
+                        <FileText class="h-4 w-4" />
+                        Download PDF
+                    </a>
+
+                    <a
+                        :href="`/activities/${props.activity.id}/questions/download/csv`"
+                        class="inline-flex items-center gap-2 rounded border border-[#ffc60b] bg-white px-4 py-2 text-sm font-semibold text-[#ffc60b] shadow hover:bg-[#fff4d1]"
+                    >
+                        <FileText class="h-4 w-4" />
+                        Download CSV
+                    </a>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
