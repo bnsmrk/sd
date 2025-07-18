@@ -119,7 +119,7 @@ const groupedNavItems: Record<string, NavItem[]> = {
             icon: Briefcase,
         },
         {
-            title: 'Student Proficiency Report',
+            title: 'Student Activities Report',
             href: '/principal-students-proficiency',
             icon: FileArchiveIcon,
         },
@@ -127,6 +127,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             title: 'Teachers Lesson Plans',
             href: '/principal-teachers-lesson-plans',
             icon: LucideFileChartColumnIncreasing,
+        },
+        {
+            title: 'Proficiency Test Result',
+            href: '/proficiency-result',
+            icon: LucideTestTube2,
         },
     ],
     student: [

@@ -81,7 +81,7 @@
         <img src="{{ public_path('images/lmslogoo.png') }}" alt="School Logo" class="logo">
         <div class="header-text">
             <h1>Sample School Name</h1>
-            <p>Proficiency Report ({{ ucfirst($type) }})</p>
+            <p>Students Activities Report ({{ ucfirst($type) }})</p>
         </div>
     </div>
 

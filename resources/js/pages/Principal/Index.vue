@@ -206,7 +206,7 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
             </div>
         </div>
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
-            <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><BarChart2 class="h-6 w-6" /> Proficiency Reports</h1>
+            <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]"><BarChart2 class="h-6 w-6" /> Students Activities Reports</h1>
 
             <div class="flex flex-wrap gap-4 rounded-lg border bg-white p-4">
                 <div class="relative min-w-[180px] flex-grow">

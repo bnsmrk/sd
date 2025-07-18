@@ -140,6 +140,7 @@ Route::get('/principal-teachers-lesson-plans', [PrincipalLessonPlanController::c
 Route::post('/principal-teachers-lesson-plans/comment', [PrincipalLessonPlanController::class, 'storeComment'])->middleware('auth');
 
 
+
 // admin routes
 Route::middleware('role:admin,ict')->group(function () {
     Route::resource('year-levels', YearLevelController::class);
@@ -150,11 +151,13 @@ Route::middleware('role:admin,ict')->group(function () {
     Route::resource('teacher-assignments', TeacherAssignmentController::class);
 });
 
-
+Route::middleware('role:principal,head')->group(function () {
+    Route::resource('proficiency-result', StudentsProficiencyResult::class);
+});
 // head routes
 Route::middleware('role:head')->group(function () {
     Route::resource('proficiency-test', ProficiencyTestController::class);
-    Route::resource('proficiency-result', StudentsProficiencyResult::class);
+
 });
 
 
@@ -177,27 +180,6 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/activities/{activity}/essay', [SubmissionController::class, 'takeEssay'])->name('essay.create');
 });
 
-
-
-// Route::get('/test-sheets', function () {
-//     $client = new Client();
-//     $client->setAuthConfig(storage_path('app/google/laravel-dev-457801-ecdd7adc14f8.json'));
-//     $client->addScope(Sheets::SPREADSHEETS);
-
-//     $service = new Sheets($client);
-
-//     $spreadsheetId = '1DK1lUySTTNl3mUPrsTIs-QXUESJWh109Hky_N2Zi6bk';
-//     $range = 'Sheet1!A1';
-
-//     $values = [['Hello from Laravel!', now()->toDateTimeString()]];
-
-//     $body = new ValueRange(['values' => $values]);
-//     $params = ['valueInputOption' => 'RAW'];
-
-//     $service->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
-
-//     return '✅ Success! Data written to Google Sheet.';
-// });
 
 
 require __DIR__ . '/settings.php';
