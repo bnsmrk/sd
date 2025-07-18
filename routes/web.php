@@ -80,6 +80,10 @@ Route::get('/head-dashboard', [HeadDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:head'])
     ->name('head.dashboard');
 
+Route::get('/head-dashboard/teachers/{user}', [HeadDashboard::class, 'show'])
+->middleware(['auth', 'verified', 'role:head'])
+->name('head.teachers.show');
+
 Route::get('/proficiency-test/{proficiencyTest}/questions/create', [ProficiencyQuestionController::class, 'create'])->name('proficiency-questions.create');
 Route::post('/proficiency-test/{proficiencyTest}/questions', [ProficiencyQuestionController::class, 'store'])->name('proficiency-questions.store');
 
