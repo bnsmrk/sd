@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
-// import AppLayout from '@/layouts/AppLayout.vue';
-
 import { router } from '@inertiajs/vue3';
-import { BookOpen, CheckCircle, Clock, FileText, Package } from 'lucide-vue-next';
+import { BookOpen, CheckCircle, Clock, FileText, ListVideo, Package } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 
 const { subject } = defineProps<{
@@ -18,7 +16,9 @@ const { subject } = defineProps<{
                 id: number;
                 title: string;
                 description: string | null;
-                file_path: string;
+                file_path: string | null;
+                video_path: string | null;
+                video_link: string | null;
                 uploaded_by: string;
             }>;
             activities: Array<{
@@ -36,11 +36,25 @@ const { subject } = defineProps<{
     progress: number;
 }>();
 
-const openModuleId = ref<number | null>(null);
+const openMaterials = ref<Set<number>>(new Set());
+const openActivities = ref<Set<number>>(new Set());
 
-function toggleModule(id: number) {
-    openModuleId.value = openModuleId.value === id ? null : id;
+function toggleMaterials(id: number) {
+    openMaterials.value.has(id) ? openMaterials.value.delete(id) : openMaterials.value.add(id);
 }
+
+function toggleActivities(id: number) {
+    openActivities.value.has(id) ? openActivities.value.delete(id) : openActivities.value.add(id);
+}
+
+function goToActivity(activity: { id: number; type: string }) {
+    if (activity.type === 'essay') {
+        router.get(`/activities/${activity.id}/essay`);
+    } else {
+        router.get(`/student/quiz/${activity.id}`);
+    }
+}
+
 onMounted(() => {
     const hash = window.location.hash;
     if (hash.startsWith('#activity-')) {
@@ -50,13 +64,6 @@ onMounted(() => {
         }
     }
 });
-function goToActivity(activity: { id: number; type: string }) {
-    if (activity.type === 'essay') {
-        router.get(`/activities/${activity.id}/essay`);
-    } else {
-        router.get(`/student/quiz/${activity.id}`);
-    }
-}
 </script>
 
 <template>
@@ -72,7 +79,7 @@ function goToActivity(activity: { id: number; type: string }) {
                 :key="module.id"
                 class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow hover:shadow-md"
             >
-                <div class="cursor-pointer bg-gradient-to-r from-sky-100 to-indigo-100 px-6 py-4" @click="toggleModule(module.id)">
+                <div class="bg-gradient-to-r from-sky-100 to-indigo-100 px-6 py-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2 font-semibold text-gray-800">
                             <Package class="h-5 w-5 text-indigo-600" />
@@ -85,32 +92,58 @@ function goToActivity(activity: { id: number; type: string }) {
                     </div>
                 </div>
 
-                <transition name="fade">
-                    <div v-if="openModuleId === module.id" class="space-y-6 bg-white px-6 py-5">
-                        <div v-if="module.materials.length" class="border-b border-gray-200 pb-4">
-                            <h3 class="flex items-center gap-2 text-base font-bold text-gray-800">
-                                <FileText class="h-5 w-5 text-sky-500" />
-                                Materials
-                            </h3>
-                            <ul class="mt-4 space-y-3">
-                                <li
-                                    v-for="material in module.materials"
-                                    :key="material.id"
-                                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm"
-                                >
-                                    <div class="text-sm font-medium text-indigo-700">
-                                        <a :href="`/storage/${material.file_path}`" target="_blank" class="hover:underline">
-                                            {{ material.title }}
-                                        </a>
-                                    </div>
-                                    <div v-if="material.description" class="mt-1 text-xs text-gray-600">
-                                        {{ material.description }}
-                                    </div>
-                                    <div class="mt-1 text-xs text-gray-500">Uploaded by: {{ material.uploaded_by }}</div>
-                                </li>
-                            </ul>
-                        </div>
+                <div class="cursor-pointer bg-white px-6 py-3 hover:bg-gray-50" @click="toggleMaterials(module.id)">
+                    <h3 class="flex items-center gap-2 text-base font-bold text-sky-700">
+                        <FileText class="h-5 w-5" />
+                        Materials
+                    </h3>
+                </div>
 
+                <transition name="fade">
+                    <div v-if="openMaterials.has(module.id)" class="space-y-3 bg-white px-6 pb-4">
+                        <ul class="space-y-3">
+                            <li
+                                v-for="material in module.materials"
+                                :key="material.id"
+                                class="rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm"
+                            >
+                                <div class="text-sm font-medium text-indigo-700">
+                                    <a v-if="material.file_path" :href="`/storage/${material.file_path}`" target="_blank" class="hover:underline">
+                                        {{ material.title }}
+                                    </a>
+                                    <span v-else>{{ material.title }}</span>
+                                </div>
+
+                                <div v-if="material.description" class="mt-1 text-xs text-gray-600">
+                                    {{ material.description }}
+                                </div>
+
+                                <div v-if="material.video_path" class="mt-3">
+                                    <video class="w-full max-w-md rounded-lg border" controls :src="`/storage/${material.video_path}`" />
+                                </div>
+
+                                <div v-else-if="material.video_link" class="mt-3">
+                                    <a :href="material.video_link" target="_blank" class="text-sm text-blue-600 underline hover:text-blue-800">
+                                        ▶ Watch Video
+                                    </a>
+                                </div>
+
+                                <div class="mt-1 text-xs text-gray-500">Uploaded by: {{ material.uploaded_by }}</div>
+                            </li>
+                        </ul>
+                        <div v-if="module.materials.length === 0" class="mt-2 text-sm text-gray-500 italic">No materials available.</div>
+                    </div>
+                </transition>
+
+                <div class="cursor-pointer bg-white px-6 py-3 hover:bg-gray-50" @click="toggleActivities(module.id)">
+                    <h3 class="flex items-center gap-2 text-base font-bold text-violet-700">
+                        <ListVideo class="h-5 w-5" />
+                        Activities
+                    </h3>
+                </div>
+
+                <transition name="fade">
+                    <div v-if="openActivities.has(module.id)" class="space-y-3 bg-white px-6 pb-6">
                         <div
                             v-for="activity in module.activities"
                             :key="activity.id"
@@ -124,7 +157,9 @@ function goToActivity(activity: { id: number; type: string }) {
                         >
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <div class="font-semibold text-gray-800">{{ activity.title }}</div>
+                                    <div class="font-semibold text-gray-800">
+                                        {{ activity.title }}
+                                    </div>
                                     <div class="flex items-center gap-1 text-sm text-gray-500">
                                         <Clock class="h-4 w-4 text-sky-500" />
                                         <span>{{ activity.type }} • {{ activity.scheduled_at }}</span>

@@ -85,6 +85,8 @@ class StudentSubjectController extends Controller
                     'title' => $mat->title,
                     'description' => $mat->description,
                     'file_path' => $mat->file_path,
+                    'video_path' => $mat->video_path,
+                    'video_link' => $mat->video_link,
                     'uploaded_by' => $mat->user->name ?? 'Unknown',
                 ]),
                 'activities' => $activityData,
