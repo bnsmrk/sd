@@ -161,9 +161,12 @@ Route::middleware('role:admin,ict')->group(function () {
 Route::middleware('role:principal,head')->group(function () {
     Route::resource('proficiency-result', StudentsProficiencyResult::class);
 });
+
 // head routes
 Route::middleware('role:head')->group(function () {
     Route::resource('proficiency-test', ProficiencyTestController::class);
+    Route::get('/proficiency-test/{proficiencyTest}/download/pdf', [ProficiencyQuestionController::class, 'downloadPdf']);
+    Route::get('/proficiency-test/{proficiencyTest}/download/csv', [ProficiencyQuestionController::class, 'downloadCsv']);
 
 });
 

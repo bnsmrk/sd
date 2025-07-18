@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\ProficiencyTest;
 use App\Models\ProficiencyQuestion;
 use Illuminate\Support\Facades\Validator;
-
+use Barryvdh\DomPDF\Facade\Pdf;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 class ProficiencyQuestionController extends Controller
 {
     public function create(ProficiencyTest $proficiencyTest)
@@ -86,4 +87,46 @@ class ProficiencyQuestionController extends Controller
 
         return redirect()->route('proficiency-test.index')->with('success', 'Questions updated successfully.');
     }
+
+    public function downloadPdf(ProficiencyTest $proficiencyTest)
+    {
+        $questions = $proficiencyTest->proficiencyQuestions;
+
+        $pdf = Pdf::loadView('pdf.proficiency-questions', [
+            'activity' => $proficiencyTest,
+            'questions' => $questions,
+        ]);
+
+        return $pdf->download("proficiency_test_{$proficiencyTest->id}_questions.pdf");
+    }
+    public function downloadCsv(ProficiencyTest $proficiencyTest): StreamedResponse
+{
+    $filename = "proficiency_test_{$proficiencyTest->id}_questions.csv";
+
+    $questions = $proficiencyTest->proficiencyQuestions;
+
+    $headers = [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => "attachment; filename=\"$filename\"",
+    ];
+
+    $columns = ['Question #', 'Type', 'Question', 'Choices', 'Answer Key'];
+
+    return response()->stream(function () use ($questions, $columns) {
+        $handle = fopen('php://output', 'w');
+        fputcsv($handle, $columns);
+
+        foreach ($questions as $i => $q) {
+            fputcsv($handle, [
+                $i + 1,
+                ucfirst(str_replace('_', ' ', $q->type)),
+                $q->question,
+                $q->options ? implode(', ', json_decode($q->options, true)) : '',
+                $q->answer_key ? (is_array(json_decode($q->answer_key)) ? implode(', ', json_decode($q->answer_key)) : $q->answer_key) : 'N/A',
+            ]);
+        }
+
+        fclose($handle);
+    }, 200, $headers);
+}
 }

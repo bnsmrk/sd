@@ -136,7 +136,7 @@ function submit() {
                 <div class="flex gap-2">
                     <a
                         :href="`/activities/${props.activity.id}/questions/download/pdf`"
-                        class="inline-flex items-center gap-2 rounded border border-[#ff69b4] bg-white px-4 py-2 text-sm font-semibold text-[#ff69b4] shadow hover:bg-[#ffe4f1]"
+                        class="inline-flex items-center gap-2 rounded border border-pink-600 bg-pink-500 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-600"
                     >
                         <FileText class="h-4 w-4" />
                         Download PDF
@@ -144,7 +144,7 @@ function submit() {
 
                     <a
                         :href="`/activities/${props.activity.id}/questions/download/csv`"
-                        class="inline-flex items-center gap-2 rounded border border-[#ffc60b] bg-white px-4 py-2 text-sm font-semibold text-[#ffc60b] shadow hover:bg-[#fff4d1]"
+                        class="inline-flex items-center gap-2 rounded border border-green-600 bg-green-500 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600"
                     >
                         <FileText class="h-4 w-4" />
                         Download CSV
