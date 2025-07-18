@@ -13,37 +13,44 @@ class ClassListController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $userId = Auth::id();
+     public function index(Request $request)
+     {
+         $userId = Auth::id();
 
-        $assignments = TeacherAssignment::where('user_id', $userId)->get();
-        $sectionIds = $assignments->pluck('section_id')->unique()->filter()->toArray();
+         $assignments = TeacherAssignment::with('subject')->where('user_id', $userId)->get();
 
-        $studentsQuery = Student::with(['user', 'section', 'yearLevel'])
-            ->whereIn('section_id', $sectionIds);
+         $sectionIds = $assignments->pluck('section_id')->unique()->filter()->values();
 
-        if ($request->filled('search')) {
-            $studentsQuery->whereHas('user', function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->search . '%');
-            });
-        }
+         $subjectsBySection = $assignments->groupBy('section_id')->map(function ($assignments) {
+             return $assignments->pluck('subject.name')->unique()->values();
+         });
 
-        $students = $studentsQuery->paginate(10)->through(function ($s) {
-            return [
-                'id' => $s->id,
-                'name' => $s->user?->name,
-                'year_level' => $s->yearLevel?->name,
-                'section' => $s->section?->name,
-            ];
-        });
+         $studentsQuery = Student::with(['user', 'section', 'yearLevel'])
+             ->whereIn('section_id', $sectionIds);
 
+         if ($request->filled('search')) {
+             $studentsQuery->whereHas('user', function ($query) use ($request) {
+                 $query->where('name', 'like', '%' . $request->search . '%');
+             });
+         }
 
-        return Inertia::render('TeacherAssignments/ClassList', [
-            'students' => $students,
-            'filters' => $request->only('search'),
-        ]);
-    }
+         $students = $studentsQuery->paginate(10)->through(function ($s) use ($subjectsBySection) {
+             $subjects = $subjectsBySection[$s->section_id] ?? collect();
+             return [
+                 'id' => $s->id,
+                 'name' => $s->user?->name ?? 'Unnamed',
+                 'year_level' => $s->yearLevel?->name ?? '-',
+                 'section' => $s->section?->name ?? '-',
+                 'subjects' => $subjects->all(),
+             ];
+         });
+
+         return Inertia::render('TeacherAssignments/ClassList', [
+             'students' => $students,
+             'filters' => $request->only('search'),
+         ]);
+     }
+
 
 
     /**

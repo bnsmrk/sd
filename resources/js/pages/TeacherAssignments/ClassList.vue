@@ -11,6 +11,7 @@ const props = defineProps<{
             name: string;
             section: string | null;
             year_level: string | null;
+            subjects: string[];
         }[];
         links: {
             url: string | null;
@@ -80,6 +81,7 @@ const sortedStudents = computed(() => {
                             <th @click="toggleSort('section')" class="cursor-pointer px-4 py-3 text-left">
                                 Section <span v-if="sortKey === 'section'">{{ sortAsc ? '↑' : '↓' }}</span>
                             </th>
+                            <th class="px-4 py-3 text-left">Subjects</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#01006c]">
@@ -87,9 +89,13 @@ const sortedStudents = computed(() => {
                             <td class="px-4 py-2 text-[#01006c]">{{ student.name }}</td>
                             <td class="px-4 py-2 text-[#01006c]">{{ student.year_level }}</td>
                             <td class="px-4 py-2 text-[#01006c]">{{ student.section }}</td>
+                            <td class="px-4 py-2 text-[#01006c]">
+                                <span v-if="student.subjects.length">{{ student.subjects.join(', ') }}</span>
+                                <span v-else class="text-gray-400 italic">None</span>
+                            </td>
                         </tr>
                         <tr v-if="!sortedStudents.length">
-                            <td colspan="3" class="px-4 py-4 text-center text-gray-500">No students found.</td>
+                            <td colspan="4" class="px-4 py-4 text-center text-gray-500">No students found.</td>
                         </tr>
                     </tbody>
                 </table>
