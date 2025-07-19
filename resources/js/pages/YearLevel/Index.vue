@@ -151,7 +151,7 @@ const sortedYearLevels = computed(() => {
 
         <div class="p-6">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h1 class="text-xl font-bold text-[#01006c]">👥 Users</h1>
+                <h1 class="text-xl font-bold text-[#01006c]">👥 Year Level</h1>
                 <div class="flex flex-wrap items-center gap-2">
                     <input
                         v-model="search"
