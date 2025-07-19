@@ -20,6 +20,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ClassListController;
 use App\Http\Controllers\YearLevelController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StudentSubjectController;
@@ -45,15 +46,10 @@ Route::get('dashboard', [AdminDashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/notifications', function () {
-        return response()->json(Auth::user()->notifications);
-    });
-
-    Route::post('/notifications/mark-as-read', function () {
-        Auth::user()->unreadNotifications->markAsRead();
-        return response()->json(['status' => 'ok']);
-    });
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
 });
+
 
 Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:teacher'])
@@ -81,8 +77,8 @@ Route::get('/head-dashboard', [HeadDashboard::class, 'index'])
     ->name('head.dashboard');
 
 Route::get('/head-dashboard/teachers/{user}', [HeadDashboard::class, 'show'])
-->middleware(['auth', 'verified', 'role:head'])
-->name('head.teachers.show');
+    ->middleware(['auth', 'verified', 'role:head'])
+    ->name('head.teachers.show');
 
 Route::get('/proficiency-test/{proficiencyTest}/questions/create', [ProficiencyQuestionController::class, 'create'])->name('proficiency-questions.create');
 Route::post('/proficiency-test/{proficiencyTest}/questions', [ProficiencyQuestionController::class, 'store'])->name('proficiency-questions.store');
@@ -167,7 +163,6 @@ Route::middleware('role:head')->group(function () {
     Route::resource('proficiency-test', ProficiencyTestController::class);
     Route::get('/proficiency-test/{proficiencyTest}/download/pdf', [ProficiencyQuestionController::class, 'downloadPdf']);
     Route::get('/proficiency-test/{proficiencyTest}/download/csv', [ProficiencyQuestionController::class, 'downloadCsv']);
-
 });
 
 

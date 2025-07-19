@@ -187,55 +187,54 @@ class MaterialController extends Controller
 
 
     public function update(Request $request, Material $material)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string|max:1000',
-        'type' => 'required|in:material,lesson_plan',
-        'year_level_id' => 'required|exists:year_levels,id',
-        'subject_id' => 'required|exists:subjects,id',
-        'section_id' => 'nullable|exists:sections,id',
-        'module_id' => 'nullable|exists:modules,id',
-        'video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:51200',
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'type' => 'required|in:material,lesson_plan',
+            'year_level_id' => 'required|exists:year_levels,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'section_id' => 'nullable|exists:sections,id',
+            'module_id' => 'nullable|exists:modules,id',
+            'video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:51200',
+            'video_link' => 'nullable|url|max:255',
+        ]);
 
-        'video_link' => 'nullable|url|max:255',
-    ]);
+        $user = Auth::user();
 
-    $user = Auth::user();
+        $authorized = $user->teacherAssignments()
+            ->where('year_level_id', $request->year_level_id)
+            ->where('subject_id', $request->subject_id)
+            ->exists();
 
-    $authorized = $user->teacherAssignments()
-        ->where('year_level_id', $request->year_level_id)
-        ->where('subject_id', $request->subject_id)
-        ->exists();
+        if (!$authorized) {
+            abort(403, 'Unauthorized to update this material.');
+        }
 
-    if (!$authorized) {
-        abort(403, 'Unauthorized to update this material.');
+        $material->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'type' => $request->type,
+            'year_level_id' => $request->year_level_id,
+            'subject_id' => $request->subject_id,
+            'section_id' => $request->section_id,
+            'module_id' => $request->module_id,
+        ]);
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('materials', 'public');
+            $material->update(['file_path' => $path]);
+        }
+
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->store('materials/videos', 'public');
+            $material->update(['video_path' => $videoPath]);
+        }
+
+        $material->update(['video_link' => $request->video_link]);
+
+        return redirect()->route('materials.index')->with('success', 'Material updated.');
     }
-
-    $material->update([
-        'title' => $request->title,
-        'description' => $request->description,
-        'type' => $request->type,
-        'year_level_id' => $request->year_level_id,
-        'subject_id' => $request->subject_id,
-        'section_id' => $request->section_id,
-        'module_id' => $request->module_id,
-    ]);
-
-    if ($request->hasFile('file')) {
-        $path = $request->file('file')->store('materials', 'public');
-        $material->update(['file_path' => $path]);
-    }
-
-    if ($request->hasFile('video')) {
-        $videoPath = $request->file('video')->store('materials/videos', 'public');
-        $material->update(['video_path' => $videoPath]);
-    }
-
-    $material->update(['video_link' => $request->video_link]);
-
-    return redirect()->route('materials.index')->with('success', 'Material updated.');
-}
 
 
 
