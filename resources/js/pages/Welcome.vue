@@ -2,7 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, ref } from 'vue';
 
-const images = ['/images/1.jpg', '/images/3.jpg', '/images/4.jpg', '/images/2.jpg'];
+const images = ['/images/1.jpg', '/images/2.jpg', '/images/3.jpg', '/images/4.jpg'];
 
 const current = ref(0);
 const currentImage = ref(images[0]);
