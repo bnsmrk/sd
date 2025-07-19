@@ -83,7 +83,7 @@ class MaterialController extends Controller
             'module_id' => $request->type === 'material' ? 'required|exists:modules,id' : 'nullable',
             'subject_id' => $request->type === 'lesson_plan' ? 'required|exists:subjects,id' : 'nullable',
             'section_id' => 'nullable|exists:sections,id',
-            'video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:20480',
+            'video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:51200',
 
             'video_link' => 'nullable|url|max:255',
         ]);
@@ -195,7 +195,9 @@ class MaterialController extends Controller
         'year_level_id' => 'required|exists:year_levels,id',
         'subject_id' => 'required|exists:subjects,id',
         'section_id' => 'nullable|exists:sections,id',
-        'module_id' => 'nullable|exists:modules,id','video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:20480','video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:51200',
+        'module_id' => 'nullable|exists:modules,id',
+        'video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:51200',
+
         'video_link' => 'nullable|url|max:255',
     ]);
 

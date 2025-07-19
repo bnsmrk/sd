@@ -53,7 +53,6 @@ const selectedSectionId = ref<number | null>(null);
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
 const filteredSections = computed(() => {
     const ylId = selectedType.value === 'material' ? selectedModule.value?.year_level.id : selectedYearLevelId.value;
-
     return props.sections.filter((s) => s.year_level_id === ylId);
 });
 const filteredSubjects = computed(() => {
@@ -70,6 +69,28 @@ const form = useForm({
     video: null as File | null,
     video_link: '',
 });
+
+const videoError = ref('');
+
+function validateVideoFile(file: File | null): string | null {
+    if (!file) return null;
+    const maxSizeMB = 50;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+        return `Video must be less than ${maxSizeMB}MB`;
+    }
+    const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/x-matroska', 'video/mkv'];
+    if (!validTypes.includes(file.type)) {
+        return 'Invalid video format. Only MP4, WEBM, OGG, and MKV are allowed.';
+    }
+    return null;
+}
+
+function handleVideoChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0] ?? null;
+    form.video = file;
+    videoError.value = validateVideoFile(file) || '';
+}
 
 watch(selectedType, (newType) => {
     form.type = newType;
@@ -90,6 +111,11 @@ watch(selectedModuleId, (newModuleId) => {
 function submitForm() {
     if (!form.title || !form.file) {
         alert('Title and file are required.');
+        return;
+    }
+
+    if (videoError.value) {
+        alert(videoError.value);
         return;
     }
 
@@ -127,7 +153,6 @@ function submitForm() {
             form.file = null;
             form.video = null;
             form.video_link = '';
-
             selectedModuleId.value = null;
             selectedSectionId.value = null;
             selectedSubjectId.value = null;
@@ -286,9 +311,12 @@ function submitForm() {
                 <input
                     type="file"
                     accept="video/*"
-                    @change="(e) => (form.video = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
+                    @change="handleVideoChange"
                     class="w-full rounded border border-[#01006c] p-2 text-[#ff69b4] file:mr-4 file:border-0 file:bg-[#ffc60b]/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#01006c] hover:file:bg-[#ffc60b]/40 focus:border-[#ffc60b] focus:outline-none"
                 />
+                <div v-if="videoError || form.errors.video" class="text-sm text-red-600">
+                    {{ videoError || form.errors.video }}
+                </div>
             </div>
 
             <div>
