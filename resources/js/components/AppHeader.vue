@@ -2,7 +2,7 @@
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
-import { Bell, LayoutDashboard, ClipboardCheck, Menu } from 'lucide-vue-next';
+import { Bell, ClipboardCheck, LayoutDashboard, Menu } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 import AppLogo from '@/components/AppLogo.vue';
@@ -161,7 +161,7 @@ onMounted(fetchNotifications);
                                         class="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
                                         @click="
                                             () => {
-                                                console.log('Navigating to:', n.data.url); // ✅ DEBUG
+                                                console.log('Navigating to:', n.data.url);
                                                 markAsRead(n.id);
                                                 router.visit(n.data.url);
                                             }
