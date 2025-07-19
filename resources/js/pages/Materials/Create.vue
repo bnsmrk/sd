@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { ArrowLeft, FileUp } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
+
+const page = usePage();
+const errors = computed(() => page.props.value.errors || {});
 
 const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
 const isCreating = ref(false);
@@ -296,6 +299,7 @@ function submitForm() {
                     placeholder="https://youtube.com/... or https://zoom.us/..."
                     class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                 />
+                <div v-if="form.errors.video_link" class="text-sm text-red-600">{{ form.errors.video_link }}</div>
             </div>
 
             <div>
