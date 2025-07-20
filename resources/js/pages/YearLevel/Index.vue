@@ -136,12 +136,9 @@ const sortedYearLevels = computed(() => {
             <div class="flex flex-col items-center gap-4">
                 <div class="relative h-16 w-16">
                     <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
-
                     <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
-
                     <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
                 </div>
-
                 <div class="text-center">
                     <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
                     <span class="text-xs text-[#01006c]/70">This may take a moment</span>
@@ -151,48 +148,47 @@ const sortedYearLevels = computed(() => {
 
         <div class="p-6">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h1 class="text-xl font-bold text-[#01006c]">👥 Year Level</h1>
+                <h1 class="text-xl font-bold text-pink-500">Year Level</h1>
                 <div class="flex flex-wrap items-center gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search..."
-                        class="rounded border border-[#01006c] px-3 py-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-pink-500 focus:outline-none"
                     />
-                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white hover:bg-[#0d1282]">
+                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white hover:bg-pink-600">
                         <UserPlus class="h-4 w-4" /> + Add Year Level
                     </button>
                 </div>
             </div>
 
-            <div class="overflow-hidden rounded-lg border border-[#01006c] shadow">
-                <table class="min-w-full divide-y divide-[#01006c]">
-                    <thead class="bg-[#01006c] text-xs font-semibold text-white">
+            <div class="overflow-hidden rounded-2xl border border-pink-200 shadow-md">
+                <table class="min-w-full divide-y divide-pink-100">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-800">
                         <tr>
-                            <th @click="toggleSort('id')" class="cursor-pointer px-6 py-3 text-center">
-                                ID <span v-if="sortKey === 'id'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            <th @click="toggleSort('id')" class="cursor-pointer px-6 py-3 text-center tracking-wide">
+                                ID <span v-if="sortKey === 'id'" class="text-yellow-500">{{ sortAsc ? '↑' : '↓' }}</span>
                             </th>
-                            <th @click="toggleSort('name')" class="cursor-pointer px-6 py-3 text-left">
-                                Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
+                            <th @click="toggleSort('name')" class="cursor-pointer px-6 py-3 text-left tracking-wide">
+                                Name <span v-if="sortKey === 'name'" class="text-yellow-500">{{ sortAsc ? '↑' : '↓' }}</span>
                             </th>
-                            <th class="px-6 py-3 text-center">Actions</th>
+                            <th class="px-6 py-3 text-center tracking-wide">Actions</th>
                         </tr>
                     </thead>
-
-                    <tbody class="divide-y divide-[#01006c] bg-white text-sm">
-                        <tr v-for="level in sortedYearLevels" :key="level.id" class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-center font-medium text-[#01006c]">{{ level.id }}</td>
-                            <td class="px-6 py-4 text-left text-[#01006c]">{{ level.name }}</td>
+                    <tbody class="divide-y divide-pink-100 bg-white text-sm">
+                        <tr v-for="level in sortedYearLevels" :key="level.id" class="transition-colors hover:bg-pink-50">
+                            <td class="px-6 py-4 text-center font-medium text-pink-800">{{ level.id }}</td>
+                            <td class="px-6 py-4 text-left text-pink-800">{{ level.name }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
                                 <button
                                     @click="openEditModal(level)"
-                                    class="inline-flex items-center gap-1 text-[#01006c] transition hover:text-[#ff69b4]"
+                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
                                 >
                                     <Pencil class="h-4 w-4" /> Edit
                                 </button>
                                 <button
                                     @click="openDeleteModal(level.id)"
-                                    class="inline-flex items-center gap-1 text-red-600 transition hover:text-red-800"
+                                    class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
                                 >
                                     <Trash2 class="h-4 w-4" /> Delete
                                 </button>
@@ -210,8 +206,8 @@ const sortedYearLevels = computed(() => {
                         :href="link.url"
                         class="inline-flex items-center justify-center rounded-md border px-3 py-1 text-sm transition"
                         :class="{
-                            'border-blue-600 bg-blue-600 text-white': link.active,
-                            'border-gray-300 text-gray-700 hover:bg-gray-100': !link.active,
+                            'border-pink-500 bg-pink-500 text-white': link.active,
+                            'border-pink-200 text-pink-800 hover:bg-pink-100': !link.active,
                         }"
                     >
                         <span v-html="link.label" />
@@ -221,16 +217,16 @@ const sortedYearLevels = computed(() => {
         </div>
 
         <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
-                <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">➕ Add Year Level</h3>
+            <div class="w-full max-w-md rounded-2xl border-2 border-pink-300 bg-white p-6 shadow-xl">
+                <h3 class="mb-4 text-xl font-bold text-pink-600">➕ Add Year Level</h3>
                 <form @submit.prevent="createYearLevel" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-[#01006c]">Name</label>
+                        <label class="block text-sm font-semibold text-pink-700">Name</label>
                         <input
                             v-model="createForm.name"
                             type="text"
                             placeholder="e.g. Grade 7"
-                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded-lg border-2 border-pink-200 px-3 py-2 text-pink-800 focus:border-yellow-400 focus:outline-none"
                         />
                         <div v-if="createForm.errors.name" class="text-sm text-red-600">
                             {{ createForm.errors.name }}
@@ -240,13 +236,13 @@ const sortedYearLevels = computed(() => {
                         <button
                             type="button"
                             @click="showAddModal = false"
-                            class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                            class="inline-flex items-center gap-1 rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
                         >
                             <X class="h-4 w-4" /> Cancel
                         </button>
                         <button
                             type="submit"
-                            class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                            class="inline-flex items-center gap-1 rounded-md bg-pink-500 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-600"
                         >
                             <Save class="h-4 w-4" /> Save
                         </button>
@@ -256,15 +252,15 @@ const sortedYearLevels = computed(() => {
         </div>
 
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
-                <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">✏️ Edit Year Level</h3>
+            <div class="w-full max-w-md rounded-2xl border-2 border-pink-300 bg-white p-6 shadow-xl">
+                <h3 class="mb-4 text-xl font-bold text-pink-600">✏️ Edit Year Level</h3>
                 <form @submit.prevent="updateYearLevel" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-[#01006c]">Name</label>
+                        <label class="block text-sm font-semibold text-pink-700">Name</label>
                         <input
                             v-model="editForm.name"
                             type="text"
-                            class="w-full rounded-lg border-2 border-[#01006c] px-3 py-2 text-[#01006c] focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded-lg border-2 border-pink-200 px-3 py-2 text-pink-800 focus:border-yellow-400 focus:outline-none"
                         />
                         <div v-if="editForm.errors.name" class="text-sm text-red-600">
                             {{ editForm.errors.name }}
@@ -274,13 +270,13 @@ const sortedYearLevels = computed(() => {
                         <button
                             type="button"
                             @click="showEditModal = false"
-                            class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                            class="inline-flex items-center gap-1 rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
                         >
                             <X class="h-4 w-4" /> Cancel
                         </button>
                         <button
                             type="submit"
-                            class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                            class="inline-flex items-center gap-1 rounded-md bg-pink-500 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-600"
                         >
                             <Check class="h-4 w-4" /> Update
                         </button>
@@ -290,19 +286,19 @@ const sortedYearLevels = computed(() => {
         </div>
 
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-            <div class="w-full max-w-md rounded-2xl border-2 border-[#ff69b4] bg-white p-6 shadow-xl">
-                <h3 class="mb-4 text-xl font-bold text-[#ff69b4]">⚠️ Confirm Deletion</h3>
+            <div class="w-full max-w-md rounded-2xl border-2 border-pink-300 bg-white p-6 shadow-xl">
+                <h3 class="mb-4 text-xl font-bold text-pink-600">⚠️ Confirm Deletion</h3>
                 <p class="mb-6 text-sm text-gray-600">Are you sure you want to delete this year level?</p>
                 <div class="flex justify-end space-x-2 pt-2">
                     <button
                         @click="showDeleteModal = false"
-                        class="inline-flex items-center gap-1 rounded-md bg-[#ffc60b] px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
+                        class="inline-flex items-center gap-1 rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold text-[#01006c] hover:brightness-110"
                     >
                         <X class="h-4 w-4" /> Cancel
                     </button>
                     <button
                         @click="deleteYearLevel"
-                        class="inline-flex items-center gap-1 rounded-md bg-[#ff69b4] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e858a1]"
+                        class="inline-flex items-center gap-1 rounded-md bg-pink-500 px-4 py-2 text-sm font-semibold text-white hover:bg-pink-600"
                     >
                         <Trash2 class="h-4 w-4" /> Delete
                     </button>
@@ -311,6 +307,7 @@ const sortedYearLevels = computed(() => {
         </div>
     </AppLayout>
 </template>
+
 <style scoped>
 @keyframes spin-cw {
     to {
