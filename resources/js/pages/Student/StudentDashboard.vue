@@ -34,12 +34,10 @@ function isTaken(testId: number): boolean {
         <div class="min-h-screen space-y-6 bg-pink-50 px-6 py-8">
             <h1 class="flex items-center gap-2 text-3xl font-bold text-[#01006c]"><Target class="h-6 w-6 text-[#01006c]" /> Student Dashboard</h1>
 
-            <div class="rounded-xl border border-pink-200 bg-white p-6 shadow-md">
+            <div v-if="proficiencyTests.length > 0" class="rounded-xl border border-pink-200 bg-white p-6 shadow-md">
                 <h2 class="mb-4 flex items-center gap-2 text-xl font-semibold text-indigo-800">
                     <FileText class="h-5 w-5 text-indigo-800" /> Proficiency Tests
                 </h2>
-
-                <div v-if="proficiencyTests.length === 0" class="text-sm text-gray-500 italic">No proficiency tests scheduled.</div>
 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <div
@@ -60,7 +58,6 @@ function isTaken(testId: number): boolean {
                                 <p class="flex items-center gap-1 text-sm text-gray-600">
                                     <CalendarDays class="h-4 w-4 text-blue-500" /> {{ test.scheduled_at }}
                                 </p>
-
                                 <p class="mt-1 text-sm text-gray-500 italic" v-if="test.description">{{ test.description }}</p>
                             </div>
 
