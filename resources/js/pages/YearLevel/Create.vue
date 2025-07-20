@@ -1,7 +1,5 @@
 <script setup lang="ts">
-// import AppLayout from '@/layouts/AppLayout.vue';
-import NewLayout from '@/layouts/NewLayout.vue';
-
+import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -15,7 +13,7 @@ const submit = () => {
 
 <template>
     <Head title="Add Year Level" />
-    <NewLayout>
+    <AppLayout>
         <div class="mx-auto max-w-md p-4">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-bold">Add Year Level</h2>
@@ -32,5 +30,5 @@ const submit = () => {
                 <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white">Save</button>
             </form>
         </div>
-    </NewLayout>
+    </AppLayout>
 </template>
