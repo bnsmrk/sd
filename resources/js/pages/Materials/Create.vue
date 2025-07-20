@@ -278,7 +278,7 @@ function submitForm() {
                     class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                 />
             </div>
-            <div>
+            <div v-if="selectedType === 'material'">
                 <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Upload Video (Optional)</label>
                 <input
                     type="file"
@@ -288,7 +288,7 @@ function submitForm() {
                 />
             </div>
 
-            <div>
+            <div v-if="selectedType === 'material'">
                 <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Video/Meeting Link (Optional)</label>
                 <input
                     v-model="form.video_link"
