@@ -43,7 +43,6 @@ const groupedNavItems: Record<string, NavItem[]> = {
 
 const mainNavItems: NavItem[] = [...groupedNavItems.common, ...(role && groupedNavItems[role] ? groupedNavItems[role] : [])];
 
-// 🔔 Notifications
 interface NotificationData {
     id: string;
     data: {
@@ -70,7 +69,7 @@ const markAsRead = async (id: string) => {
     try {
         await axios.post('/notifications/mark-as-read', { id });
         const notif = notifications.value.find((n) => n.id === id);
-        if (notif) notif.read_at = new Date().toISOString(); // update locally
+        if (notif) notif.read_at = new Date().toISOString();
     } catch (err) {
         console.error('Failed to mark notification as read:', err);
     }
@@ -83,7 +82,6 @@ onMounted(fetchNotifications);
     <div>
         <div class="border-b border-sidebar-border/80">
             <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
-                <!-- Mobile -->
                 <div class="lg:hidden">
                     <Sheet>
                         <SheetTrigger :as-child="true">
@@ -114,12 +112,10 @@ onMounted(fetchNotifications);
                     </Sheet>
                 </div>
 
-                <!-- Logo -->
                 <div class="flex items-center gap-x-2">
                     <AppLogo />
                 </div>
 
-                <!-- Desktop Menu -->
                 <div class="hidden h-full lg:flex lg:flex-1">
                     <NavigationMenu class="ml-10 flex h-full items-stretch">
                         <NavigationMenuList class="flex h-full items-stretch space-x-2">
@@ -140,9 +136,7 @@ onMounted(fetchNotifications);
                     </NavigationMenu>
                 </div>
 
-                <!-- Right side: Notifications & Avatar -->
                 <div class="ml-auto flex items-center space-x-2">
-                    <!-- 🔔 Notifications -->
                     <div class="relative flex items-center space-x-1">
                         <DropdownMenu>
                             <DropdownMenuTrigger as-child>
@@ -186,7 +180,6 @@ onMounted(fetchNotifications);
                         </DropdownMenu>
                     </div>
 
-                    <!-- 👤 Avatar -->
                     <DropdownMenu>
                         <DropdownMenuTrigger :as-child="true">
                             <Button
@@ -210,7 +203,6 @@ onMounted(fetchNotifications);
             </div>
         </div>
 
-        <!-- Breadcrumb -->
         <div v-if="props.breadcrumbs.length > 1" class="flex w-full border-b border-sidebar-border/70">
             <div class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
                 <Breadcrumbs :breadcrumbs="breadcrumbs" />

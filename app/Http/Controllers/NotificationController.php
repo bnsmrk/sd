@@ -9,7 +9,34 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        return Auth::user()->notifications;
+        $user = Auth::user();
+
+        $enrollments = $user->enrollments()->get(['year_level_id', 'section_id', 'subject_id']);
+
+        if ($enrollments->isEmpty()) {
+            return collect();
+        }
+
+        $filtered = $user->notifications->filter(function ($notification) use ($enrollments) {
+            $data = $notification->data;
+
+            if (
+                !isset($data['year_level_id']) ||
+                !isset($data['section_id']) ||
+                !isset($data['subject_id'])
+            ) {
+                return false;
+            }
+
+            return $enrollments->contains(function ($enrollment) use ($data) {
+                return
+                    $enrollment->year_level_id == $data['year_level_id'] &&
+                    $enrollment->section_id == $data['section_id'] &&
+                    $enrollment->subject_id == $data['subject_id'];
+            });
+        });
+
+        return $filtered->values();
     }
 
     public function markAsRead(Request $request)

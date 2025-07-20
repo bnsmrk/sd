@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Notifications;
 
 use App\Models\Activity;
@@ -16,9 +15,7 @@ class NewActivityNotification extends Notification
 
     public function __construct(Activity $activity)
     {
-        $this->activity = Activity::find($activity->id);
-        $this->activity = Activity::with('subject')->find($activity->id);
-
+        $this->activity = Activity::with('subject', 'module')->findOrFail($activity->id);
     }
 
     public function via(object $notifiable): array
@@ -28,17 +25,13 @@ class NewActivityNotification extends Notification
 
     public function toDatabase(object $notifiable): DatabaseMessage
     {
-
-
-
         return new DatabaseMessage([
             'title' => 'New Activity: ' . $this->activity->title,
             'body' => 'You have a new ' . $this->activity->type . ' scheduled on ' . $this->activity->scheduled_at->format('M d, Y H:i'),
-            'url' => route('student.subjects.show', ['id' => $this->activity->module->subject_id])
-
+            'url' => route('student.subjects.show', ['id' => $this->activity->module->subject_id]),
+            'year_level_id' => $this->activity->module->year_level_id,
+            'section_id'    => $this->activity->module->section_id,
+            'subject_id'    => $this->activity->module->subject_id,
         ]);
     }
-
-
 }
-

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
- use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\Submission;
@@ -36,7 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(TeacherAssignment::class, 'user_id');
     }
 
-    public function submissions() {
+    public function submissions()
+    {
         return $this->hasMany(Submission::class);
     }
     public function enrollments()
@@ -53,10 +54,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Section::class);
     }
     public function quizResults()
-{
-    return $this->hasMany(StudentQuizResult::class, 'user_id');
-}
-            /**
+    {
+        return $this->hasMany(StudentQuizResult::class, 'user_id');
+    }
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
