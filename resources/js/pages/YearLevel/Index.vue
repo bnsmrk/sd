@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
+// import AppLayout from '@/layouts/AppLayout.vue';
+import NewLayout from '@/layouts/NewLayout.vue';
+
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
 import { Check, Pencil, Save, Trash2, UserPlus, X } from 'lucide-vue-next';
@@ -131,7 +133,7 @@ const sortedYearLevels = computed(() => {
 
 <template>
     <Head title="Year Levels" />
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <NewLayout :breadcrumbs="breadcrumbs">
         <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="flex flex-col items-center gap-4">
                 <div class="relative h-16 w-16">
@@ -309,7 +311,7 @@ const sortedYearLevels = computed(() => {
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </NewLayout>
 </template>
 <style scoped>
 @keyframes spin-cw {

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
+// import AppLayout from '@/layouts/AppLayout.vue';
+import NewLayout from '@/layouts/NewLayout.vue';
+
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
@@ -17,7 +19,7 @@ const submit = () => {
 
 <template>
     <Head title="Edit Year Level" />
-    <AppLayout>
+    <NewLayout>
         <div class="mx-auto max-w-md p-4">
             <div class="mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-bold">Edit Year Level</h2>
@@ -34,5 +36,5 @@ const submit = () => {
                 <button type="submit" class="rounded bg-green-600 px-4 py-2 text-white">Update</button>
             </form>
         </div>
-    </AppLayout>
+    </NewLayout>
 </template>
