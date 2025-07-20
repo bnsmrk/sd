@@ -71,12 +71,12 @@ class SectionController extends Controller
 
         $section->update($validated);
 
-        return redirect()->route('sections.index')->with('success', 'Section updated successfully.');
+        return redirect()->route('sections.index')->with('warning', 'Section updated successfully.');
     }
 
     public function destroy(Section $section)
     {
         $section->delete();
-        return redirect()->route('sections.index')->with('success', 'Section deleted successfully.');
+        return redirect()->route('sections.index')->with('danger', 'Section deleted successfully.');
     }
 }

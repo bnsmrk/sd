@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
 import debounce from 'lodash/debounce';
-import { Pencil, Plus, Trash2 } from 'lucide-vue-next';
+import { Layers, Pencil, Plus, Trash2 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 import { computed } from 'vue';

@@ -170,7 +170,7 @@ class ActivityController extends Controller
 
         $activity->update($validated);
 
-        return redirect()->route('activities.index')->with('success', 'Activity updated.');
+        return redirect()->route('activities.index')->with('warning', 'You have successfully updated the Activity.');
     }
 
 
@@ -183,6 +183,6 @@ class ActivityController extends Controller
 
         $activity->delete();
 
-        return redirect()->route('activities.index')->with('success', 'Activity deleted.');
+        return redirect()->route('activities.index')->with('danger', 'You have successfully deleted an Activity. ');
     }
 }

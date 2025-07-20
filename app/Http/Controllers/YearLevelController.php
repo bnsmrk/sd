@@ -57,7 +57,7 @@ class YearLevelController extends Controller
 
         $yearLevel->update($validated);
 
-        return redirect()->route('year-levels.index')->with('success', 'Year Level updated successfully.');
+        return redirect()->route('year-levels.index')->with('warning', 'Year Level updated successfully.');
     }
 
     public function destroy(YearLevel $yearLevel)

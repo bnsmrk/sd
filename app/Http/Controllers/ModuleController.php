@@ -159,7 +159,7 @@ class ModuleController extends Controller
 
         $module->update($validated);
 
-        return redirect()->route('modules.index')->with('success', 'Module updated successfully.');
+        return redirect()->route('modules.index')->with('warning', 'Module updated successfully.');
     }
 
 
@@ -168,6 +168,6 @@ class ModuleController extends Controller
     public function destroy(Module $module)
     {
         $module->delete();
-        return redirect()->route('modules.index')->with('success', 'Module deleted.');
+        return redirect()->route('modules.index')->with('danger', 'Module deleted.');
     }
 }

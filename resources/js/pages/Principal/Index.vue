@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { BarChart2, BookOpen, ClipboardList, FileText, Layers, LayoutTemplate, Search } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
@@ -110,13 +110,6 @@ watch(
             selectedModule.value = newModules[0].id;
         }
     },
-);
-watch(selectedSection, (newSection) => {
-    console.log('Selected Section: ', newSection);
-});
-console.log(
-    selectedSection.value,
-    props.subjects.map((s) => s.section_id),
 );
 
 const applyFilters = () => {

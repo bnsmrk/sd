@@ -28,6 +28,8 @@ class ProficiencyTestController extends Controller
     {
         return Inertia::render('Head/ProficiencyTestCreate', [
             'yearLevels' => YearLevel::all(),
+            'sections' => Section::all(['id', 'name']),
+            'subjects' => Subject::all(['id', 'name']),
 
         ]);
     }
@@ -82,14 +84,14 @@ class ProficiencyTestController extends Controller
 
         $test->update($validated);
 
-        return redirect()->route('proficiency-test.index')->with('success', 'Test updated.');
+        return redirect()->route('proficiency-test.index')->with('warning', 'Test updated.');
     }
 
     public function destroy(string $id)
     {
         ProficiencyTest::findOrFail($id)->delete();
 
-        return redirect()->route('proficiency-test.index')->with('success', 'Test deleted.');
+        return redirect()->route('proficiency-test.index')->with('danger', 'Test deleted.');
     }
 
     public function submit(Request $request, $testId)

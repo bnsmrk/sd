@@ -87,7 +87,6 @@ class QuizController extends Controller
                 }
             }
 
-            // ✅ Always increment total — even essay
             $total += $points;
 
             StudentAnswer::create([

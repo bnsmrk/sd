@@ -155,7 +155,7 @@ class EnrollStudentController extends Controller
             ]);
         }
 
-        return redirect()->route('enroll.index')->with('success', 'Enrollment updated successfully.');
+        return redirect()->route('enroll.index')->with('warning', 'Enrollment updated successfully.');
     }
 
 
@@ -167,6 +167,6 @@ class EnrollStudentController extends Controller
             ->where('year_level_id', $student->year_level_id)
             ->delete();
 
-        return redirect()->route('enroll.index')->with('success', 'Enrollment deleted.');
+        return redirect()->route('enroll.index')->with('danger', 'Enrollment deleted.');
     }
 }

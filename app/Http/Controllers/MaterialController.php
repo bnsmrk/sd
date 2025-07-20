@@ -233,7 +233,7 @@ class MaterialController extends Controller
 
         $material->update(['video_link' => $request->video_link]);
 
-        return redirect()->route('materials.index')->with('success', 'Material updated.');
+        return redirect()->route('materials.index')->with('warning', 'Material updated.');
     }
 
 
@@ -253,6 +253,6 @@ class MaterialController extends Controller
 
         $material->delete();
 
-        return redirect()->route('materials.index')->with('success', 'Material deleted.');
+        return redirect()->route('materials.index')->with('danger', 'Material deleted.');
     }
 }

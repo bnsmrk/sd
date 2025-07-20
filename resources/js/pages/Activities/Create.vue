@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
-import { ArrowLeft, CalendarClock, ClipboardList, FileText, FileUp, Layers, Tag } from 'lucide-vue-next';
+import { ArrowLeft, CalendarClock, ClipboardList, FileText, FileUp, Layers, Save, Tag } from 'lucide-vue-next';
 
 import { ref } from 'vue';
 

@@ -175,7 +175,7 @@ class SubmissionController extends Controller
         ]);
 
         return redirect()->route('activities.essay.view', $submission->activity_id)
-            ->with('success', 'Score saved.');
+            ->with('warning', 'Score saved.');
     }
 
 

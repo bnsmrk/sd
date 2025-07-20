@@ -128,7 +128,7 @@ class TeacherAssignmentController extends Controller
             'subject_id' => $request->subject_id,
         ]);
 
-        return redirect()->route('teacher-assignments.index')->with('success', 'Assignment updated.');
+        return redirect()->route('teacher-assignments.index')->with('warning', 'Assignment updated.');
     }
 
 
@@ -136,6 +136,6 @@ class TeacherAssignmentController extends Controller
     {
         $teacherAssignment->delete();
 
-        return back()->with('success', 'Assignment deleted.');
+        return back()->with('danger', 'Assignment deleted.');
     }
 }

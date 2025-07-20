@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
-import { Check, Pencil, Save, Trash2, X } from 'lucide-vue-next';
+import { Check, Pencil, Save, Trash2, UserPlus, X } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
 const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
