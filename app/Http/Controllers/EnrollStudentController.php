@@ -115,19 +115,33 @@ class EnrollStudentController extends Controller
             'section_id' => 'required|exists:sections,id',
         ]);
 
+        $currentEnrollmentIds = Student::where('user_id', $enroll->user_id)
+            ->where('year_level_id', $enroll->year_level_id)
+            ->where('section_id', $enroll->section_id)
+            ->pluck('id');
+
         $alreadyEnrolled = Student::where('user_id', $validated['user_id'])
             ->where('year_level_id', $validated['year_level_id'])
-            ->where('id', '!=', $enroll->id)
+            ->where('section_id', $validated['section_id'])
+            ->whereNotIn('id', $currentEnrollmentIds)
             ->exists();
 
         if ($alreadyEnrolled) {
             return back()->withErrors([
-                'year_level_id' => 'Student is already enrolled in the selected year level.',
+                'year_level_id' => 'Student is already enrolled in the selected year level and section.',
             ])->withInput();
         }
 
-        Student::where('user_id', $validated['user_id'])
-            ->where('year_level_id', $validated['year_level_id'])
+        if (
+            $enroll->year_level_id == $validated['year_level_id'] &&
+            $enroll->section_id == $validated['section_id']
+        ) {
+            return redirect()->route('enroll.index')->with('info', 'No changes were made.');
+        }
+
+        Student::where('user_id', $enroll->user_id)
+            ->where('year_level_id', $enroll->year_level_id)
+            ->where('section_id', $enroll->section_id)
             ->delete();
 
         $subjects = Subject::where('year_level_id', $validated['year_level_id'])->get();
@@ -141,7 +155,7 @@ class EnrollStudentController extends Controller
             ]);
         }
 
-        return redirect()->route('enroll.index')->with('success', 'Enrollment updated.');
+        return redirect()->route('enroll.index')->with('success', 'Enrollment updated successfully.');
     }
 
 
