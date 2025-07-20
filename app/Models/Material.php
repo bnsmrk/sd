@@ -15,24 +15,36 @@ class Material extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'file_path',   'type', 'year_level_id', 'section_id', 'subject_id', 'user_id','module_id', 'description',
+        'title',
+        'file_path',
+        'type',
+        'year_level_id',
+        'section_id',
+        'subject_id',
+        'user_id',
+        'module_id',
+        'description',
         'video_path',
         'video_link',
     ];
 
-    public function yearLevel() {
+    public function yearLevel()
+    {
         return $this->belongsTo(YearLevel::class);
     }
 
-    public function section() {
+    public function section()
+    {
         return $this->belongsTo(Section::class);
     }
 
-    public function subject() {
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
     public function module()

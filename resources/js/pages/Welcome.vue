@@ -36,10 +36,13 @@ onUnmounted(() => clearInterval(interval));
                 </Link>
             </template>
             <template v-else>
-                <Link :href="route('login')" class="rounded-sm border border-white/40 px-5 py-1.5 backdrop-blur-sm hover:border-white/70">
+                <Link :href="route('login')" class="rounded-sm border border-white/40 px-5 py-1.5 text-black backdrop-blur-sm hover:border-white/70">
                     Log in
                 </Link>
-                <Link :href="route('register')" class="rounded-sm border border-white/40 px-5 py-1.5 backdrop-blur-sm hover:border-white/70">
+                <Link
+                    :href="route('register')"
+                    class="rounded-sm border border-white/40 px-5 py-1.5 text-black backdrop-blur-sm hover:border-white/70"
+                >
                     Register
                 </Link>
             </template>
@@ -49,7 +52,7 @@ onUnmounted(() => clearInterval(interval));
             <!-- <h1 class="text-2xl font-bold text-white drop-shadow">Welcome to the LMS</h1> -->
         </div>
 
-        <footer class="py-4 text-center text-xs text-white/80 backdrop-blur-sm">
+        <footer class="py-4 text-center text-sm text-black/90 backdrop-blur-sm">
             © {{ new Date().getFullYear() }} Your LMS. All rights reserved.
         </footer>
     </div>
