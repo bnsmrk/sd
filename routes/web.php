@@ -151,6 +151,9 @@ Route::middleware('role:admin,ict')->group(function () {
     Route::resource('subjects', SubjectController::class);
     Route::resource('enroll', EnrollStudentController::class);
     Route::resource('users', UserController::class);
+});
+
+Route::middleware('role:admin,head')->group(function () {
     Route::resource('teacher-assignments', TeacherAssignmentController::class);
 });
 

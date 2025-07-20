@@ -153,6 +153,11 @@ const groupedNavItems: Record<string, NavItem[]> = {
             icon: LayoutDashboardIcon,
         },
         {
+            title: 'Teacher Assign',
+            href: '/teacher-assignments',
+            icon: UserCog,
+        },
+        {
             title: 'Proficiency Test',
             href: '/proficiency-test',
             icon: TestTubesIcon,
