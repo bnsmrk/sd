@@ -120,8 +120,8 @@ const sortedModules = computed(() => {
         </div>
         <div class="space-y-6 p-6">
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
-                    <Layers class="h-6 w-6 text-[#01006c]" />
+                <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-500">
+                    <Layers class="h-6 w-6 text-pink-500" />
                     Module List
                 </h1>
                 <div class="flex flex-wrap items-center gap-2">
@@ -129,11 +129,11 @@ const sortedModules = computed(() => {
                         v-model="search"
                         type="text"
                         placeholder="Search modules..."
-                        class="rounded border border-gray-300 px-3 py-2 text-sm focus:border-[#ffc60b] focus:ring-2 focus:ring-[#ffc60b] focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
                     />
                     <Link
                         href="/modules/create"
-                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-sm font-semibold text-white shadow hover:bg-[#0d1282]"
+                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
                     >
                         <Plus class="h-4 w-4" />
                         Create Module
@@ -141,9 +141,9 @@ const sortedModules = computed(() => {
                 </div>
             </div>
 
-            <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow">
-                <table class="min-w-full text-sm text-gray-700">
-                    <thead class="bg-[#01006c] text-white">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
                         <tr>
                             <th @click="toggleSort('name')" class="cursor-pointer px-6 py-3 text-left">
                                 Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -158,12 +158,8 @@ const sortedModules = computed(() => {
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr
-                            v-for="m in sortedModules"
-                            :key="m.id"
-                            class="border-b transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
-                        >
+                    <tbody class="divide-y divide-pink-100 bg-white">
+                        <tr v-for="m in sortedModules" :key="m.id" class="hover:bg-pink-50">
                             <td class="px-6 py-4">{{ m.name }}</td>
                             <td class="px-6 py-4">{{ m.year_level.name }}</td>
                             <td class="px-6 py-4">{{ m.subject.name }}</td>
@@ -171,13 +167,13 @@ const sortedModules = computed(() => {
                                 <div class="flex justify-center gap-4">
                                     <Link
                                         :href="`/modules/${m.id}/edit`"
-                                        class="inline-flex items-center gap-1 font-medium text-[#01006c] hover:text-[#ffc60b]"
+                                        class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
                                     >
                                         <Pencil class="h-4 w-4" /> Edit
                                     </Link>
                                     <button
                                         @click="confirmDelete(m.id)"
-                                        class="inline-flex items-center gap-1 font-medium text-red-600 hover:underline"
+                                        class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
                                     >
                                         <Trash2 class="h-4 w-4" /> Delete
                                     </button>
@@ -200,8 +196,8 @@ const sortedModules = computed(() => {
                         :href="link.url"
                         class="inline-flex items-center justify-center rounded px-3 py-1 text-sm font-medium transition"
                         :class="{
-                            'bg-[#01006c] text-white hover:bg-[#0d1282]': link.active,
-                            'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100': !link.active,
+                            'border-pink-500 bg-pink-500 text-white': link.active,
+                            'border-pink-200 text-pink-800 hover:bg-pink-100': !link.active,
                         }"
                     >
                         <span v-html="link.label" />

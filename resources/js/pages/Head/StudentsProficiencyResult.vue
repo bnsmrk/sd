@@ -147,9 +147,9 @@ const sortedSections = computed(() => {
         <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="flex flex-col items-center gap-4">
                 <div class="relative h-16 w-16">
-                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-pink-500 border-t-transparent"></div>
-                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-pink-300 border-t-transparent"></div>
-                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-700 border-t-transparent"></div>
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-500 border-t-transparent"></div>
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
                 </div>
                 <div class="text-center">
                     <span class="block animate-pulse text-base font-semibold text-[#ff69b4]">Processing Request...</span>
@@ -213,7 +213,7 @@ const sortedSections = computed(() => {
                         v-if="filtersApplied && props.individuals.length > 0"
                         :href="pdfUrl"
                         target="_blank"
-                        class="mt-4 flex items-center gap-2 rounded bg-pink-700 px-4 py-2 text-sm font-medium text-white shadow hover:bg-pink-800"
+                        class="mt-4 flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-sm font-medium text-white shadow hover:bg-pink-600"
                     >
                         <FileText class="h-4 w-4" /> Download PDF
                     </a>

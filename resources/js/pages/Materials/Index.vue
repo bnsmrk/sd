@@ -148,8 +148,8 @@ const sortedMaterials = computed(() => {
 
         <div class="space-y-6 p-6">
             <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
-                <h1 class="flex items-center gap-2 text-2xl font-bold text-[#01006c]">
-                    <BookOpen class="h-6 w-6 text-[#01006c]" /> My Uploaded Materials
+                <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-500">
+                    <BookOpen class="h-6 w-6 text-pink-500" /> My Uploaded Materials
                 </h1>
 
                 <div class="flex items-center gap-2">
@@ -157,11 +157,11 @@ const sortedMaterials = computed(() => {
                         v-model="search"
                         type="text"
                         placeholder="Search by title..."
-                        class="rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
                     />
                     <button
                         @click="createMaterial"
-                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-sm text-white hover:bg-[#0d1282]"
+                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
                     >
                         <BookOpen class="h-4 w-4" />
                         <span>Upload Material</span>
@@ -169,9 +169,9 @@ const sortedMaterials = computed(() => {
                 </div>
             </div>
 
-            <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
-                <table class="min-w-full table-auto text-left text-sm">
-                    <thead class="bg-[#01006c] text-white">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
                         <tr>
                             <th @click="toggleSort('title')" class="cursor-pointer p-3">
                                 Title <span v-if="sortKey === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -193,10 +193,10 @@ const sortedMaterials = computed(() => {
                         </tr>
                     </thead>
 
-                    <tbody class="text-sm text-gray-700">
+                    <tbody class="divide-y divide-pink-100 bg-white">
                         <template v-for="material in sortedMaterials" :key="material.id">
-                            <tr class="border-t hover:bg-gray-50">
-                                <td class="p-3 align-top text-[#01006c]">{{ material.title }}</td>
+                            <tr class="hover:bg-pink-50">
+                                <td class="p-3 align-top">{{ material.title }}</td>
                                 <td class="p-3 align-top capitalize">{{ material.type.replace('_', ' ') }}</td>
                                 <td class="p-3 align-top">{{ material.year_level.name }}</td>
                                 <td class="p-3 align-top">{{ material.section?.name || '—' }}</td>
@@ -205,7 +205,7 @@ const sortedMaterials = computed(() => {
                                     <a
                                         :href="`/storage/${material.file_path}`"
                                         target="_blank"
-                                        class="inline-flex items-center gap-1 font-medium text-blue-600 hover:text-[#ff69b4]"
+                                        class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
                                     >
                                         <Eye class="h-4 w-4" />
                                         <span>View</span>
@@ -214,14 +214,14 @@ const sortedMaterials = computed(() => {
                                 <td class="p-3 text-center align-top">
                                     <div class="flex justify-center gap-3">
                                         <button
-                                            class="inline-flex items-center gap-1 font-medium text-blue-600 hover:text-[#01006c]"
+                                            class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
                                             @click="editMaterial(material.id)"
                                         >
                                             <Pencil class="h-4 w-4" />
                                             <span>Edit</span>
                                         </button>
                                         <button
-                                            class="inline-flex items-center gap-1 font-medium text-red-600 hover:text-[#a60000]"
+                                            class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
                                             @click="confirmDelete(material.id)"
                                         >
                                             <Trash2 class="h-4 w-4" />
@@ -258,8 +258,8 @@ const sortedMaterials = computed(() => {
                         :href="link.url"
                         class="inline-flex items-center justify-center rounded px-4 py-2 text-sm font-medium transition-all"
                         :class="{
-                            'bg-[#01006c] text-white hover:bg-[#0d1282]': link.active,
-                            'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100': !link.active,
+                            'border-pink-500 bg-pink-500 text-white': link.active,
+                            'border-pink-200 text-pink-800 hover:bg-pink-100': !link.active,
                         }"
                     >
                         <span v-html="link.label" />

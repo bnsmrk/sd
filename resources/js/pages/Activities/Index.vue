@@ -114,17 +114,17 @@ const sortedActivities = computed(() => {
 
         <div class="space-y-4 p-6">
             <div class="mb-4 flex flex-wrap justify-between gap-2 sm:items-center sm:justify-between">
-                <h1 class="text-2xl font-bold text-[#01006c]">Activities</h1>
+                <h1 class="text-2xl font-bold text-pink-500">Activities</h1>
                 <div class="flex w-full justify-end gap-2 sm:w-auto">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search activities..."
-                        class="rounded border border-[#01006c] px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
                     />
                     <Link
                         href="/activities/create"
-                        class="inline-flex items-center gap-2 rounded border border-[#01006c] bg-[#01006c] px-4 py-2 text-sm font-semibold text-white hover:bg-[#ffc60b] hover:text-[#01006c]"
+                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
                     >
                         <PlusCircle class="h-4 w-4" />
                         Create Activity
@@ -132,9 +132,9 @@ const sortedActivities = computed(() => {
                 </div>
             </div>
 
-            <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
-                <table class="min-w-full table-auto text-left text-sm">
-                    <thead class="bg-[#01006c] text-white">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
                         <tr>
                             <th @click="toggleSort('title')" class="cursor-pointer px-6 py-3">
                                 Title <span v-if="sortKey === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -152,12 +152,8 @@ const sortedActivities = computed(() => {
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr
-                            v-for="a in sortedActivities"
-                            :key="a.id"
-                            class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-                        >
+                    <tbody class="divide-y divide-pink-100 bg-white">
+                        <tr v-for="a in sortedActivities" :key="a.id" class="hover:bg-pink-50">
                             <td class="px-6 py-4 font-medium text-[#01006c] dark:text-white">{{ a.title }}</td>
                             <td class="px-6 py-4">
                                 <span
@@ -208,8 +204,8 @@ const sortedActivities = computed(() => {
                         :href="link.url"
                         class="rounded px-3 py-1 text-sm font-medium"
                         :class="{
-                            'bg-[#01006c] text-white': link.active,
-                            'text-gray-700 hover:text-[#ffc60b] hover:underline': !link.active,
+                            'border-pink-500 bg-pink-500 text-white': link.active,
+                            'border-pink-200 text-pink-800 hover:bg-pink-100': !link.active,
                         }"
                     >
                         <span v-html="link.label" />

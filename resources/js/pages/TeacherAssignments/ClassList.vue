@@ -60,18 +60,18 @@ const sortedStudents = computed(() => {
     <AppLayout>
         <div class="p-6">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <h1 class="text-2xl font-bold text-[#01006c]">📚 My Class List</h1>
+                <h1 class="text-2xl font-bold text-pink-500">My Class List</h1>
                 <input
                     v-model="search"
                     type="text"
                     placeholder="Search student name..."
-                    class="rounded border border-[#01006c] px-3 py-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none"
+                    class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
                 />
             </div>
 
-            <div class="overflow-x-auto rounded border border-[#01006c] bg-white shadow">
-                <table class="min-w-full divide-y divide-[#01006c] text-sm">
-                    <thead class="bg-[#01006c] text-white">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
                         <tr>
                             <th @click="toggleSort('name')" class="cursor-pointer px-4 py-3 text-left">
                                 Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -85,12 +85,12 @@ const sortedStudents = computed(() => {
                             <th class="px-4 py-3 text-left">Subjects</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[#01006c]">
-                        <tr v-for="student in sortedStudents" :key="student.id" class="hover:bg-gray-50">
-                            <td class="px-4 py-2 text-[#01006c]">{{ student.name }}</td>
-                            <td class="px-4 py-2 text-[#01006c]">{{ student.year_level }}</td>
-                            <td class="px-4 py-2 text-[#01006c]">{{ student.section }}</td>
-                            <td class="px-4 py-2 text-[#01006c]">
+                    <tbody class="divide-y divide-pink-100 bg-white">
+                        <tr v-for="student in sortedStudents" :key="student.id" class="hover:bg-pink-50">
+                            <td class="px-4 py-2">{{ student.name }}</td>
+                            <td class="px-4 py-2">{{ student.year_level }}</td>
+                            <td class="px-4 py-2">{{ student.section }}</td>
+                            <td class="px-4 py-2">
                                 <span v-if="student.subjects.length">{{ student.subjects.join(', ') }}</span>
                                 <span v-else class="text-gray-400 italic">None</span>
                             </td>
@@ -110,8 +110,8 @@ const sortedStudents = computed(() => {
                         :href="link.url"
                         class="inline-flex items-center justify-center rounded-md border px-3 py-1 text-sm transition"
                         :class="{
-                            'border-blue-600 bg-blue-600 text-white': link.active,
-                            'border-gray-300 text-gray-700 hover:bg-gray-100': !link.active,
+                            'border-pink-500 bg-pink-500 text-white': link.active,
+                            'border-pink-200 text-pink-800 hover:bg-pink-100': !link.active,
                         }"
                     >
                         <span v-html="link.label" />
