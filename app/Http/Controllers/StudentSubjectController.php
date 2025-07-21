@@ -43,12 +43,16 @@ class StudentSubjectController extends Controller
 
         $subject = Subject::with(['modules.activities', 'modules.materials.user'])->findOrFail($id);
 
+        $assignment = \App\Models\TeacherAssignment::with('user')
+            ->where('subject_id', $subject->id)
+            ->first();
+
+        $teacherName = $assignment?->user?->name ?? 'Unknown';
+
         $quizResults = StudentQuizResult::where('user_id', $userId)->get()->keyBy('activity_id');
         $essaySubmissions = Submission::where('user_id', $userId)->get()->keyBy('activity_id');
 
-        $moduleCount = $subject->modules->count();
         $subjectProgress = 0;
-
         $modules = $subject->modules->map(function ($mod) use ($quizResults, $essaySubmissions) {
             $activities = $mod->activities;
             $activityCount = $activities->count();
@@ -93,12 +97,12 @@ class StudentSubjectController extends Controller
             ];
         });
 
-
         return Inertia::render('Student/SubjectDetail', [
             'subject' => [
                 'id' => $subject->id,
                 'name' => $subject->name,
                 'modules' => $modules,
+                'teacher' => $teacherName,
             ],
             'progress' => round($subjectProgress, 2),
         ]);

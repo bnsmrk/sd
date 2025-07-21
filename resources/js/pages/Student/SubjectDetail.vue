@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
 import { router } from '@inertiajs/vue3';
-import { BookOpen, CheckCircle, ChevronDown, Clock, FileText, ListVideo, Package } from 'lucide-vue-next';
+import { BookOpen, CheckCircle, ChevronDown, Clock, FileText, ListVideo, Package, User2 } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 const isAllEmpty = computed(() => {
@@ -11,6 +11,7 @@ const { subject } = defineProps<{
     subject: {
         id: number;
         name: string;
+        teacher: string; // ✅ Add teacher here at top-level
         modules: Array<{
             id: number;
             title: string;
@@ -72,10 +73,20 @@ onMounted(() => {
 <template>
     <AppLayoutStudent>
         <div class="min-h-screen space-y-8 bg-gray-50 px-6 py-8">
-            <h1 class="flex items-center gap-2 text-3xl font-bold text-indigo-800">
-                <BookOpen class="h-6 w-6 text-sky-600" />
-                <span>Subject: {{ subject.name }}</span>
+            <h1 class="flex flex-col gap-4 rounded-xl bg-white px-6 py-5 shadow sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center gap-3 text-2xl font-semibold text-indigo-800 sm:text-3xl">
+                    <BookOpen class="h-8 w-8 text-sky-600" />
+                    <span>Subject: {{ subject.name }}</span>
+                </div>
+
+                <div class="flex items-center gap-2 text-sm text-indigo-700">
+                    <span class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-4 py-1.5 font-medium shadow-sm">
+                        <User2 class="h-4 w-4 text-indigo-600" />
+                        Teacher: {{ subject.teacher }}
+                    </span>
+                </div>
             </h1>
+
             <div v-if="isAllEmpty" class="text-center text-sm text-gray-500 italic">
                 Please wait a moment, your teacher hasn't uploaded any materials or activities yet.
             </div>

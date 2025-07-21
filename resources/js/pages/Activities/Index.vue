@@ -133,8 +133,8 @@ const sortedActivities = computed(() => {
             </div>
 
             <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
-                <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                <table class="min-w-full table-auto text-left text-sm text-pink-500">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-500 uppercase">
                         <tr>
                             <th @click="toggleSort('title')" class="cursor-pointer px-6 py-3">
                                 Title <span v-if="sortKey === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -162,8 +162,8 @@ const sortedActivities = computed(() => {
                                     {{ a.type }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4">{{ a.scheduled_at }}</td>
-                            <td class="px-6 py-4">{{ a.due_date }}</td>
+                            <td class="px-6 py-4 text-[#01006c]">{{ a.scheduled_at }}</td>
+                            <td class="px-6 py-4 text-[#01006c]">{{ a.due_date }}</td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-3">
                                     <Link :href="`/activities/${a.id}/edit`" class="text-[#01006c] hover:text-[#ffc60b]">

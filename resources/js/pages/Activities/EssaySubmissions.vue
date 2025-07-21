@@ -100,9 +100,9 @@ const sortedSubmissions = computed(() => {
                 No students have submitted yet.
             </div>
 
-            <div class="overflow-x-auto rounded-lg border border-[#01006c] bg-white">
-                <table class="min-w-full table-auto text-left text-sm">
-                    <thead class="bg-[#01006c] text-white">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-300">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-300 uppercase">
                         <tr>
                             <th class="cursor-pointer px-6 py-3" @click="toggleSort('student')">
                                 Student <span v-if="sortKey === 'student'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -114,11 +114,11 @@ const sortedSubmissions = computed(() => {
                             <th class="px-6 py-3">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y">
-                        <tr v-for="submission in sortedSubmissions" :key="submission.id" class="hover:bg-gray-50">
-                            <td class="px-6 py-3 font-medium">{{ submission.user.name }}</td>
+                    <tbody class="divide-y divide-pink-100 bg-white">
+                        <tr v-for="submission in sortedSubmissions" :key="submission.id" class="hover:bg-pink-50">
+                            <td class="px-6 py-3 font-medium text-[#01006c]">{{ submission.user.name }}</td>
 
-                            <td class="px-6 py-3">
+                            <td class="px-6 py-3 text-[#01006c]">
                                 <span
                                     v-if="submission.score !== null"
                                     class="inline-flex items-center gap-1 rounded bg-green-100 px-2 py-1 text-green-700"
