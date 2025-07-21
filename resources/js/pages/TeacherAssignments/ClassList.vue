@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
-import { Link } from 'lucide-vue-next';
+
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{

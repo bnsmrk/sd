@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
 import { router } from '@inertiajs/vue3';
-import { BookOpen, CheckCircle, Clock, FileText, ListVideo, Package } from 'lucide-vue-next';
+import { BookOpen, CheckCircle, ChevronDown, Clock, FileText, ListVideo, Package } from 'lucide-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 const isAllEmpty = computed(() => {
@@ -99,9 +99,17 @@ onMounted(() => {
                 </div>
 
                 <div class="cursor-pointer bg-white px-6 py-3 hover:bg-gray-50" @click="toggleMaterials(module.id)">
-                    <h3 class="flex items-center gap-2 text-base font-bold text-sky-700">
-                        <FileText class="h-5 w-5" />
-                        Materials
+                    <h3 class="flex items-center justify-between text-base font-bold text-sky-700">
+                        <span class="flex items-center gap-2">
+                            <FileText class="h-5 w-5" />
+                            Materials
+                        </span>
+                        <ChevronDown
+                            :class="[
+                                'h-5 w-5 text-sky-700 transition-transform duration-300',
+                                openMaterials.has(module.id) ? 'rotate-180' : 'rotate-0',
+                            ]"
+                        />
                     </h3>
                 </div>
 
@@ -142,9 +150,17 @@ onMounted(() => {
                 </transition>
 
                 <div class="cursor-pointer bg-white px-6 py-3 hover:bg-gray-50" @click="toggleActivities(module.id)">
-                    <h3 class="flex items-center gap-2 text-base font-bold text-violet-700">
-                        <ListVideo class="h-5 w-5" />
-                        Activities
+                    <h3 class="flex items-center justify-between text-base font-bold text-violet-700">
+                        <span class="flex items-center gap-2">
+                            <ListVideo class="h-5 w-5" />
+                            Activities
+                        </span>
+                        <ChevronDown
+                            :class="[
+                                'h-5 w-5 text-violet-700 transition-transform duration-300',
+                                openActivities.has(module.id) ? 'rotate-180' : 'rotate-0',
+                            ]"
+                        />
                     </h3>
                 </div>
 
