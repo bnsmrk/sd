@@ -221,26 +221,26 @@ const sortedSubjects = computed(() => {
         </div>
         <div class="p-4">
             <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <h2 class="text-xl font-bold text-[#01006c]">📘 Subjects</h2>
+                <h2 class="text-xl font-bold text-pink-500">Subjects</h2>
                 <div class="flex items-center gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search subject..."
-                        class="w-full rounded border border-[#01006c] p-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none md:w-64"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
                     />
                     <button
                         @click="openCreateModal"
-                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white transition hover:bg-[#0d1282]"
+                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
                     >
                         <Plus class="h-4 w-4" />
                         Add Subject
                     </button>
                 </div>
             </div>
-            <div class="overflow-x-auto rounded-lg border border-[#01006c] shadow">
-                <table class="min-w-full table-auto text-sm text-[#01006c]">
-                    <thead class="bg-[#01006c] text-xs font-semibold text-white uppercase">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
                         <tr>
                             <th @click="toggleSort('name')" class="cursor-pointer px-4 py-2 text-left">
                                 Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -252,21 +252,21 @@ const sortedSubjects = computed(() => {
                         </tr>
                     </thead>
 
-                    <tbody class="divide-y divide-[#01006c] bg-white">
-                        <tr v-for="subject in sortedSubjects" :key="subject.id" class="transition hover:bg-gray-50">
+                    <tbody class="divide-y divide-pink-100 bg-white">
+                        <tr v-for="subject in sortedSubjects" :key="subject.id" class="hover:bg-pink-50">
                             <td class="px-4 py-2">{{ subject.name }}</td>
                             <td class="px-4 py-2">{{ subject.year_level?.name ?? '—' }}</td>
                             <td class="space-x-2 px-4 py-2 text-center">
                                 <button
                                     @click="openEditModal(subject)"
-                                    class="inline-flex items-center gap-1 text-[#01006c] transition hover:text-[#ff69b4]"
+                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
                                 >
                                     <Pencil class="h-4 w-4" />
                                     Edit
                                 </button>
                                 <button
                                     @click="confirmDelete(subject.id)"
-                                    class="inline-flex items-center gap-1 text-red-600 transition hover:text-red-800"
+                                    class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
                                 >
                                     <Trash2 class="h-4 w-4" />
                                     Delete
@@ -285,8 +285,8 @@ const sortedSubjects = computed(() => {
                     :href="link.url"
                     class="inline-flex items-center justify-center rounded-md border px-3 py-1 text-sm transition"
                     :class="{
-                        'border-blue-600 bg-blue-600 text-white': link.active,
-                        'border-gray-300 text-gray-700 hover:bg-gray-100': !link.active,
+                        'border-pink-500 bg-pink-500 text-white': link.active,
+                        'border-pink-200 text-pink-800 hover:bg-pink-100': !link.active,
                     }"
                 >
                     <span v-html="link.label" />

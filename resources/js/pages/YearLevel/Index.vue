@@ -253,7 +253,7 @@ const sortedYearLevels = computed(() => {
 
         <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-pink-300 bg-white p-6 shadow-xl">
-                <h3 class="mb-4 text-xl font-bold text-pink-600">✏️ Edit Year Level</h3>
+                <h3 class="mb-4 text-xl font-bold text-pink-600">Edit Year Level</h3>
                 <form @submit.prevent="updateYearLevel" class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-pink-700">Name</label>
@@ -287,7 +287,7 @@ const sortedYearLevels = computed(() => {
 
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-pink-300 bg-white p-6 shadow-xl">
-                <h3 class="mb-4 text-xl font-bold text-pink-600">⚠️ Confirm Deletion</h3>
+                <h3 class="mb-4 text-xl font-bold text-pink-600">Confirm Deletion</h3>
                 <p class="mb-6 text-sm text-gray-600">Are you sure you want to delete this year level?</p>
                 <div class="flex justify-end space-x-2 pt-2">
                     <button

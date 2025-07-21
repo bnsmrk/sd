@@ -170,26 +170,26 @@ function sortIcon(key: string) {
 
         <div class="p-4">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h1 class="text-xl font-bold text-[#01006c]">👥 Users</h1>
+                <h1 class="text-xl font-bold text-pink-500">Users</h1>
                 <div class="flex flex-wrap items-center gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search..."
-                        class="rounded border border-[#01006c] px-3 py-2 text-sm shadow-sm focus:border-[#ffc60b] focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
                     />
                     <button
                         @click="openCreateModal"
-                        class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white hover:bg-[#0d1282]"
+                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
                     >
                         <UserPlus class="h-4 w-4" /> Add User
                     </button>
                 </div>
             </div>
 
-            <div class="overflow-hidden rounded-lg border border-gray-200 shadow">
-                <table class="min-w-full divide-y divide-[#01006c] text-sm">
-                    <thead class="bg-[#01006c] text-xs font-semibold text-white">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
                         <tr>
                             <th class="cursor-pointer px-6 py-3 text-left" @click="toggleSort('name')">
                                 Name <span class="ml-1">{{ sortIcon('name') }}</span>
@@ -203,21 +203,24 @@ function sortIcon(key: string) {
                             <th class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[#01006c] bg-white">
-                        <tr v-for="user in sortedUsers" :key="user.id" class="transition hover:bg-gray-50">
+                    <tbody class="divide-y divide-pink-100 bg-white">
+                        <tr v-for="user in sortedUsers" :key="user.id" class="hover:bg-pink-50">
                             <td class="px-6 py-4 text-gray-800">{{ user.name }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ user.email }}</td>
                             <td class="px-6 py-4 text-gray-700 capitalize">{{ user.role }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
                                 <button
                                     @click="openEditModal(user)"
-                                    class="inline-flex items-center gap-1 text-blue-400 hover:underline disabled:opacity-50"
+                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
                                     :disabled="user.role === 'student'"
                                 >
                                     <Pencil class="h-4 w-4" /> Edit
                                 </button>
 
-                                <button @click="confirmDelete(user.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
+                                <button
+                                    @click="confirmDelete(user.id)"
+                                    class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
+                                >
                                     <Trash2 class="h-4 w-4" /> Delete
                                 </button>
                             </td>
@@ -241,8 +244,8 @@ function sortIcon(key: string) {
                         :href="link.url"
                         class="inline-flex items-center justify-center rounded px-3 py-2 text-sm font-medium transition-all"
                         :class="{
-                            'bg-[#01006c] text-white hover:bg-[#0d1282]': link.active,
-                            'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100': !link.active,
+                            'border-pink-500 bg-pink-500 text-white': link.active,
+                            'border-pink-200 text-pink-800 hover:bg-pink-100': !link.active,
                         }"
                     >
                         <span v-html="link.label" />
