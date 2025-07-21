@@ -2,8 +2,11 @@
 import AppLayoutStudent from '@/layouts/AppLayoutStudent.vue';
 import { router } from '@inertiajs/vue3';
 import { BookOpen, CheckCircle, Clock, FileText, ListVideo, Package } from 'lucide-vue-next';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
+const isAllEmpty = computed(() => {
+    return subject.modules.every((module) => module.materials.length === 0 && module.activities.length === 0);
+});
 const { subject } = defineProps<{
     subject: {
         id: number;
@@ -73,6 +76,9 @@ onMounted(() => {
                 <BookOpen class="h-6 w-6 text-sky-600" />
                 <span>Subject: {{ subject.name }}</span>
             </h1>
+            <div v-if="isAllEmpty" class="text-center text-sm text-gray-500 italic">
+                Please wait a moment, your teacher hasn't uploaded any materials or activities yet.
+            </div>
 
             <div
                 v-for="(module, index) in subject.modules"
