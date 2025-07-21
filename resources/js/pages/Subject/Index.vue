@@ -221,17 +221,17 @@ const sortedSubjects = computed(() => {
         </div>
         <div class="p-4">
             <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <h2 class="text-xl font-bold text-pink-500">Subjects</h2>
+                <h2 class="text-xl font-bold text-pink-400">Subjects</h2>
                 <div class="flex items-center gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search subject..."
-                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-400 shadow-sm focus:border-yellow-400 focus:outline-none"
                     />
                     <button
                         @click="openCreateModal"
-                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
+                        class="inline-flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-white transition hover:bg-pink-500"
                     >
                         <Plus class="h-4 w-4" />
                         Add Subject
@@ -239,8 +239,8 @@ const sortedSubjects = computed(() => {
                 </div>
             </div>
             <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
-                <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                <table class="min-w-full table-auto text-left text-sm text-pink-400">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-400 uppercase">
                         <tr>
                             <th @click="toggleSort('name')" class="cursor-pointer px-4 py-2 text-left">
                                 Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -254,22 +254,14 @@ const sortedSubjects = computed(() => {
 
                     <tbody class="divide-y divide-pink-100 bg-white">
                         <tr v-for="subject in sortedSubjects" :key="subject.id" class="hover:bg-pink-50">
-                            <td class="px-4 py-2">{{ subject.name }}</td>
-                            <td class="px-4 py-2">{{ subject.year_level?.name ?? '—' }}</td>
+                            <td class="px-4 py-2 text-[#01006c]">{{ subject.name }}</td>
+                            <td class="px-4 py-2 text-[#01006c]">{{ subject.year_level?.name ?? '—' }}</td>
                             <td class="space-x-2 px-4 py-2 text-center">
-                                <button
-                                    @click="openEditModal(subject)"
-                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
-                                >
+                                <button @click="openEditModal(subject)" class="text-blue-600 hover:text-blue-800">
                                     <Pencil class="h-4 w-4" />
-                                    Edit
                                 </button>
-                                <button
-                                    @click="confirmDelete(subject.id)"
-                                    class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
-                                >
+                                <button @click="confirmDelete(subject.id)" class="text-red-600 hover:text-red-800">
                                     <Trash2 class="h-4 w-4" />
-                                    Delete
                                 </button>
                             </td>
                         </tr>

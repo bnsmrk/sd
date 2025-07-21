@@ -162,20 +162,20 @@ const sortedLessonPlans = computed(() => {
                     <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
                 </div>
                 <div class="text-center">
-                    <span class="block animate-pulse text-base font-semibold text-pink-900">Processing Request...</span>
+                    <span class="block animate-pulse text-base font-semibold text-pink-400">Processing Request...</span>
                     <span class="text-xs text-pink-800/70">This may take a moment</span>
                 </div>
             </div>
         </div>
 
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
-            <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-500"><FileText class="h-6 w-6" /> Teachers Lesson Plans</h1>
+            <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-400"><FileText class="h-6 w-6" /> Teachers Lesson Plans</h1>
 
             <div class="flex flex-wrap items-center gap-4 rounded-lg border border-pink-200 bg-white p-4">
                 <select
                     v-model="selectedYearLevel"
                     @change="selectedSection = null"
-                    class="w-56 rounded border border-pink-500 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none sm:w-64 md:w-72 lg:w-80"
+                    class="w-56 rounded border border-pink-400 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none sm:w-64 md:w-72 lg:w-80"
                 >
                     <option :value="null">Select Year Level</option>
                     <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
@@ -183,7 +183,7 @@ const sortedLessonPlans = computed(() => {
 
                 <select
                     v-model="selectedSection"
-                    class="w-56 rounded border border-pink-500 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none sm:w-64 md:w-72 lg:w-80"
+                    class="w-56 rounded border border-pink-400 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none sm:w-64 md:w-72 lg:w-80"
                 >
                     <option :value="null">Select Section</option>
                     <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -191,15 +191,15 @@ const sortedLessonPlans = computed(() => {
 
                 <button
                     @click="applyFilters"
-                    class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-sm text-white hover:bg-pink-700"
+                    class="inline-flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-sm text-white hover:bg-pink-500"
                 >
                     <Filter class="h-4 w-4" /> Apply Filters
                 </button>
             </div>
 
             <div v-if="filtersApplied && props.lessonPlans.length > 0" class="overflow-x-auto rounded-lg border border-pink-200 shadow">
-                <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                <table class="min-w-full table-auto text-left text-sm text-pink-400">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-400 uppercase">
                         <tr>
                             <th class="cursor-pointer border px-4 py-2" @click="toggleSort('title')">
                                 Title <span v-if="sortKey === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -219,25 +219,25 @@ const sortedLessonPlans = computed(() => {
 
                     <tbody class="divide-y divide-pink-100 bg-white">
                         <tr v-for="plan in sortedLessonPlans" :key="plan.id" class="bg-white hover:bg-pink-50">
-                            <td class="border px-4 py-2 text-pink-900">{{ plan.title }}</td>
-                            <td class="border px-4 py-2 text-pink-900">{{ plan.uploader?.name ?? 'N/A' }}</td>
-                            <td class="border px-4 py-2 text-pink-900">{{ plan.year_level?.name ?? '—' }}</td>
-                            <td class="border px-4 py-2 text-pink-900">{{ plan.section?.name ?? '—' }}</td>
+                            <td class="border px-4 py-2 text-[#01006c]">{{ plan.title }}</td>
+                            <td class="border px-4 py-2 text-[#01006c]">{{ plan.uploader?.name ?? 'N/A' }}</td>
+                            <td class="border px-4 py-2 text-[#01006c]">{{ plan.year_level?.name ?? '—' }}</td>
+                            <td class="border px-4 py-2 text-[#01006c]">{{ plan.section?.name ?? '—' }}</td>
                             <td class="space-y-3 border px-4 py-2">
                                 <a
                                     :href="`/storage/${plan.file_path}`"
                                     target="_blank"
-                                    class="inline-flex items-center gap-1 text-pink-600 hover:text-pink-700"
+                                    class="inline-flex items-center gap-1 text-pink-400 hover:text-pink-500"
                                 >
                                     <FileText class="h-4 w-4" /> View File
                                 </a>
 
-                                <div class="space-y-1 text-xs text-pink-800/90">
+                                <div class="space-y-1 text-xs text-[#01006c]">
                                     <div v-if="plan.comments?.length">
-                                        <p class="font-medium text-pink-600">Comments:</p>
+                                        <p class="font-medium text-[#01006c]">Comments:</p>
                                         <ul class="ml-4 list-disc">
                                             <li v-for="c in plan.comments" :key="c.id">
-                                                <span class="text-pink-900 italic">{{ c.user.name }}:</span> {{ c.comment }}
+                                                <span class="text-[#01006c] italic">{{ c.user.name }}:</span> {{ c.comment }}
                                             </li>
                                         </ul>
                                     </div>

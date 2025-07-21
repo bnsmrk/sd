@@ -120,8 +120,8 @@ const sortedModules = computed(() => {
         </div>
         <div class="space-y-6 p-6">
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-500">
-                    <Layers class="h-6 w-6 text-pink-500" />
+                <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-400">
+                    <Layers class="h-6 w-6 text-pink-400" />
                     Module List
                 </h1>
                 <div class="flex flex-wrap items-center gap-2">
@@ -133,7 +133,7 @@ const sortedModules = computed(() => {
                     />
                     <Link
                         href="/modules/create"
-                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
+                        class="inline-flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-white transition hover:bg-pink-400"
                     >
                         <Plus class="h-4 w-4" />
                         Create Module
@@ -142,8 +142,8 @@ const sortedModules = computed(() => {
             </div>
 
             <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
-                <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                <table class="min-w-full table-auto text-left text-sm text-pink-500">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-500 uppercase">
                         <tr>
                             <th @click="toggleSort('name')" class="cursor-pointer px-6 py-3 text-left">
                                 Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -160,22 +160,16 @@ const sortedModules = computed(() => {
 
                     <tbody class="divide-y divide-pink-100 bg-white">
                         <tr v-for="m in sortedModules" :key="m.id" class="hover:bg-pink-50">
-                            <td class="px-6 py-4">{{ m.name }}</td>
-                            <td class="px-6 py-4">{{ m.year_level.name }}</td>
-                            <td class="px-6 py-4">{{ m.subject.name }}</td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-6 py-4 text-[#01006c]">{{ m.name }}</td>
+                            <td class="px-6 py-4 text-[#01006c]">{{ m.year_level.name }}</td>
+                            <td class="px-6 py-4 text-[#01006c]">{{ m.subject.name }}</td>
+                            <td class="px-6 py-4 text-center text-[#01006c]">
                                 <div class="flex justify-center gap-4">
-                                    <Link
-                                        :href="`/modules/${m.id}/edit`"
-                                        class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
-                                    >
-                                        <Pencil class="h-4 w-4" /> Edit
+                                    <Link :href="`/modules/${m.id}/edit`" class="text-blue-500 hover:text-blue-800">
+                                        <Pencil class="h-4 w-4" />
                                     </Link>
-                                    <button
-                                        @click="confirmDelete(m.id)"
-                                        class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
-                                    >
-                                        <Trash2 class="h-4 w-4" /> Delete
+                                    <button @click="confirmDelete(m.id)" class="text-red-600 hover:text-red-800">
+                                        <Trash2 class="h-4 w-4" />
                                     </button>
                                 </div>
                             </td>

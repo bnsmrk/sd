@@ -158,21 +158,19 @@ const sortedSections = computed(() => {
             </div>
         </div>
 
-        <!-- Content -->
         <div class="space-y-6 p-6">
             <div class="flex items-center gap-3">
                 <FileText class="text-[#ff69b4]" />
                 <h1 class="text-2xl font-bold text-[#ff69b4]">Student Proficiency Report</h1>
             </div>
 
-            <!-- Filters -->
             <div class="rounded-lg border border-pink-300 bg-white p-4 shadow-md">
                 <div class="flex flex-wrap items-end gap-4">
                     <div class="flex flex-col">
                         <label class="text-sm font-medium text-[#ff69b4]">Year Level</label>
                         <select
                             v-model="selectedYearLevel"
-                            class="rounded border border-pink-500 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none"
+                            class="rounded border border-pink-400 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none"
                         >
                             <option :value="null">Select Year Level</option>
                             <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
@@ -213,23 +211,21 @@ const sortedSections = computed(() => {
                         v-if="filtersApplied && props.individuals.length > 0"
                         :href="pdfUrl"
                         target="_blank"
-                        class="mt-4 flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-sm font-medium text-white shadow hover:bg-pink-600"
+                        class="mt-4 flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-sm font-medium text-white shadow hover:bg-pink-500"
                     >
                         <FileText class="h-4 w-4" /> Download PDF
                     </a>
                 </div>
             </div>
 
-            <!-- Report -->
             <div v-if="filtersApplied && props.individuals.length > 0" class="space-y-8">
-                <!-- Individual Averages -->
                 <div>
-                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-pink-700">
-                        <BookOpen class="h-5 w-5 text-pink-600" /> Individual Averages
+                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-pink-400">
+                        <BookOpen class="h-5 w-5 text-pink-400" /> Individual Averages
                     </div>
                     <div class="overflow-x-auto rounded-lg border border-pink-300 shadow">
-                        <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                            <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                        <table class="min-w-full table-auto text-left text-sm text-pink-400">
+                            <thead class="bg-pink-100 text-xs font-semibold text-pink-400 uppercase">
                                 <tr>
                                     <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('name')">
                                         Student <span v-if="sortKeyIndividual === 'name'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
@@ -244,8 +240,8 @@ const sortedSections = computed(() => {
                             </thead>
                             <tbody class="divide-y divide-pink-100 bg-white">
                                 <tr v-for="i in sortedIndividuals" :key="i.student.id" class="hover:bg-pink-50">
-                                    <td class="border border-pink-300 px-4 py-2 text-pink-800">{{ i.student.name }}</td>
-                                    <td class="border border-pink-300 px-4 py-2 text-pink-800">{{ i.student.section?.name ?? 'N/A' }}</td>
+                                    <td class="border border-pink-300 px-4 py-2 text-[#01006c]">{{ i.student.name }}</td>
+                                    <td class="border border-pink-300 px-4 py-2 text-[#01006c]">{{ i.student.section?.name ?? 'N/A' }}</td>
                                     <td class="border border-pink-300 px-4 py-2 font-medium text-green-700">{{ i.average }}%</td>
                                 </tr>
                             </tbody>
@@ -253,14 +249,13 @@ const sortedSections = computed(() => {
                     </div>
                 </div>
 
-                <!-- Section Averages -->
                 <div>
-                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-pink-700">
-                        <ListChecks class="h-5 w-5 text-pink-600" /> Section Averages
+                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-pink-400">
+                        <ListChecks class="h-5 w-5 text-pink-400" /> Section Averages
                     </div>
                     <div class="overflow-x-auto rounded-lg border border-pink-300 shadow">
-                        <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                            <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                        <table class="min-w-full table-auto text-left text-sm text-pink-400">
+                            <thead class="bg-pink-100 text-xs font-semibold text-pink-400 uppercase">
                                 <tr>
                                     <th class="cursor-pointer border px-4 py-2" @click="toggleSortSection('section')">
                                         Section <span v-if="sortKeySection === 'section'">{{ sortAscSection ? '↑' : '↓' }}</span>
@@ -272,23 +267,21 @@ const sortedSections = computed(() => {
                             </thead>
                             <tbody class="divide-y divide-pink-100 bg-white">
                                 <tr v-for="s in sortedSections" :key="s.section.id" class="hover:bg-pink-50">
-                                    <td class="border border-pink-300 px-4 py-2 text-pink-800">{{ s.section.name }}</td>
-                                    <td class="border border-pink-300 px-4 py-2 font-medium text-pink-600">{{ s.average }}%</td>
+                                    <td class="border border-pink-300 px-4 py-2 text-[#01006c]">{{ s.section.name }}</td>
+                                    <td class="border border-pink-300 px-4 py-2 font-medium text-[#01006c]">{{ s.average }}%</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Year Level Average -->
-                <div class="mt-2 flex items-center gap-2 text-lg font-bold text-pink-700">
+                <div class="mt-2 flex items-center gap-2 text-lg font-bold text-pink-400">
                     <CalendarClock class="h-5 w-5 text-yellow-400" />
                     Year Level Average:
                     <span class="ml-2 text-green-700">{{ props.yearLevelAverage }}%</span>
                 </div>
             </div>
 
-            <!-- No Results -->
             <div v-else-if="filtersApplied" class="mt-8 text-center text-sm text-pink-400 italic">
                 <p>No results available for the selected filters.</p>
             </div>

@@ -148,15 +148,15 @@ const sortedYearLevels = computed(() => {
 
         <div class="p-6">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <h1 class="text-xl font-bold text-pink-500">Year Level</h1>
+                <h1 class="text-xl font-bold text-pink-400">Year Level</h1>
                 <div class="flex flex-wrap items-center gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search..."
-                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-pink-500 focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-400 shadow-sm focus:border-pink-500 focus:outline-none"
                     />
-                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white hover:bg-pink-600">
+                    <button @click="openAddModal" class="inline-flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-white hover:bg-pink-500">
                         <UserPlus class="h-4 w-4" /> + Add Year Level
                     </button>
                 </div>
@@ -164,7 +164,7 @@ const sortedYearLevels = computed(() => {
 
             <div class="overflow-hidden rounded-2xl border border-pink-200 shadow-md">
                 <table class="min-w-full divide-y divide-pink-100">
-                    <thead class="bg-pink-100 text-xs font-semibold text-pink-800">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-400">
                         <tr>
                             <th @click="toggleSort('id')" class="cursor-pointer px-6 py-3 text-center tracking-wide">
                                 ID <span v-if="sortKey === 'id'" class="text-yellow-500">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -177,20 +177,14 @@ const sortedYearLevels = computed(() => {
                     </thead>
                     <tbody class="divide-y divide-pink-100 bg-white text-sm">
                         <tr v-for="level in sortedYearLevels" :key="level.id" class="transition-colors hover:bg-pink-50">
-                            <td class="px-6 py-4 text-center font-medium text-pink-800">{{ level.id }}</td>
-                            <td class="px-6 py-4 text-left text-pink-800">{{ level.name }}</td>
-                            <td class="space-x-2 px-6 py-4 text-center">
-                                <button
-                                    @click="openEditModal(level)"
-                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
-                                >
-                                    <Pencil class="h-4 w-4" /> Edit
+                            <td class="px-6 py-4 text-center font-medium text-[#01006c]">{{ level.id }}</td>
+                            <td class="px-6 py-4 text-left text-[#01006c]">{{ level.name }}</td>
+                            <td class="space-x-2 px-6 py-4 text-center text-[#01006c]">
+                                <button @click="openEditModal(level)" class="text-blue-500 hover:text-blue-600">
+                                    <Pencil class="h-4 w-4" />
                                 </button>
-                                <button
-                                    @click="openDeleteModal(level.id)"
-                                    class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
-                                >
-                                    <Trash2 class="h-4 w-4" /> Delete
+                                <button @click="openDeleteModal(level.id)" class="text-red-500 hover:text-red-500">
+                                    <Trash2 class="h-4 w-4" />
                                 </button>
                             </td>
                         </tr>

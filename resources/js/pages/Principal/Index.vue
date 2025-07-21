@@ -198,14 +198,14 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
         </div>
 
         <div class="mx-auto w-full max-w-7xl space-y-6 p-6">
-            <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-500"><BarChart2 class="h-6 w-6" /> Students Activities Reports</h1>
+            <h1 class="flex items-center gap-2 text-2xl font-bold text-pink-400"><BarChart2 class="h-6 w-6" /> Students Activities Reports</h1>
 
             <div class="flex flex-wrap gap-4 rounded-lg border border-pink-200 bg-white p-4">
                 <div class="relative min-w-[180px] flex-grow">
-                    <Layers class="absolute top-2.5 left-3 h-4 w-4 text-pink-500" />
+                    <Layers class="absolute top-2.5 left-3 h-4 w-4 text-pink-400" />
                     <select
                         v-model="selectedYearLevel"
-                        class="w-full rounded border border-pink-500 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
+                        class="w-full rounded border border-pink-400 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
                     >
                         <option :value="null">Select Year Level</option>
                         <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
@@ -213,10 +213,10 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <LayoutTemplate class="absolute top-2.5 left-3 h-4 w-4 text-pink-700" />
+                    <LayoutTemplate class="absolute top-2.5 left-3 h-4 w-4 text-pink-400" />
                     <select
                         v-model="selectedSection"
-                        class="w-full rounded border border-pink-500 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
+                        class="w-full rounded border border-pink-400 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
                     >
                         <option :value="null">Select Section</option>
                         <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -224,10 +224,10 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <BookOpen class="absolute top-2.5 left-3 h-4 w-4 text-pink-700" />
+                    <BookOpen class="absolute top-2.5 left-3 h-4 w-4 text-pink-400" />
                     <select
                         v-model="selectedSubject"
-                        class="w-full rounded border border-pink-500 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
+                        class="w-full rounded border border-pink-400 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
                     >
                         <option :value="null">Select Subject</option>
                         <option v-for="sub in filteredSubjects" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
@@ -235,10 +235,10 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
                 </div>
 
                 <div class="relative min-w-[180px] flex-grow">
-                    <FileText class="absolute top-2.5 left-3 h-4 w-4 text-pink-700" />
+                    <FileText class="absolute top-2.5 left-3 h-4 w-4 text-pink-400" />
                     <select
                         v-model="selectedModule"
-                        class="w-full rounded border border-pink-500 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
+                        class="w-full rounded border border-pink-400 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
                     >
                         <option :value="null">Select Module</option>
                         <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
@@ -246,10 +246,10 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
                 </div>
 
                 <div class="relative min-w-[160px] flex-grow">
-                    <ClipboardList class="absolute top-2.5 left-3 h-4 w-4 text-pink-700" />
+                    <ClipboardList class="absolute top-2.5 left-3 h-4 w-4 text-pink-400" />
                     <select
                         v-model="selectedType"
-                        class="w-full rounded border border-pink-500 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
+                        class="w-full rounded border border-pink-400 bg-white py-2 pr-3 pl-10 text-sm focus:border-pink-400 focus:outline-none"
                     >
                         <option value="quiz">Quiz</option>
                         <option value="exam">Exam</option>
@@ -259,7 +259,7 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
                 <div class="flex-shrink-0">
                     <button
                         @click="applyFilters"
-                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-sm text-white hover:bg-pink-700"
+                        class="inline-flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-sm text-white hover:bg-pink-700"
                     >
                         <Search class="h-4 w-4" /> Generate Report
                     </button>
@@ -270,7 +270,7 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
                 <a
                     :href="pdfUrl"
                     target="_blank"
-                    class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-sm text-white hover:bg-pink-600"
+                    class="inline-flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-sm text-white hover:bg-pink-500"
                 >
                     <FileText class="h-4 w-4" /> Generate PDF
                 </a>
@@ -278,10 +278,10 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
 
             <div v-if="props.resultsByActivity.length > 0" class="mt-6 space-y-8">
                 <div v-for="group in props.resultsByActivity" :key="group.activity_title">
-                    <h2 class="text-lg font-semibold text-pink-900">{{ group.activity_title }}</h2>
+                    <h2 class="text-lg font-semibold text-pink-400">{{ group.activity_title }}</h2>
                     <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
-                        <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                            <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                        <table class="min-w-full table-auto text-left text-sm text-pink-400">
+                            <thead class="bg-pink-100 text-xs font-semibold text-pink-400 uppercase">
                                 <tr>
                                     <th class="cursor-pointer border px-4 py-2" @click="toggleSort(group.activity_title, 'student')">
                                         Student
@@ -312,10 +312,10 @@ function getSortedEntries(activity: GroupedResult): ResultEntry[] {
 
                             <tbody class="divide-y divide-pink-100 bg-white">
                                 <tr v-for="entry in getSortedEntries(group)" :key="entry.student" class="bg-white hover:bg-pink-50">
-                                    <td class="border px-4 py-2 text-pink-900">{{ entry.student }}</td>
-                                    <td class="border px-4 py-2 text-pink-900">{{ entry.score }}</td>
-                                    <td class="border px-4 py-2 text-pink-900">{{ entry.total }}</td>
-                                    <td class="border px-4 py-2 font-medium text-pink-700">{{ entry.average }}%</td>
+                                    <td class="border px-4 py-2 text-[#01006c]">{{ entry.student }}</td>
+                                    <td class="border px-4 py-2 text-[#01006c]">{{ entry.score }}</td>
+                                    <td class="border px-4 py-2 text-[#01006c]">{{ entry.total }}</td>
+                                    <td class="border px-4 py-2 font-medium text-[#01006c]">{{ entry.average }}%</td>
                                 </tr>
                             </tbody>
                         </table>

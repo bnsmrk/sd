@@ -128,17 +128,17 @@ const sortedEnrollments = computed(() => {
         </div>
         <div class="p-4">
             <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-pink-500">Enrollments</h2>
+                <h2 class="text-xl font-bold text-pink-400">Enrollments</h2>
                 <div class="flex items-center gap-2">
                     <input
                         v-model="search"
                         type="text"
                         placeholder="Search student..."
-                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-400 shadow-sm focus:border-yellow-400 focus:outline-none"
                     />
                     <Link
                         href="/enroll/create"
-                        class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
+                        class="inline-flex items-center gap-2 rounded bg-pink-400 px-4 py-2 text-white transition hover:bg-pink-500"
                     >
                         <Plus class="h-4 w-4" /> Add Enrollment
                     </Link>
@@ -146,8 +146,8 @@ const sortedEnrollments = computed(() => {
             </div>
 
             <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
-                <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                <table class="min-w-full table-auto text-left text-sm text-pink-400">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-400 uppercase">
                         <tr>
                             <th @click="toggleSort('user')" class="cursor-pointer px-6 py-3">
                                 Student
@@ -167,22 +167,18 @@ const sortedEnrollments = computed(() => {
 
                     <tbody class="divide-y divide-pink-100 bg-white">
                         <tr v-for="enroll in sortedEnrollments" :key="enroll.id" class="hover:bg-pink-50">
-                            <td class="px-6 py-4 font-medium">{{ enroll.user.name }}</td>
-                            <td class="px-6 py-4">{{ enroll.year_level.name }}</td>
-                            <td class="px-6 py-4">{{ enroll.section?.name ?? '—' }}</td>
-                            <td class="space-x-3 px-6 py-4 text-center">
-                                <Link
-                                    :href="`/enroll/${enroll.id}/edit`"
-                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
-                                >
-                                    <Pencil class="h-4 w-4" /> Edit
-                                </Link>
-                                <button
-                                    @click="confirmDelete(enroll.id)"
-                                    class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
-                                >
-                                    <Trash2 class="h-4 w-4" /> Delete
-                                </button>
+                            <td class="px-6 py-4 font-medium text-[#01006c]">{{ enroll.user.name }}</td>
+                            <td class="px-6 py-4 text-[#01006c]">{{ enroll.year_level.name }}</td>
+                            <td class="px-6 py-4 text-[#01006c]">{{ enroll.section?.name ?? '—' }}</td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center gap-3">
+                                    <Link :href="`/enroll/${enroll.id}/edit`" class="text-blue-600 hover:text-blue-800">
+                                        <Pencil class="h-5 w-5" />
+                                    </Link>
+                                    <button @click="confirmDelete(enroll.id)" class="text-red-600 hover:text-red-800">
+                                        <Trash2 class="h-5 w-5" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

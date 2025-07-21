@@ -60,7 +60,7 @@ const sortedStudents = computed(() => {
     <AppLayout>
         <div class="p-6">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <h1 class="text-2xl font-bold text-pink-500">My Class List</h1>
+                <h1 class="text-2xl font-bold text-pink-400">My Class List</h1>
                 <input
                     v-model="search"
                     type="text"
@@ -70,8 +70,8 @@ const sortedStudents = computed(() => {
             </div>
 
             <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
-                <table class="min-w-full table-auto text-left text-sm text-pink-900">
-                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                <table class="min-w-full table-auto text-left text-sm text-pink-400">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-400 uppercase">
                         <tr>
                             <th @click="toggleSort('name')" class="cursor-pointer px-4 py-3 text-left">
                                 Name <span v-if="sortKey === 'name'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -87,10 +87,10 @@ const sortedStudents = computed(() => {
                     </thead>
                     <tbody class="divide-y divide-pink-100 bg-white">
                         <tr v-for="student in sortedStudents" :key="student.id" class="hover:bg-pink-50">
-                            <td class="px-4 py-2">{{ student.name }}</td>
-                            <td class="px-4 py-2">{{ student.year_level }}</td>
-                            <td class="px-4 py-2">{{ student.section }}</td>
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2 text-[#01006c]">{{ student.name }}</td>
+                            <td class="px-4 py-2 text-[#01006c]">{{ student.year_level }}</td>
+                            <td class="px-4 py-2 text-[#01006c]">{{ student.section }}</td>
+                            <td class="px-4 py-2 text-[#01006c]">
                                 <span v-if="student.subjects.length">{{ student.subjects.join(', ') }}</span>
                                 <span v-else class="text-gray-400 italic">None</span>
                             </td>
