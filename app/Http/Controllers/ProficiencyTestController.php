@@ -12,7 +12,8 @@ use App\Models\ProficiencyQuestion;
 use Illuminate\Support\Facades\Auth;
 use App\Models\StudentProficiencyAnswer;
 use App\Models\StudentProficiencyResult;
-
+use App\Notifications\NewProficiencyTestNotification;
+use App\Models\User;
 class ProficiencyTestController extends Controller
 {
     public function index()
@@ -35,20 +36,30 @@ class ProficiencyTestController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:reading,numerical',
-            'year_level_id' => 'required|exists:year_levels,id',
-            'scheduled_at' => 'required|date',
-            'due_date' => 'nullable|date|after_or_equal:scheduled_at',
-            'description' => 'nullable|string',
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'type' => 'required|in:reading,numerical',
+        'year_level_id' => 'required|exists:year_levels,id',
+        'scheduled_at' => 'required|date',
+        'due_date' => 'nullable|date|after_or_equal:scheduled_at',
+        'description' => 'nullable|string',
+    ]);
 
-        ProficiencyTest::create($validated);
+    $test = ProficiencyTest::create($validated);
 
-        return redirect()->route('proficiency-test.index')->with('success', 'Test created successfully.');
+    $students = User::where('role', 'student')
+        ->whereHas('enrollments', function ($q) use ($validated) {
+            $q->where('year_level_id', $validated['year_level_id']);
+        })
+        ->get();
+
+    foreach ($students as $student) {
+        $student->notify(new NewProficiencyTestNotification($test));
     }
+
+    return redirect()->route('proficiency-test.index')->with('success', 'Test created and notifications sent.');
+}
 
     public function edit(string $id)
     {

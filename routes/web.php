@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
 });
 
+Route::get('/student/proficiency/{id}', [ProficiencyTestController::class, 'show'])
+    ->middleware(['auth', 'role:student'])
+    ->name('student.proficiency.show');
 
 Route::get('teacher-dashboard', [TeacherDashboard::class, 'index'])
     ->middleware(['auth', 'verified', 'role:teacher'])
