@@ -143,36 +143,36 @@ const sortedSections = computed(() => {
 
 <template>
     <AppLayout>
+        <!-- Loading Overlay -->
         <div v-if="isLoading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
             <div class="flex flex-col items-center gap-4">
                 <div class="relative h-16 w-16">
-                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"></div>
-
-                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-yellow-400 border-t-transparent"></div>
-
-                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                    <div class="animate-spin-slow-cw absolute inset-0 rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                    <div class="animate-spin-slow-ccw absolute inset-2 rounded-full border-4 border-pink-300 border-t-transparent"></div>
+                    <div class="animate-spin-fast-cw absolute inset-4 rounded-full border-4 border-pink-700 border-t-transparent"></div>
                 </div>
-
                 <div class="text-center">
-                    <span class="block animate-pulse text-base font-semibold text-[#01006c]">Processing Request...</span>
-                    <span class="text-xs text-[#01006c]/70">This may take a moment</span>
+                    <span class="block animate-pulse text-base font-semibold text-[#ff69b4]">Processing Request...</span>
+                    <span class="text-xs text-pink-500/70">This may take a moment</span>
                 </div>
             </div>
         </div>
 
+        <!-- Content -->
         <div class="space-y-6 p-6">
             <div class="flex items-center gap-3">
-                <FileText class="text-[#01006c]" />
-                <h1 class="text-2xl font-bold text-[#01006c]">Student Proficiency Report</h1>
+                <FileText class="text-[#ff69b4]" />
+                <h1 class="text-2xl font-bold text-[#ff69b4]">Student Proficiency Report</h1>
             </div>
 
-            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-md">
+            <!-- Filters -->
+            <div class="rounded-lg border border-pink-300 bg-white p-4 shadow-md">
                 <div class="flex flex-wrap items-end gap-4">
                     <div class="flex flex-col">
                         <label class="text-sm font-medium text-[#ff69b4]">Year Level</label>
                         <select
                             v-model="selectedYearLevel"
-                            class="rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="rounded border border-pink-500 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none"
                         >
                             <option :value="null">Select Year Level</option>
                             <option v-for="y in props.yearLevels" :key="y.id" :value="y.id">{{ y.name }}</option>
@@ -183,7 +183,7 @@ const sortedSections = computed(() => {
                         <label class="text-sm font-medium text-[#ff69b4]">Section</label>
                         <select
                             v-model="selectedSection"
-                            class="rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="rounded border border-pink-500 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none"
                         >
                             <option :value="null">Select Section</option>
                             <option v-for="s in filteredSections" :key="s.id" :value="s.id">{{ s.name }}</option>
@@ -194,7 +194,7 @@ const sortedSections = computed(() => {
                         <label class="text-sm font-medium text-[#ff69b4]">Test Type</label>
                         <select
                             v-model="selectedType"
-                            class="rounded border border-[#01006c] bg-white px-3 py-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="rounded border border-pink-500 bg-white px-3 py-2 text-sm focus:border-pink-400 focus:outline-none"
                         >
                             <option value="">Select Type</option>
                             <option value="reading">Reading</option>
@@ -204,7 +204,7 @@ const sortedSections = computed(() => {
 
                     <button
                         @click="applyFilters"
-                        class="mt-4 flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#0d1282]"
+                        class="mt-4 flex items-center gap-2 rounded bg-[#ff69b4] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#e858a1]"
                     >
                         <Send class="h-4 w-4" /> Generate Report
                     </button>
@@ -213,76 +213,83 @@ const sortedSections = computed(() => {
                         v-if="filtersApplied && props.individuals.length > 0"
                         :href="pdfUrl"
                         target="_blank"
-                        class="mt-4 flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-red-700"
+                        class="mt-4 flex items-center gap-2 rounded bg-pink-700 px-4 py-2 text-sm font-medium text-white shadow hover:bg-pink-800"
                     >
                         <FileText class="h-4 w-4" /> Download PDF
                     </a>
                 </div>
             </div>
 
+            <!-- Report -->
             <div v-if="filtersApplied && props.individuals.length > 0" class="space-y-8">
+                <!-- Individual Averages -->
                 <div>
-                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-[#01006c]">
-                        <BookOpen class="h-5 w-5 text-green-600" /> Individual Averages
+                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-pink-700">
+                        <BookOpen class="h-5 w-5 text-pink-600" /> Individual Averages
                     </div>
-                    <table class="w-full overflow-hidden rounded-md border border-[#01006c] text-sm">
-                        <thead class="bg-[#01006c] text-white">
-                            <tr>
-                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('name')">
-                                    Student <span v-if="sortKeyIndividual === 'name'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
-                                </th>
-                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('section')">
-                                    Section <span v-if="sortKeyIndividual === 'section'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
-                                </th>
-                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('average')">
-                                    Average (%) <span v-if="sortKeyIndividual === 'average'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr v-for="i in sortedIndividuals" :key="i.student.id" class="even:bg-gray-50">
-                                <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ i.student.name }}</td>
-                                <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ i.student.section?.name ?? 'N/A' }}</td>
-                                <td class="border border-[#01006c] px-4 py-2 font-medium text-green-700">{{ i.average }}%</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto rounded-lg border border-pink-300 shadow">
+                        <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                            <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                                <tr>
+                                    <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('name')">
+                                        Student <span v-if="sortKeyIndividual === 'name'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
+                                    </th>
+                                    <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('section')">
+                                        Section <span v-if="sortKeyIndividual === 'section'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
+                                    </th>
+                                    <th class="cursor-pointer border px-4 py-2" @click="toggleSortIndividual('average')">
+                                        Average (%) <span v-if="sortKeyIndividual === 'average'">{{ sortAscIndividual ? '↑' : '↓' }}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-pink-100 bg-white">
+                                <tr v-for="i in sortedIndividuals" :key="i.student.id" class="hover:bg-pink-50">
+                                    <td class="border border-pink-300 px-4 py-2 text-pink-800">{{ i.student.name }}</td>
+                                    <td class="border border-pink-300 px-4 py-2 text-pink-800">{{ i.student.section?.name ?? 'N/A' }}</td>
+                                    <td class="border border-pink-300 px-4 py-2 font-medium text-green-700">{{ i.average }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
+                <!-- Section Averages -->
                 <div>
-                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-[#01006c]">
-                        <ListChecks class="h-5 w-5 text-indigo-600" /> Section Averages
+                    <div class="mb-2 flex items-center gap-2 text-xl font-semibold text-pink-700">
+                        <ListChecks class="h-5 w-5 text-pink-600" /> Section Averages
                     </div>
-                    <table class="w-full overflow-hidden rounded-md border border-[#01006c] text-sm">
-                        <thead class="bg-[#01006c] text-white">
-                            <tr>
-                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortSection('section')">
-                                    Section <span v-if="sortKeySection === 'section'">{{ sortAscSection ? '↑' : '↓' }}</span>
-                                </th>
-                                <th class="cursor-pointer border px-4 py-2" @click="toggleSortSection('average')">
-                                    Average (%) <span v-if="sortKeySection === 'average'">{{ sortAscSection ? '↑' : '↓' }}</span>
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr v-for="s in sortedSections" :key="s.section.id" class="even:bg-gray-50">
-                                <td class="border border-[#01006c] px-4 py-2 text-[#01006c]">{{ s.section.name }}</td>
-                                <td class="border border-[#01006c] px-4 py-2 font-medium text-pink-600">{{ s.average }}%</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto rounded-lg border border-pink-300 shadow">
+                        <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                            <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
+                                <tr>
+                                    <th class="cursor-pointer border px-4 py-2" @click="toggleSortSection('section')">
+                                        Section <span v-if="sortKeySection === 'section'">{{ sortAscSection ? '↑' : '↓' }}</span>
+                                    </th>
+                                    <th class="cursor-pointer border px-4 py-2" @click="toggleSortSection('average')">
+                                        Average (%) <span v-if="sortKeySection === 'average'">{{ sortAscSection ? '↑' : '↓' }}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-pink-100 bg-white">
+                                <tr v-for="s in sortedSections" :key="s.section.id" class="hover:bg-pink-50">
+                                    <td class="border border-pink-300 px-4 py-2 text-pink-800">{{ s.section.name }}</td>
+                                    <td class="border border-pink-300 px-4 py-2 font-medium text-pink-600">{{ s.average }}%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="mt-2 flex items-center gap-2 text-lg font-bold text-[#01006c]">
-                    <CalendarClock class="h-5 w-5 text-yellow-500" />
+                <!-- Year Level Average -->
+                <div class="mt-2 flex items-center gap-2 text-lg font-bold text-pink-700">
+                    <CalendarClock class="h-5 w-5 text-yellow-400" />
                     Year Level Average:
                     <span class="ml-2 text-green-700">{{ props.yearLevelAverage }}%</span>
                 </div>
             </div>
 
-            <div v-else-if="filtersApplied" class="mt-8 text-center text-sm text-gray-500 italic">
+            <!-- No Results -->
+            <div v-else-if="filtersApplied" class="mt-8 text-center text-sm text-pink-400 italic">
                 <p>No results available for the selected filters.</p>
             </div>
         </div>

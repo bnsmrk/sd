@@ -109,19 +109,19 @@ const sortedTests = computed(() => {
         </div>
         <div class="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-[#01006c]">Proficiency Tests</h1>
+                <h1 class="text-2xl font-bold text-pink-500">Proficiency Tests</h1>
                 <Link
                     href="/proficiency-test/create"
-                    class="inline-flex items-center gap-2 rounded bg-[#01006c] px-4 py-2 text-white hover:bg-[#0d1282]"
+                    class="inline-flex items-center gap-2 rounded bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
                 >
                     <PlusCircle class="h-5 w-5" />
                     Create Test
                 </Link>
             </div>
 
-            <div class="overflow-x-auto rounded-lg border border-gray-300">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-[#01006c] text-white">
+            <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">
+                <table class="min-w-full table-auto text-left text-sm text-pink-900">
+                    <thead class="bg-pink-100 text-xs font-semibold text-pink-700 uppercase">
                         <tr>
                             <th class="cursor-pointer px-4 py-2 text-left font-semibold" @click="toggleSort('title')">
                                 Title <span v-if="sortBy === 'title'">{{ sortAsc ? '↑' : '↓' }}</span>
@@ -142,10 +142,10 @@ const sortedTests = computed(() => {
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr v-for="test in sortedTests" :key="test.id" class="border-b">
+                    <tbody class="divide-y divide-pink-100 bg-white">
+                        <tr v-for="test in sortedTests" :key="test.id" class="hover:bg-pink-50">
                             <td class="flex items-center gap-2 px-4 py-2">
-                                <BookOpen class="h-4 w-4 text-blue-500" />
+                                <BookOpen class="h-4 w-4 text-pink-500" />
                                 {{ test.title }}
                             </td>
                             <td class="px-4 py-2 capitalize">{{ test.type }}</td>
@@ -155,17 +155,20 @@ const sortedTests = computed(() => {
                             <td class="space-x-2 px-4 py-2">
                                 <Link
                                     :href="`/proficiency-test/${test.id}/edit`"
-                                    class="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
                                 >
                                     <Pencil class="h-4 w-4" /> Edit
                                 </Link>
                                 <Link
                                     :href="`/proficiency-test/${test.id}/questions/create`"
-                                    class="inline-flex items-center gap-1 text-indigo-600 hover:underline"
+                                    class="inline-flex items-center gap-1 rounded bg-pink-100 px-3 py-1 text-sm font-medium text-pink-700 hover:bg-pink-200"
                                 >
                                     <PlusCircle class="h-4 w-4" /> Add Questions
                                 </Link>
-                                <button @click="confirmDelete(test.id)" class="inline-flex items-center gap-1 text-red-600 hover:underline">
+                                <button
+                                    @click="confirmDelete(test.id)"
+                                    class="inline-flex items-center gap-1 rounded bg-red-100 px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-200"
+                                >
                                     <Trash2 class="h-4 w-4" /> Delete
                                 </button>
                             </td>
