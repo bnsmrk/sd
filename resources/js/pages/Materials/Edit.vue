@@ -209,8 +209,8 @@ function submitForm() {
                         <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Section</label>
                         <select
                             v-model="selectedSectionId"
-                            :disabled="!selectedModuleId"
-                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            disabled
+                            class="w-full rounded border border-[#01006c] bg-gray-100 p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Section</option>
                             <option v-for="section in filteredSections" :key="section.id" :value="section.id">
@@ -285,7 +285,6 @@ function submitForm() {
                     class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                 />
             </div>
-            <!-- Upload Video File -->
             <div>
                 <label class="mb-1 block flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
                     <FileUp class="h-4 w-4 text-[#ff69b4]" />
@@ -307,7 +306,6 @@ function submitForm() {
                 </div>
             </div>
 
-            <!-- Optional Video Link -->
             <div>
                 <label class="block text-sm font-medium text-[#ff69b4]">Video/Meeting Link (Optional)</label>
                 <input

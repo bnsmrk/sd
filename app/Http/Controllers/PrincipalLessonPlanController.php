@@ -15,37 +15,38 @@ class PrincipalLessonPlanController extends Controller
     public function index(Request $request)
     {
         $yearLevelId = $request->input('year_level_id');
-        $sectionId   = $request->input('section_id');
+        $sectionId = $request->input('section_id');
+        $search = $request->input('search');
 
-        $lessonPlans = [];
+        $query = Material::with(['uploader:id,name', 'yearLevel:id,name', 'section:id,name', 'comments.user:id,name'])
+            ->where('type', 'lesson_plan');
 
-        if ($yearLevelId && $sectionId) {
-            $lessonPlans = Material::with(['uploader:id,name', 'yearLevel:id,name', 'section:id,name'])
-                ->where('type', 'lesson_plan')
-                ->where('year_level_id', $yearLevelId)
-                ->where('section_id', $sectionId)
-                ->latest()
-                ->get();
+        if ($yearLevelId) {
+            $query->where('year_level_id', $yearLevelId);
         }
-        $lessonPlans = Material::with([
-            'uploader:id,name',
-            'yearLevel:id,name',
-            'section:id,name',
-            'comments.user:id,name'
-        ])
-            ->where('type', 'lesson_plan')
-            ->where('year_level_id', $yearLevelId)
-            ->where('section_id', $sectionId)
-            ->latest()
-            ->get();
+
+        if ($sectionId) {
+            $query->where('section_id', $sectionId);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhereHas('uploader', fn($u) => $u->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $lessonPlans = $query->latest()->paginate(10)->withQueryString();
+
         return Inertia::render('Principal/LessonPlans/Index', [
             'lessonPlans' => $lessonPlans,
             'filters' => [
                 'year_level_id' => $yearLevelId,
                 'section_id' => $sectionId,
+                'search' => $search,
             ],
             'yearLevels' => YearLevel::all(['id', 'name']),
-            'sections'   => Section::all(['id', 'name', 'year_level_id']),
+            'sections' => Section::all(['id', 'name', 'year_level_id']),
         ]);
     }
 

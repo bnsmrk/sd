@@ -206,8 +206,7 @@ function submitForm() {
                         <select
                             disabled
                             v-model="selectedSectionId"
-                            :disabled="!selectedModuleId"
-                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-gray-100 p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Section</option>
                             <option v-for="section in filteredSections" :key="section.id" :value="section.id">
