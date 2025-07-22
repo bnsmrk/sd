@@ -11,7 +11,7 @@ const { subject } = defineProps<{
     subject: {
         id: number;
         name: string;
-        teacher: string; // ✅ Add teacher here at top-level
+        teacher: string;
         modules: Array<{
             id: number;
             title: string;

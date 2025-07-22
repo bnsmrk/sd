@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 
 import debounce from 'lodash/debounce';
-import { BookOpen, Eye, Pencil, Trash2 } from 'lucide-vue-next';
+import { BookOpen, Eye, Pencil, Trash2, Video } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
 const isLoading = computed(() => isCreating.value || isUpdating.value || isDeleting.value);
@@ -18,6 +18,8 @@ const props = defineProps<{
             title: string;
             type: string;
             file_path: string;
+            video_path?: string | null;
+            video_link?: string | null;
             year_level: { name: string };
             section?: { name: string };
             subject: { name: string };
@@ -201,10 +203,20 @@ const sortedMaterials = computed(() => {
                                 <td class="p-3 align-top text-[#01006c]">{{ material.year_level.name }}</td>
                                 <td class="p-3 align-top text-[#01006c]">{{ material.section?.name || '—' }}</td>
                                 <td class="p-3 align-top text-[#01006c]">{{ material.subject.name }}</td>
-                                <td class="p-3 align-top">
+                                <td class="flex items-center gap-3 p-3 align-top">
                                     <a :href="`/storage/${material.file_path}`" target="_blank" class="text-green-600 hover:text-green-800">
                                         <Eye class="h-4 w-4" />
                                     </a>
+                                    <template v-if="material.video_path || material.video_link">
+                                        <a
+                                            :href="material.video_path ? `/storage/${material.video_path}` : (material.video_link ?? '')"
+                                            target="_blank"
+                                            class="text-blue-600 hover:text-blue-800"
+                                            title="View Video"
+                                        >
+                                            <Video class="h-4 w-4" />
+                                        </a>
+                                    </template>
                                 </td>
                                 <td class="p-3 text-center align-top">
                                     <div class="flex justify-center gap-3">
