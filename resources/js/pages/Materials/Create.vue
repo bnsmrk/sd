@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ArrowLeft, FileUp } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
@@ -66,6 +66,10 @@ const form = useForm({
     file: null as File | null,
     video: null as File | null,
     video_link: '',
+    module_id: null as number | null,
+});
+watch(selectedModuleId, (newId) => {
+    form.module_id = newId;
 });
 
 watch(selectedType, (newType) => {
@@ -85,11 +89,6 @@ watch(selectedModuleId, (newModuleId) => {
 });
 
 function submitForm() {
-    if (!form.title || !form.file) {
-        alert('Title and file are required.');
-        return;
-    }
-
     isCreating.value = true;
 
     const data = new FormData();
@@ -107,7 +106,6 @@ function submitForm() {
     }
 
     if (form.type === 'material' && selectedModuleId.value) {
-        data.append('module_id', selectedModuleId.value.toString());
         if (selectedSectionId.value) {
             data.append('section_id', selectedSectionId.value.toString());
         }
@@ -116,15 +114,10 @@ function submitForm() {
         data.append('section_id', selectedSectionId.value.toString());
     }
 
-    router.post('/materials', data, {
+    form.post('/materials', {
         forceFormData: true,
         onSuccess: () => {
-            form.title = '';
-            form.description = '';
-            form.file = null;
-            form.video = null;
-            form.video_link = '';
-
+            form.reset();
             selectedModuleId.value = null;
             selectedSectionId.value = null;
             selectedSubjectId.value = null;
@@ -194,6 +187,7 @@ function submitForm() {
                             <option :value="null" disabled>Select Module</option>
                             <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
                         </select>
+                        <p v-if="form.errors.module_id" class="mt-1 text-sm text-red-600">{{ form.errors.module_id }}</p>
                     </div>
 
                     <div>
@@ -277,6 +271,7 @@ function submitForm() {
                     type="text"
                     class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                 />
+                <p v-if="form.errors.title" class="mt-1 text-sm text-red-600">{{ form.errors.title }}</p>
             </div>
             <div v-if="selectedType === 'material'">
                 <label class="mb-1 block text-sm font-medium text-[#01006c] text-[#ff69b4]">Upload Video (Optional)</label>
@@ -318,6 +313,7 @@ function submitForm() {
                     @change="(e) => (form.file = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
                     class="w-full rounded border border-[#01006c] p-2 text-[#ff69b4] file:mr-4 file:border-0 file:bg-[#ffc60b]/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#01006c] hover:file:bg-[#ffc60b]/40 focus:border-[#ffc60b] focus:outline-none"
                 />
+                <p v-if="form.errors.file" class="mt-1 text-sm text-red-600">{{ form.errors.file }}</p>
             </div>
 
             <button @click="submitForm" class="w-full rounded bg-[#01006c] py-2 text-white transition hover:bg-[#0d1282]">Submit</button>
