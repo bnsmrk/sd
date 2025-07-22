@@ -38,6 +38,6 @@ class Student extends Model
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(related: Subject::class);
     }
 }

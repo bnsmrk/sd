@@ -144,13 +144,17 @@ onMounted(() => {
                                 </div>
 
                                 <div v-if="material.video_path" class="mt-3">
-                                    <video class="w-full max-w-md rounded-lg border" controls :src="`/storage/${material.video_path}`" />
+                                    <div class="flex justify-center">
+                                        <video class="w-full rounded-lg border" controls :src="`/storage/${material.video_path}`" />
+                                    </div>
                                 </div>
 
                                 <div v-else-if="material.video_link" class="mt-3">
-                                    <a :href="material.video_link" target="_blank" class="text-sm text-blue-600 underline hover:text-blue-800">
-                                        ▶ Watch Video
-                                    </a>
+                                    <div class="flex justify-center">
+                                        <a :href="material.video_link" target="_blank" class="text-sm text-blue-600 underline hover:text-blue-800">
+                                            ▶ Watch Video
+                                        </a>
+                                    </div>
                                 </div>
 
                                 <div class="mt-1 text-xs text-gray-500">Uploaded by: {{ material.uploaded_by }}</div>

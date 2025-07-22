@@ -26,6 +26,7 @@ class MaterialController extends Controller
         $assignments = $this->getTeacherAssignments();
 
         $materials = Material::with(['yearLevel', 'section', 'subject', 'user', 'comments.user:id,name'])
+            ->where('user_id', Auth::id())
             ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
             ->whereIn('subject_id', $assignments->pluck('subject_id'))
             ->when($request->filled('search'), function ($query) use ($request) {
