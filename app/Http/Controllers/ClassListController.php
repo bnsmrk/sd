@@ -25,25 +25,27 @@ class ClassListController extends Controller
              return $assignments->pluck('subject.name')->unique()->values();
          });
 
-         $studentsQuery = Student::with(['user', 'section', 'yearLevel'])
-             ->whereIn('section_id', $sectionIds);
+         $studentsQuery = Student::whereIn('section_id', $sectionIds)
+            ->selectRaw('MIN(id) as id, user_id, section_id')
+            ->groupBy('user_id', 'section_id');
 
-         if ($request->filled('search')) {
-             $studentsQuery->whereHas('user', function ($query) use ($request) {
-                 $query->where('name', 'like', '%' . $request->search . '%');
-             });
-         }
+        if ($request->filled('search')) {
+            $studentsQuery->whereHas('user', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
 
-         $students = $studentsQuery->paginate(10)->through(function ($s) use ($subjectsBySection) {
-             $subjects = $subjectsBySection[$s->section_id] ?? collect();
-             return [
-                 'id' => $s->id,
-                 'name' => $s->user?->name ?? 'Unnamed',
-                 'year_level' => $s->yearLevel?->name ?? '-',
-                 'section' => $s->section?->name ?? '-',
-                 'subjects' => $subjects->all(),
-             ];
-         });
+        $students = $studentsQuery->paginate(10)->through(function ($s) use ($subjectsBySection) {
+            $student = Student::with(['user', 'section', 'yearLevel'])->find($s->id);
+            $subjects = $subjectsBySection[$student->section_id] ?? collect();
+            return [
+                'id' => $student->id,
+                'name' => $student->user?->name ?? 'Unnamed',
+                'year_level' => $student->yearLevel?->name ?? '-',
+                'section' => $student->section?->name ?? '-',
+                'subjects' => $subjects->all(),
+            ];
+        });
 
          return Inertia::render('TeacherAssignments/ClassList', [
              'students' => $students,
