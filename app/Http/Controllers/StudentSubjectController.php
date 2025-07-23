@@ -46,17 +46,22 @@ class StudentSubjectController extends Controller
             'subjects' => $subjects,
         ]);
     }
-
     public function show($id)
     {
         $userId = Auth::id();
 
+        // Get student with year level and section
         $student = Student::with(['yearLevel', 'section'])
             ->where('user_id', $userId)
             ->firstOrFail();
 
-        $subject = Subject::with(['modules.activities', 'modules.materials.user'])->findOrFail($id);
+        // Get subject with related modules, activities, and materials
+        $subject = Subject::with([
+            'modules.activities',
+            'modules.materials.user'
+        ])->findOrFail($id);
 
+        // Get teacher assigned to the student for this subject
         $assignment = TeacherAssignment::with('user')
             ->where('subject_id', $subject->id)
             ->where('year_level_id', $student->year_level_id)
@@ -65,13 +70,21 @@ class StudentSubjectController extends Controller
 
         $teacherName = $assignment?->user?->name ?? 'Unknown';
 
+        // Get student's quiz and essay submissions
         $quizResults = StudentQuizResult::where('user_id', $userId)->get()->keyBy('activity_id');
         $essaySubmissions = Submission::where('user_id', $userId)->get()->keyBy('activity_id');
 
-        $modules = $subject->modules->map(function ($mod) use ($quizResults, $essaySubmissions) {
+        // Filter only modules for this student
+        $filteredModules = $subject->modules->filter(function ($mod) use ($student, $subject) {
+            return $mod->year_level_id === $student->year_level_id &&
+                   $mod->section_id === $student->section_id &&
+                   $mod->subject_id === $subject->id;
+        });
+
+        $modules = $filteredModules->map(function ($mod) use ($quizResults, $essaySubmissions, $student, $subject, $assignment) {
+            // All activities inside this module are considered valid
             $activities = $mod->activities;
             $activityCount = $activities->count();
-
             $completedCount = 0;
 
             $activityData = $activities->map(function ($act) use ($quizResults, $essaySubmissions, &$completedCount) {
@@ -95,11 +108,19 @@ class StudentSubjectController extends Controller
 
             $moduleProgress = $activityCount > 0 ? ($completedCount / $activityCount) * 100 : 0;
 
+            // Filter materials to only those assigned to this student's level/section/subject
+            $filteredMaterials = $mod->materials->filter(function ($mat) use ($student, $subject, $assignment) {
+                return $mat->year_level_id === $student->year_level_id &&
+                    $mat->section_id === $student->section_id &&
+                    $mat->subject_id === $subject->id &&
+                    $mat->user_id === $assignment?->user?->id;
+            });
+
             return [
                 'id' => $mod->id,
                 'title' => $mod->title,
                 'progress' => round($moduleProgress, 2),
-                'materials' => $mod->materials->map(fn($mat) => [
+                'materials' => $filteredMaterials->map(fn($mat) => [
                     'id' => $mat->id,
                     'title' => $mat->title,
                     'description' => $mat->description,
@@ -116,10 +137,11 @@ class StudentSubjectController extends Controller
             'subject' => [
                 'id' => $subject->id,
                 'name' => $subject->name,
-                'modules' => $modules,
+                'modules' => $modules->values(),
                 'teacher' => $teacherName,
             ],
             'progress' => 0,
         ]);
     }
+
 }
