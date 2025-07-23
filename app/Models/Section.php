@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\YearLevel;
+use App\Models\Student;
 use Illuminate\Database\Eloquent\Model;
 
 class Section extends Model
@@ -13,4 +14,9 @@ class Section extends Model
     {
         return $this->belongsTo(YearLevel::class);
     }
+    public function students()
+{
+    return $this->hasMany(Student::class);
+}
+
 }

@@ -1,10 +1,12 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Student;
 use App\Models\Subject;
+use App\Models\TeacherAssignment;
 use App\Models\Submission;
 use Illuminate\Http\Request;
 use App\Models\StudentQuizResult;
@@ -16,7 +18,8 @@ class StudentSubjectController extends Controller
     {
         $userId = Auth::id();
 
-        $student = Student::with(['subject', 'yearLevel', 'section'])
+        // Get the current student with year level and section
+        $student = Student::with(['yearLevel', 'section'])
             ->where('user_id', $userId)
             ->firstOrFail();
 
@@ -26,7 +29,7 @@ class StudentSubjectController extends Controller
             ->pluck('subject')
             ->unique('id')
             ->map(function ($subject) use ($student) {
-                $assignment = \App\Models\TeacherAssignment::with('user')
+                $assignment = TeacherAssignment::with('user')
                     ->where('subject_id', $subject->id)
                     ->where('year_level_id', $student->year_level_id)
                     ->where('section_id', $student->section_id)
@@ -52,50 +55,23 @@ class StudentSubjectController extends Controller
             ->where('user_id', $userId)
             ->firstOrFail();
 
-        $subject = Subject::with([
-            'modules.activities',
-            'modules.materials.user',
-        ])->findOrFail($id);
+        $subject = Subject::with(['modules.activities', 'modules.materials.user'])->findOrFail($id);
 
-        $assignment = \App\Models\TeacherAssignment::with('user')
+        $assignment = TeacherAssignment::with('user')
             ->where('subject_id', $subject->id)
             ->where('year_level_id', $student->year_level_id)
             ->where('section_id', $student->section_id)
             ->first();
 
-        $assignedTeacher = $assignment?->user;
-        $teacherName = $assignedTeacher?->name ?? 'Unknown';
-        $assignedTeacherId = $assignedTeacher?->id;
+        $teacherName = $assignment?->user?->name ?? 'Unknown';
 
         $quizResults = StudentQuizResult::where('user_id', $userId)->get()->keyBy('activity_id');
         $essaySubmissions = Submission::where('user_id', $userId)->get()->keyBy('activity_id');
 
-        $modules = $subject->modules->map(function ($mod) use (
-            $quizResults,
-            $essaySubmissions,
-            $student,
-            $subject,
-            $assignedTeacherId
-        ) {
-            $activities = $mod->activities->filter(function ($act) use ($student, $subject, $assignedTeacherId) {
-                return $act->year_level_id === $student->year_level_id &&
-                    $act->section_id === $student->section_id &&
-                    $act->subject_id === $subject->id &&
-                    $act->user_id === $assignedTeacherId;
-            });
-
-            $materials = $mod->materials->filter(function ($mat) use ($student, $subject, $assignedTeacherId) {
-                return $mat->year_level_id === $student->year_level_id &&
-                    $mat->section_id === $student->section_id &&
-                    $mat->subject_id === $subject->id &&
-                    $mat->user_id === $assignedTeacherId;
-            });
-
-            if ($activities->isEmpty() && $materials->isEmpty()) {
-                return null;
-            }
-
+        $modules = $subject->modules->map(function ($mod) use ($quizResults, $essaySubmissions) {
+            $activities = $mod->activities;
             $activityCount = $activities->count();
+
             $completedCount = 0;
 
             $activityData = $activities->map(function ($act) use ($quizResults, $essaySubmissions, &$completedCount) {
@@ -123,7 +99,7 @@ class StudentSubjectController extends Controller
                 'id' => $mod->id,
                 'title' => $mod->title,
                 'progress' => round($moduleProgress, 2),
-                'materials' => $materials->map(fn($mat) => [
+                'materials' => $mod->materials->map(fn($mat) => [
                     'id' => $mat->id,
                     'title' => $mat->title,
                     'description' => $mat->description,
@@ -134,16 +110,15 @@ class StudentSubjectController extends Controller
                 ]),
                 'activities' => $activityData,
             ];
-        })->filter();
+        });
 
         return Inertia::render('Student/SubjectDetail', [
             'subject' => [
                 'id' => $subject->id,
                 'name' => $subject->name,
-                'modules' => $modules->filter()->values()->all(),
+                'modules' => $modules,
                 'teacher' => $teacherName,
             ],
-
             'progress' => 0,
         ]);
     }
