@@ -209,7 +209,12 @@ function sortIcon(key: string) {
                             <td class="px-6 py-4 text-[#01006c]">{{ user.email }}</td>
                             <td class="px-6 py-4 text-[#01006c] capitalize">{{ user.role }}</td>
                             <td class="space-x-2 px-6 py-4 text-center">
-                                <button @click="openEditModal(user)" class="text-blue-600 hover:text-blue-800" :disabled="user.role === 'student'">
+                                <button
+                                    @click="openEditModal(user)"
+                                    :disabled="user.role === 'student'"
+                                    class="rounded p-1"
+                                    :class="user.role === 'student' ? 'cursor-not-allowed text-blue-200' : 'text-blue-600 hover:text-blue-800'"
+                                >
                                     <Pencil class="h-4 w-4" />
                                 </button>
 

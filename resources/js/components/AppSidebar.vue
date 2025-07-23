@@ -61,6 +61,11 @@ const adminNavItems: NavItem[] = [
         icon: UserCheck,
     },
     {
+        title: 'Head Assign',
+        href: '/head-assignments',
+        icon: UserCog,
+    },
+    {
         title: 'Teacher Assign',
         href: '/teacher-assignments',
         icon: UserCog,

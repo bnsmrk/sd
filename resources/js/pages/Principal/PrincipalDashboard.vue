@@ -39,7 +39,7 @@ const statsKeys = (Object.keys(props.counts) as (keyof typeof props.counts)[]).f
     <Head title="Principal Dashboard" />
     <AppLayout :breadcrumbs="[{ title: 'Principal Dashboard', href: '/principal-dashboard' }]">
         <div class="min-h-screen space-y-8 bg-pink-50 p-6">
-            <h1 class="text-3xl font-bold text-[#01006c]">📊 Principal Dashboard</h1>
+            <h1 class="text-3xl font-bold text-[#01006c]">Principal Dashboard</h1>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <div v-for="(key, index) in statsKeys" :key="key" :class="getCardClasses(index)">

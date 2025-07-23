@@ -23,6 +23,7 @@ use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\EnrollStudentController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\HeadAssignmentController;
 use App\Http\Controllers\StudentSubjectController;
 use App\Http\Controllers\ProficiencyTestController;
 use App\Http\Controllers\StudentsProficiencyResult;
@@ -156,6 +157,11 @@ Route::middleware('role:admin,ict')->group(function () {
     Route::resource('enroll', EnrollStudentController::class);
     Route::resource('users', UserController::class);
 });
+
+Route::post('/head-assignments/assign-to-all', [HeadAssignmentController::class, 'assignToAll']);
+Route::delete('/head-assignments/year-level/{yearLevelId}', [HeadAssignmentController::class, 'destroyByYearLevel']);
+Route::resource('head-assignments', HeadAssignmentController::class);
+
 
 Route::middleware('role:admin,head')->group(function () {
     Route::resource('teacher-assignments', TeacherAssignmentController::class);
