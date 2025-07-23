@@ -101,7 +101,6 @@ const deleteAssignment = () => {
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div class="w-full max-w-md rounded-2xl border-2 border-pink-300 bg-white p-6 shadow-xl">
                 <h3 class="mb-4 text-xl font-bold text-pink-600">Confirm Deletion</h3>

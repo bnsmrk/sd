@@ -119,16 +119,15 @@ onMounted(() => {
             </div>
 
             <div class="mt-10 h-[400px] rounded-xl bg-white p-6 shadow">
-                <h2 class="mb-2 text-lg font-semibold text-indigo-800">📊 Students & Activity Overview</h2>
+                <h2 class="mb-2 text-lg font-semibold text-indigo-800">Students & Activity Overview</h2>
                 <canvas id="chart" class="h-full w-full"></canvas>
             </div>
         </div>
         <div class="mt-10 rounded-xl bg-white p-6 shadow">
-            <h2 class="mb-4 text-lg font-semibold text-indigo-800">👩‍🏫 All Teachers</h2>
+            <h2 class="mb-4 text-lg font-semibold text-indigo-800">All Teachers</h2>
             <div class="mb-4 flex justify-end">
                 <input
                     v-model="search"
-                    @input="updateSearch"
                     type="text"
                     placeholder="Search teachers..."
                     class="w-full max-w-xs rounded border px-4 py-2 text-sm shadow-sm focus:ring-2 focus:ring-indigo-500"

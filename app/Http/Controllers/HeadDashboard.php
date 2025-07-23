@@ -5,16 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Section;
 use App\Models\YearLevel;
+use App\Models\HeadAssignment;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HeadDashboard extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $filters = Request::only('search');
+        $filters = $request->only('search');
 
-        $query = User::where('role', 'teacher');
+        $userId = Auth::id();
+        $assignedSectionIds = HeadAssignment::where('user_id', $userId)
+            ->pluck('section_id')
+            ->filter()
+            ->unique();
+
+        $query = User::where('role', 'teacher')
+            ->whereHas('teacherAssignments', function ($q) use ($assignedSectionIds) {
+                $q->whereIn('section_id', $assignedSectionIds);
+            });
 
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
@@ -23,7 +34,8 @@ class HeadDashboard extends Controller
             });
         }
 
-        $teachers = $query->with('teacherAssignments.subject.yearLevel', 'teacherAssignments.section')
+        $teachers = $query
+            ->with('teacherAssignments.subject.yearLevel', 'teacherAssignments.section')
             ->paginate(10)
             ->withQueryString()
             ->through(function ($teacher) {
@@ -39,7 +51,7 @@ class HeadDashboard extends Controller
                 ];
             });
 
-        $yearLevels = YearLevel::withCount(['students'])->get();
+        $yearLevels = YearLevel::withCount('students')->get();
         $sectionCount = Section::count();
         $teacherCount = User::where('role', 'teacher')->count();
 
@@ -56,6 +68,7 @@ class HeadDashboard extends Controller
             ],
         ]);
     }
+
     public function show($id)
     {
         $teacher = User::with(['teacherAssignments.subject.yearLevel', 'teacherAssignments.section'])->findOrFail($id);
