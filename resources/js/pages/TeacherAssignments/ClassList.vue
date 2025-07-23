@@ -61,12 +61,23 @@ const sortedStudents = computed(() => {
         <div class="p-6">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <h1 class="text-2xl font-bold text-pink-400">My Class List</h1>
-                <input
-                    v-model="search"
-                    type="text"
-                    placeholder="Search student name..."
-                    class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
-                />
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Search student name..."
+                        class="rounded border border-pink-300 px-3 py-2 text-sm text-pink-800 shadow-sm focus:border-yellow-400 focus:outline-none"
+                    />
+
+                    <a
+                        :href="`/class-lists/export?search=${encodeURIComponent(search)}`"
+                        target="_blank"
+                        class="rounded bg-yellow-400 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-yellow-500"
+                    >
+                        Download CSV
+                    </a>
+                </div>
             </div>
 
             <div class="overflow-x-auto rounded-lg border border-pink-200 shadow">

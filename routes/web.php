@@ -123,8 +123,9 @@ Route::middleware('role:teacher')->group(function () {
     Route::resource('modules', ModuleController::class);
     Route::resource('students-proficiency', ProficiencyReportController::class)->only(['index']);
     Route::get('/students-proficiency/pdf', [ProficiencyReportController::class, 'exportPdf'])->name('students-proficiency.pdf');
-    Route::resource('class-lists', ClassListController::class);
+    Route::get('/class-lists/export', [ClassListController::class, 'export'])->name('class-lists.export');
 
+    Route::resource('class-lists', ClassListController::class);
 
     Route::get('/activities/{activity}/essay-answers', [SubmissionController::class, 'showEssayAnswerTable'])
         ->name('activities.essay.answers');
