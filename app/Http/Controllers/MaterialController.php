@@ -4,34 +4,31 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Module;
-use App\Models\Section;
 use App\Models\Subject;
 use App\Models\Material;
-use App\Models\YearLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Models\TeacherSubAssignment;
 
 class MaterialController extends Controller
 {
-    private function getTeacherAssignments()
+    private function getTeacherSubAssignments()
     {
-        return Auth::user()
-            ->teacherAssignments()
-            ->with(['yearLevel', 'section', 'subject'])
+        return TeacherSubAssignment::with(['section', 'subject'])
+            ->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
             ->get();
     }
 
     public function index(Request $request)
     {
-        $assignments = $this->getTeacherAssignments();
+        $assignments = $this->getTeacherSubAssignments();
 
         $materials = Material::with(['yearLevel', 'section', 'subject', 'user', 'comments.user:id,name'])
             ->where('user_id', Auth::id())
-            ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
+            ->whereIn('section_id', $assignments->pluck('section_id'))
             ->whereIn('subject_id', $assignments->pluck('subject_id'))
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $query->where('title', 'like', '%' . $request->search . '%');
-            })
+            ->when($request->filled('search'), fn($q) => $q->where('title', 'like', '%' . $request->search . '%'))
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -42,25 +39,23 @@ class MaterialController extends Controller
         ]);
     }
 
-
     public function create()
     {
-        $assignments = $this->getTeacherAssignments();
+        $assignments = $this->getTeacherSubAssignments();
 
-        $yearLevels = $assignments->pluck('yearLevel')->unique('id')->values();
+        $yearLevels = $assignments->pluck('section.yearLevel')->unique('id')->values();
         $sections = $assignments->pluck('section')->unique('id')->values();
         $subjects = $assignments->pluck('subject')->unique('id')->values();
-        $modules = Module::whereIn('year_level_id', $assignments->pluck('year_level_id'))
+
+        $modules = Module::with(['yearLevel', 'subject'])
+            ->whereIn('section_id', $assignments->pluck('section_id'))
             ->whereIn('subject_id', $assignments->pluck('subject_id'))
-            ->with(['yearLevel', 'subject'])
             ->get();
 
-        $subjectSectionMap = $assignments->map(function ($assignment) {
-            return [
-                'section_id' => $assignment->section_id,
-                'subject_id' => $assignment->subject_id,
-            ];
-        });
+        $subjectSectionMap = $assignments->map(fn ($a) => [
+            'section_id' => $a->section_id,
+            'subject_id' => $a->subject_id,
+        ]);
 
         return Inertia::render('Materials/Create', [
             'modules' => $modules,
@@ -70,9 +65,6 @@ class MaterialController extends Controller
             'subjectSectionMap' => $subjectSectionMap,
         ]);
     }
-
-
-
 
     public function store(Request $request)
     {
@@ -85,14 +77,10 @@ class MaterialController extends Controller
             'subject_id' => $request->type === 'lesson_plan' ? 'required|exists:subjects,id' : 'nullable',
             'section_id' => 'nullable|exists:sections,id',
             'video' => 'nullable|file|mimetypes:video/mp4,video/x-msvideo,video/quicktime,video/x-matroska|max:51200',
-
             'video_link' => 'nullable|url|max:255',
         ]);
-        $videoPath = null;
 
-        if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->store('materials/videos', 'public');
-        }
+        $videoPath = $request->hasFile('video') ? $request->file('video')->store('materials/videos', 'public') : null;
 
         $user = Auth::user();
         $year_level_id = null;
@@ -102,9 +90,8 @@ class MaterialController extends Controller
 
         if ($request->type === 'material') {
             $module = Module::findOrFail($request->module_id);
-
-            $authorized = $user->teacherAssignments()
-                ->where('year_level_id', $module->year_level_id)
+            $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+                ->where('section_id', $module->section_id)
                 ->where('subject_id', $module->subject_id)
                 ->exists();
 
@@ -117,17 +104,16 @@ class MaterialController extends Controller
             $subject_id = $module->subject_id;
             $module_id = $module->id;
         } else {
-            $subject = Subject::findOrFail($request->subject_id);
-
-            $authorized = $user->teacherAssignments()
-                ->where('year_level_id', $subject->year_level_id)
-                ->where('subject_id', $subject->id)
+            $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+                ->where('section_id', $request->section_id)
+                ->where('subject_id', $request->subject_id)
                 ->exists();
 
             if (!$authorized) {
-                abort(403, 'Unauthorized to upload lesson plan for this subject.');
+                abort(403, 'Unauthorized to upload lesson plan.');
             }
 
+            $subject = Subject::findOrFail($request->subject_id);
             $year_level_id = $subject->year_level_id;
             $section_id = $request->section_id;
             $subject_id = $subject->id;
@@ -147,32 +133,27 @@ class MaterialController extends Controller
             'user_id' => $user->id,
             'video_path' => $videoPath,
             'video_link' => $request->video_link,
-
         ]);
 
         return redirect()->route('materials.index')->with('success', 'Material uploaded successfully.');
     }
 
-
     public function edit(Material $material)
     {
+        $assignments = $this->getTeacherSubAssignments();
 
-        $user = Auth::user();
-
-        $assignments = $this->getTeacherAssignments();
-
-        $yearLevels = $assignments->pluck('yearLevel')->unique('id')->values();
+        $yearLevels = $assignments->pluck('section.yearLevel')->unique('id')->values();
         $sections = $assignments->pluck('section')->unique('id')->values();
         $subjects = $assignments->pluck('subject')->unique('id')->values();
 
-        $modules = Module::whereIn('year_level_id', $assignments->pluck('year_level_id'))
+        $modules = Module::with(['yearLevel', 'subject'])
+            ->whereIn('section_id', $assignments->pluck('section_id'))
             ->whereIn('subject_id', $assignments->pluck('subject_id'))
-            ->with(['yearLevel', 'subject'])
             ->get();
 
-        $subjectSectionMap = $assignments->map(fn($assignment) => [
-            'section_id' => $assignment->section_id,
-            'subject_id' => $assignment->subject_id,
+        $subjectSectionMap = $assignments->map(fn($a) => [
+            'section_id' => $a->section_id,
+            'subject_id' => $a->subject_id,
         ]);
 
         return Inertia::render('Materials/Edit', [
@@ -184,8 +165,6 @@ class MaterialController extends Controller
             'subjectSectionMap' => $subjectSectionMap,
         ]);
     }
-
-
 
     public function update(Request $request, Material $material)
     {
@@ -203,8 +182,8 @@ class MaterialController extends Controller
 
         $user = Auth::user();
 
-        $authorized = $user->teacherAssignments()
-            ->where('year_level_id', $request->year_level_id)
+        $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+            ->where('section_id', $request->section_id)
             ->where('subject_id', $request->subject_id)
             ->exists();
 
@@ -237,14 +216,12 @@ class MaterialController extends Controller
         return redirect()->route('materials.index')->with('warning', 'Material updated.');
     }
 
-
-
     public function destroy(Material $material)
     {
         $user = Auth::user();
 
-        $authorized = $user->teacherAssignments()
-            ->where('year_level_id', $material->year_level_id)
+        $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+            ->where('section_id', $material->section_id)
             ->where('subject_id', $material->subject_id)
             ->exists();
 

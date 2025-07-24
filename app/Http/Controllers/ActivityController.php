@@ -7,7 +7,7 @@ use Inertia\Inertia;
 use App\Models\Module;
 use App\Models\Activity;
 use Illuminate\Http\Request;
-use App\Models\TeacherAssignment;
+use App\Models\TeacherSubAssignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\NewActivityNotification;
@@ -19,11 +19,12 @@ class ActivityController extends Controller
     {
         $teacherId = Auth::id();
 
-        $assignments = TeacherAssignment::where('user_id', $teacherId)->get();
+        $subAssignments = TeacherSubAssignment::whereHas('teacherAssignment', function ($q) use ($teacherId) {
+            $q->where('user_id', $teacherId);
+        })->get();
 
-        $allowedModuleIds = Module::whereIn('year_level_id', $assignments->pluck('year_level_id'))
-            ->whereIn('section_id', $assignments->pluck('section_id'))
-            ->whereIn('subject_id', $assignments->pluck('subject_id'))
+        $allowedModuleIds = Module::whereIn('section_id', $subAssignments->pluck('section_id'))
+            ->whereIn('subject_id', $subAssignments->pluck('subject_id'))
             ->pluck('id');
 
         $search = $request->input('search');
@@ -58,18 +59,20 @@ class ActivityController extends Controller
 
     public function create()
     {
-        $user = Auth::user();
+        $userId = Auth::id();
 
-        $assignments = $user->teacherAssignments()->get();
+        $subAssignments = TeacherSubAssignment::with(['teacherAssignment.yearLevel', 'section', 'subject'])
+            ->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $userId))
+            ->get();
 
         $modules = Module::with(['yearLevel', 'section', 'subject'])
-            ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
-            ->whereIn('section_id', $assignments->pluck('section_id'))
-            ->whereIn('subject_id', $assignments->pluck('subject_id'))
+            ->whereIn('section_id', $subAssignments->pluck('section_id'))
+            ->whereIn('subject_id', $subAssignments->pluck('subject_id'))
             ->get();
 
         return Inertia::render('Activities/Create', compact('modules'));
     }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -82,47 +85,55 @@ class ActivityController extends Controller
             'file' => 'nullable|file|max:10240',
         ]);
 
+        $module = Module::findOrFail($data['module_id']);
+
+        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
+            ->where('section_id', $module->section_id)
+            ->where('subject_id', $module->subject_id)
+            ->exists();
+
+        if (! $isAssigned) {
+            abort(403, 'You are not assigned to this module.');
+        }
+
         if ($request->hasFile('file')) {
-            $data['file_path'] = $request->file('file')->store('activity_files');
+            $data['file_path'] = $request->file('file')->store('activity_files', 'public');
         }
 
         $activity = Activity::create($data);
-
-        $module = Module::findOrFail($data['module_id']);
 
         $studentUserIds = \App\Models\Student::where('year_level_id', $module->year_level_id)
             ->where('section_id', $module->section_id)
             ->where('subject_id', $module->subject_id)
             ->pluck('user_id');
 
-
-        $students = \App\Models\User::whereIn('id', $studentUserIds)->get();
-
-
+        $students = User::whereIn('id', $studentUserIds)->get();
 
         if ($students->isNotEmpty()) {
             Notification::send($students, new NewActivityNotification($activity));
         }
+
         return redirect()->route('activities.index')->with('success', 'Activity created and students notified.');
     }
 
     public function edit(Activity $activity)
     {
-        $user = Auth::user();
+        $userId = Auth::id();
 
-        $assignments = $user->teacherAssignments()->get();
+        $subAssignments = TeacherSubAssignment::with(['teacherAssignment'])
+            ->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $userId))
+            ->get();
 
         $modules = Module::with(['yearLevel', 'section', 'subject'])
-            ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
-            ->whereIn('section_id', $assignments->pluck('section_id'))
-            ->whereIn('subject_id', $assignments->pluck('subject_id'))
+            ->whereIn('section_id', $subAssignments->pluck('section_id'))
+            ->whereIn('subject_id', $subAssignments->pluck('subject_id'))
             ->get();
 
         $activityModule = $activity->module;
-        $isAssigned = $assignments->contains(function ($a) use ($activityModule) {
-            return $a->year_level_id === $activityModule->year_level_id
-                && $a->section_id === $activityModule->section_id
-                && $a->subject_id === $activityModule->subject_id;
+
+        $isAssigned = $subAssignments->contains(function ($a) use ($activityModule) {
+            return $a->section_id === $activityModule->section_id &&
+                   $a->subject_id === $activityModule->subject_id;
         });
 
         if (! $isAssigned) {
@@ -148,10 +159,8 @@ class ActivityController extends Controller
         ]);
 
         $module = Module::findOrFail($validated['module_id']);
-        $user = Auth::user();
 
-        $isAssigned = $user->teacherAssignments()
-            ->where('year_level_id', $module->year_level_id)
+        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
             ->where('section_id', $module->section_id)
             ->where('subject_id', $module->subject_id)
             ->exists();
@@ -161,8 +170,8 @@ class ActivityController extends Controller
         }
 
         if ($request->hasFile('file')) {
-            if ($activity->file_path && \Storage::disk('public')->exists($activity->file_path)) {
-                \Storage::disk('public')->delete($activity->file_path);
+            if ($activity->file_path && Storage::disk('public')->exists($activity->file_path)) {
+                Storage::disk('public')->delete($activity->file_path);
             }
 
             $validated['file_path'] = $request->file('file')->store('activity_files', 'public');
@@ -173,16 +182,25 @@ class ActivityController extends Controller
         return redirect()->route('activities.index')->with('warning', 'You have successfully updated the Activity.');
     }
 
-
-
     public function destroy(Activity $activity)
     {
-        if ($activity->file_path && Storage::exists($activity->file_path)) {
-            Storage::delete($activity->file_path);
+        $module = $activity->module;
+
+        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
+            ->where('section_id', $module->section_id)
+            ->where('subject_id', $module->subject_id)
+            ->exists();
+
+        if (! $isAssigned) {
+            abort(403, 'You are not authorized to delete this activity.');
+        }
+
+        if ($activity->file_path && Storage::disk('public')->exists($activity->file_path)) {
+            Storage::disk('public')->delete($activity->file_path);
         }
 
         $activity->delete();
 
-        return redirect()->route('activities.index')->with('danger', 'You have successfully deleted an Activity. ');
+        return redirect()->route('activities.index')->with('danger', 'You have successfully deleted an Activity.');
     }
 }

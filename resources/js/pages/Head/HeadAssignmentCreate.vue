@@ -52,9 +52,6 @@ const isLoading = computed(() => isSubmitting.value);
             <h1 class="mb-6 text-xl font-semibold text-pink-500">Assign Head to Year Level</h1>
 
             <form @submit.prevent="submitForm" class="space-y-6">
-                <!-- Horizontal row for both fields -->
-
-                <!-- Head -->
                 <div class="mb-4">
                     <label class="mb-1 block text-sm font-medium text-pink-600">Head</label>
                     <select v-model="form.user_id" class="w-full rounded border border-pink-300 px-3 py-2 text-pink-600">
@@ -64,7 +61,6 @@ const isLoading = computed(() => isSubmitting.value);
                     <span v-if="form.errors.user_id" class="text-sm text-red-500">{{ form.errors.user_id }}</span>
                 </div>
 
-                <!-- Year Level -->
                 <div class="mb-4">
                     <label class="mb-1 block text-sm font-medium text-pink-600">Year Level</label>
                     <select v-model="form.year_level_id" class="w-full rounded border border-pink-300 px-3 py-2 text-pink-600">
@@ -74,7 +70,6 @@ const isLoading = computed(() => isSubmitting.value);
                     <span v-if="form.errors.year_level_id" class="text-sm text-red-500">{{ form.errors.year_level_id }}</span>
                 </div>
 
-                <!-- Buttons below -->
                 <div class="mt-6 flex justify-end gap-2">
                     <Link href="/head-assignments" class="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600">Cancel</Link>
                     <button type="submit" class="rounded bg-pink-500 px-4 py-2 text-white hover:bg-pink-600">Assign</button>

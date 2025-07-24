@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
-import { Eye, Pencil, Plus, Trash2, X } from 'lucide-vue-next';
+import { Pencil, Plus, Trash2, X } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 import { computed } from 'vue';
@@ -162,9 +162,6 @@ const sortedAssignments = computed(() => {
                             <td class="px-4 py-2 text-[#01006c]">{{ a.year_level.name }}</td>
                             <td class="px-4 py-2 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <Link :href="`/teacher-assignments/${a.id}`" class="text-green-600 hover:text-green-800">
-                                        <Eye class="h-5 w-5" />
-                                    </Link>
                                     <Link :href="`/teacher-assignments/${a.id}/edit`" class="text-blue-600 hover:text-blue-800">
                                         <Pencil class="h-5 w-5" />
                                     </Link>

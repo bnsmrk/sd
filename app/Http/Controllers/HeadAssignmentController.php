@@ -14,9 +14,6 @@ use Illuminate\Validation\ValidationException;
 
 class HeadAssignmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -137,9 +134,7 @@ class HeadAssignmentController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         //
@@ -197,10 +192,4 @@ class HeadAssignmentController extends Controller
     }
 
 
-
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
 }

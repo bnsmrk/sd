@@ -285,37 +285,40 @@ function submitForm() {
                     class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                 />
             </div>
-            <div>
-                <label class="mb-1 block flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
-                    <FileUp class="h-4 w-4 text-[#ff69b4]" />
-                    Upload Video (Optional)
-                </label>
-                <input
-                    type="file"
-                    accept=".mp4,.avi,.mov,.mkv"
-                    @change="(e) => (form.video = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
-                    class="w-full rounded border border-[#01006c] p-2 text-[#ff69b4] file:mr-4 file:border-0 file:bg-[#ffc60b]/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#01006c] hover:file:bg-[#ffc60b]/40 focus:border-[#ffc60b] focus:outline-none"
-                />
-                <div v-if="props.material.video_path" class="mt-2 text-sm text-gray-700">
-                    <p>Current Video:</p>
-                    <video
-                        controls
-                        :src="`/storage/${props.material.video_path}`"
-                        class="mt-1 w-full max-w-md rounded border border-[#ffc60b]"
-                    ></video>
-                </div>
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-[#ff69b4]">Video/Meeting Link (Optional)</label>
-                <input
-                    type="url"
-                    class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
-                    v-model="form.video_link"
-                    placeholder="https://youtube.com/..."
-                />
-                <div v-if="props.material.video_link" class="mt-1 text-sm text-blue-600 underline">
-                    <a :href="props.material.video_link" target="_blank">View Video Link</a>
+            <div v-if="selectedType === 'material'">
+                <div>
+                    <label class="mb-1 block flex items-center gap-1 text-sm font-medium text-[#ff69b4]">
+                        <FileUp class="h-4 w-4 text-[#ff69b4]" />
+                        Upload Video (Optional)
+                    </label>
+                    <input
+                        type="file"
+                        accept=".mp4,.avi,.mov,.mkv"
+                        @change="(e) => (form.video = (e.target as HTMLInputElement)?.files?.[0] ?? null)"
+                        class="w-full rounded border border-[#01006c] p-2 text-[#ff69b4] file:mr-4 file:border-0 file:bg-[#ffc60b]/20 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#01006c] hover:file:bg-[#ffc60b]/40 focus:border-[#ffc60b] focus:outline-none"
+                    />
+                    <div v-if="props.material.video_path" class="mt-2 text-sm text-gray-700">
+                        <p>Current Video:</p>
+                        <video
+                            controls
+                            :src="`/storage/${props.material.video_path}`"
+                            class="mt-1 w-full max-w-md rounded border border-[#ffc60b]"
+                        ></video>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-[#ff69b4]">Video/Meeting Link (Optional)</label>
+                    <input
+                        type="url"
+                        class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                        v-model="form.video_link"
+                        placeholder="https://youtube.com/..."
+                    />
+                    <div v-if="props.material.video_link" class="mt-1 text-sm text-blue-600 underline">
+                        <a :href="props.material.video_link" target="_blank">View Video Link</a>
+                    </div>
                 </div>
             </div>
 

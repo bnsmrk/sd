@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Module;
+use App\Models\TeacherSubAssignment;
 use App\Models\YearLevel;
-use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -14,12 +14,15 @@ class ModuleController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $assignments = $user->teacherAssignments()->get();
+
+        $subAssignments = TeacherSubAssignment::with(['teacherAssignment'])
+            ->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+            ->get();
 
         $query = Module::with(['yearLevel', 'subject', 'section'])
-            ->whereIn('year_level_id', $assignments->pluck('year_level_id'))
-            ->whereIn('section_id', $assignments->pluck('section_id'))
-            ->whereIn('subject_id', $assignments->pluck('subject_id'));
+            ->whereIn('year_level_id', $subAssignments->pluck('teacherAssignment.year_level_id'))
+            ->whereIn('section_id', $subAssignments->pluck('section_id'))
+            ->whereIn('subject_id', $subAssignments->pluck('subject_id'));
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -37,12 +40,15 @@ class ModuleController extends Controller
     {
         $user = Auth::user();
 
-        $assignments = $user->teacherAssignments()
-            ->with(['yearLevel', 'section', 'subject'])
-            ->get();
+        $subAssignments = TeacherSubAssignment::with([
+            'teacherAssignment.yearLevel',
+            'section',
+            'subject',
+        ])->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+          ->get();
 
-        $grouped = $assignments->groupBy(fn($a) => $a->yearLevel->id)->map(function ($items, $yearLevelId) {
-            $yearLevel = $items->first()->yearLevel;
+        $grouped = $subAssignments->groupBy(fn ($sub) => $sub->teacherAssignment->year_level_id)->map(function ($items, $yearLevelId) {
+            $yearLevel = $items->first()->teacherAssignment->yearLevel;
 
             return [
                 'id' => $yearLevel->id,
@@ -67,8 +73,6 @@ class ModuleController extends Controller
         ]);
     }
 
-
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -78,22 +82,21 @@ class ModuleController extends Controller
             'subject_id' => 'required|exists:subjects,id',
         ]);
 
-        if (!Auth::check()) {
-            abort(403, 'Unauthorized action.');
-        }
+        $user = Auth::user();
 
-        $isAssigned = Auth::user()->teacherAssignments()
-            ->where('year_level_id', $validated['year_level_id'])
-            ->where('section_id', $validated['section_id'])
+        $isAssigned = TeacherSubAssignment::where('section_id', $validated['section_id'])
             ->where('subject_id', $validated['subject_id'])
+            ->whereHas('teacherAssignment', function ($q) use ($user, $validated) {
+                $q->where('user_id', $user->id)
+                    ->where('year_level_id', $validated['year_level_id']);
+            })
             ->exists();
 
-        if (!$isAssigned) {
+        if (! $isAssigned) {
             abort(403, 'You are not assigned to this year level, section, and subject.');
         }
 
         Module::create($validated);
-
 
         return redirect()->route('modules.index')->with('success', 'Module created successfully.');
     }
@@ -102,12 +105,15 @@ class ModuleController extends Controller
     {
         $user = Auth::user();
 
-        $assignments = $user->teacherAssignments()
-            ->with(['yearLevel', 'section', 'subject'])
-            ->get();
+        $subAssignments = TeacherSubAssignment::with([
+            'teacherAssignment.yearLevel',
+            'section',
+            'subject',
+        ])->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+          ->get();
 
-        $grouped = $assignments->groupBy(fn($a) => $a->yearLevel->id)->map(function ($items, $yearLevelId) {
-            $yearLevel = $items->first()->yearLevel;
+        $grouped = $subAssignments->groupBy(fn ($sub) => $sub->teacherAssignment->year_level_id)->map(function ($items, $yearLevelId) {
+            $yearLevel = $items->first()->teacherAssignment->yearLevel;
 
             return [
                 'id' => $yearLevel->id,
@@ -117,9 +123,7 @@ class ModuleController extends Controller
                     'name' => $s->name,
                 ]),
                 'subjects' => $items->pluck('subject')->unique('id')->values()->map(function ($subject) use ($items) {
-                    $sectionIds = $items->filter(fn($i) => $i->subject_id === $subject->id)
-                        ->pluck('section.id')->unique()->values();
-
+                    $sectionIds = $items->where('subject_id', $subject->id)->pluck('section_id')->unique()->values();
                     return [
                         'id' => $subject->id,
                         'name' => $subject->name,
@@ -135,7 +139,6 @@ class ModuleController extends Controller
         ]);
     }
 
-
     public function update(Request $request, Module $module)
     {
         $validated = $request->validate([
@@ -147,10 +150,12 @@ class ModuleController extends Controller
 
         $user = Auth::user();
 
-        $isAssigned = $user->teacherAssignments()
-            ->where('year_level_id', $validated['year_level_id'])
-            ->where('section_id', $validated['section_id'])
+        $isAssigned = TeacherSubAssignment::where('section_id', $validated['section_id'])
             ->where('subject_id', $validated['subject_id'])
+            ->whereHas('teacherAssignment', function ($q) use ($user, $validated) {
+                $q->where('user_id', $user->id)
+                    ->where('year_level_id', $validated['year_level_id']);
+            })
             ->exists();
 
         if (! $isAssigned) {
@@ -161,9 +166,6 @@ class ModuleController extends Controller
 
         return redirect()->route('modules.index')->with('warning', 'Module updated successfully.');
     }
-
-
-
 
     public function destroy(Module $module)
     {

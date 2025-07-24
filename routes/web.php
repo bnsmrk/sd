@@ -32,6 +32,7 @@ use App\Http\Controllers\TeacherAssignmentController;
 use App\Http\Controllers\PrincipalLessonPlanController;
 use App\Http\Controllers\ProficiencyQuestionController;
 use App\Http\Controllers\PrincipalProficiencyReportController;
+use App\Http\Controllers\HeadTeacherSubAssignmentController;
 
 
 // use Google\Client;
@@ -175,6 +176,9 @@ Route::middleware('role:principal,head')->group(function () {
 Route::middleware('role:head')->group(function () {
     Route::resource('proficiency-test', ProficiencyTestController::class);
     Route::get('/proficiency-test/{proficiencyTest}/download/pdf', [ProficiencyQuestionController::class, 'downloadPdf']);
+
+    Route::resource('head-teacher-assignments', HeadTeacherSubAssignmentController::class);
+
     Route::get('/proficiency-test/{proficiencyTest}/download/csv', [ProficiencyQuestionController::class, 'downloadCsv']);
 });
 

@@ -14,26 +14,47 @@ use App\Models\StudentProficiencyAnswer;
 use App\Models\StudentProficiencyResult;
 use App\Notifications\NewProficiencyTestNotification;
 use App\Models\User;
+use App\Models\HeadAssignment;
 class ProficiencyTestController extends Controller
 {
-    public function index()
-    {
-        $tests = ProficiencyTest::with('yearLevel')->latest()->get();
 
-        return Inertia::render('Head/ProficiencyTest', [
-            'tests' => $tests,
-        ]);
-    }
 
-    public function create()
-    {
-        return Inertia::render('Head/ProficiencyTestCreate', [
-            'yearLevels' => YearLevel::all(),
-            'sections' => Section::all(['id', 'name']),
-            'subjects' => Subject::all(['id', 'name']),
+public function index()
+{
+    $userId = Auth::id();
 
-        ]);
-    }
+    $assignedYearLevelIds = HeadAssignment::where('user_id', $userId)
+        ->pluck('year_level_id')
+        ->unique()
+        ->toArray();
+
+    $tests = ProficiencyTest::with('yearLevel')
+        ->whereIn('year_level_id', $assignedYearLevelIds)
+        ->latest()
+        ->get();
+
+    return Inertia::render('Head/ProficiencyTest', [
+        'tests' => $tests,
+    ]);
+}
+
+
+public function create()
+{
+    $userId = Auth::id();
+
+    $yearLevels = YearLevel::whereIn('id', function ($query) use ($userId) {
+        $query->select('year_level_id')
+            ->from('head_assignments')
+            ->where('user_id', $userId);
+    })->get(['id', 'name']);
+
+    return Inertia::render('Head/ProficiencyTestCreate', [
+        'yearLevels' => $yearLevels,
+        'sections' => Section::all(['id', 'name']),
+        'subjects' => Subject::all(['id', 'name']),
+    ]);
+}
 
     public function store(Request $request)
 {
@@ -61,24 +82,30 @@ class ProficiencyTestController extends Controller
     return redirect()->route('proficiency-test.index')->with('success', 'Test created and notifications sent.');
 }
 
-    public function edit(string $id)
-    {
-        $test = ProficiencyTest::findOrFail($id);
+public function edit(string $id)
+{
+    $test = ProficiencyTest::findOrFail($id);
+    $userId = Auth::id();
 
-        return Inertia::render('Head/ProficiencyTestEdit', [
-            'test' => [
-                'id' => $test->id,
-                'title' => $test->title,
-                'type' => $test->type,
-                'year_level_id' => $test->year_level_id,
-                'scheduled_at' => $test->scheduled_at->format('Y-m-d\TH:i'),
-                'due_date' => $test->due_date?->format('Y-m-d\TH:i'),
+    $yearLevels = YearLevel::whereIn('id', function ($query) use ($userId) {
+        $query->select('year_level_id')
+            ->from('head_assignments')
+            ->where('user_id', $userId);
+    })->get(['id', 'name']);
 
-                'description' => $test->description,
-            ],
-            'yearLevels' => YearLevel::all(['id', 'name']),
-        ]);
-    }
+    return Inertia::render('Head/ProficiencyTestEdit', [
+        'test' => [
+            'id' => $test->id,
+            'title' => $test->title,
+            'type' => $test->type,
+            'year_level_id' => $test->year_level_id,
+            'scheduled_at' => $test->scheduled_at->format('Y-m-d\TH:i'),
+            'due_date' => $test->due_date?->format('Y-m-d\TH:i'),
+            'description' => $test->description,
+        ],
+        'yearLevels' => $yearLevels,
+    ]);
+}
 
     public function update(Request $request, string $id)
     {

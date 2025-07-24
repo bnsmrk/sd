@@ -28,11 +28,14 @@ const form = useForm({
 const selectedYearLevel = computed(() => props.assignments.find((a) => a.id === Number(form.year_level_id)));
 
 const availableSections = computed(() => (selectedYearLevel.value ? selectedYearLevel.value.sections : []));
-
 const filteredSubjects = computed(() => {
     if (!selectedYearLevel.value || !form.section_id) return [];
 
-    return selectedYearLevel.value.subjects.filter((subject) => subject.section_ids.includes(Number(form.section_id)));
+    return (
+        selectedYearLevel.value?.subjects?.filter(
+            (subject) => Array.isArray(subject.section_ids) && subject.section_ids.includes(Number(form.section_id)),
+        ) ?? []
+    );
 });
 
 watch(

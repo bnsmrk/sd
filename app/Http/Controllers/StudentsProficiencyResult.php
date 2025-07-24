@@ -9,17 +9,32 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\StudentProficiencyResult;
+use App\Models\HeadAssignment;
+use Illuminate\Support\Facades\Auth;
 
 class StudentsProficiencyResult extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
+        $userId = $user->id;
+        $role = $user->role;
+
+        if ($role === 'principal') {
+            $yearLevels = YearLevel::select('id', 'name')->get();
+            $sections   = Section::select('id', 'name', 'year_level_id')->get();
+        } else {
+            $assignments = HeadAssignment::where('user_id', $userId)->get();
+            $yearLevelIds = $assignments->pluck('year_level_id')->unique();
+            $sectionIds   = $assignments->pluck('section_id')->filter()->unique();
+
+            $yearLevels = YearLevel::whereIn('id', $yearLevelIds)->select('id', 'name')->get();
+            $sections   = Section::whereIn('id', $sectionIds)->select('id', 'name', 'year_level_id')->get();
+        }
+
         $yearLevelId = $request->input('year_level_id');
         $sectionId   = $request->input('section_id');
         $type        = $request->input('type');
-
-        $yearLevels = YearLevel::select('id', 'name')->get();
-        $sections   = Section::select('id', 'name', 'year_level_id')->get();
 
         $individuals = [];
         $sectionsAvg = [];
@@ -84,9 +99,27 @@ class StudentsProficiencyResult extends Controller
 
     public function exportPdf(Request $request)
     {
+        $user = Auth::user();
+        $userId = $user->id;
+        $role = $user->role;
+
         $yearLevelId = $request->input('year_level_id');
         $sectionId   = $request->input('section_id');
         $type        = $request->input('type');
+
+        if ($role === 'head') {
+            $assignments = HeadAssignment::where('user_id', $userId)->get();
+            $yearLevelIds = $assignments->pluck('year_level_id')->unique();
+            $sectionIds   = $assignments->pluck('section_id')->filter()->unique();
+
+            if (!in_array($yearLevelId, $yearLevelIds->toArray())) {
+                abort(403, 'You are not authorized to export this year level.');
+            }
+
+            if ($sectionId && !in_array($sectionId, $sectionIds->toArray())) {
+                abort(403, 'You are not authorized to export this section.');
+            }
+        }
 
         $individuals = collect();
         $sectionsAvg = collect();

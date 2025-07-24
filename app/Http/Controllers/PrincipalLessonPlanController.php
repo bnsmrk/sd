@@ -18,8 +18,17 @@ class PrincipalLessonPlanController extends Controller
         $sectionId = $request->input('section_id');
         $search = $request->input('search');
 
-        $query = Material::with(['uploader:id,name', 'yearLevel:id,name', 'section:id,name', 'comments.user:id,name'])
-            ->where('type', 'lesson_plan');
+        $query = Material::with([
+                'uploader:id,name',
+                'yearLevel:id,name',
+                'section:id,name',
+                'subject:id,name',
+                'comments.user:id,name',
+            ])
+            ->where('type', 'lesson_plan')
+            ->whereNotNull('subject_id')
+            ->whereNotNull('section_id')
+            ->whereNotNull('year_level_id');
 
         if ($yearLevelId) {
             $query->where('year_level_id', $yearLevelId);
@@ -32,7 +41,7 @@ class PrincipalLessonPlanController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                    ->orWhereHas('uploader', fn($u) => $u->where('name', 'like', "%{$search}%"));
+                  ->orWhereHas('uploader', fn($u) => $u->where('name', 'like', "%{$search}%"));
             });
         }
 

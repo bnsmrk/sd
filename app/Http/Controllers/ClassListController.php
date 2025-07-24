@@ -5,25 +5,26 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use App\Models\TeacherAssignment;
+use App\Models\TeacherSubAssignment;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ClassListController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $userId = Auth::id();
 
-        $assignments = TeacherAssignment::with('subject')->where('user_id', $userId)->get();
+        $subAssignments = TeacherSubAssignment::with('subject')
+            ->whereHas('teacherAssignment', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->get();
 
-        $sectionIds = $assignments->pluck('section_id')->unique()->filter()->values();
+        $sectionIds = $subAssignments->pluck('section_id')->unique()->filter()->values();
 
-        $subjectsBySection = $assignments->groupBy('section_id')->map(function ($assignments) {
-            return $assignments->pluck('subject.name')->unique()->values();
+        $subjectsBySection = $subAssignments->groupBy('section_id')->map(function ($group) {
+            return $group->pluck('subject.name')->unique()->values();
         });
 
         $studentsQuery = Student::whereIn('section_id', $sectionIds)
@@ -58,13 +59,15 @@ class ClassListController extends Controller
     {
         $userId = Auth::id();
 
-        $assignments = TeacherAssignment::with('subject')
-            ->where('user_id', $userId)
+        $subAssignments = TeacherSubAssignment::with('subject')
+            ->whereHas('teacherAssignment', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
             ->get();
 
-        $sectionIds = $assignments->pluck('section_id')->unique()->filter()->values();
+        $sectionIds = $subAssignments->pluck('section_id')->unique()->filter()->values();
 
-        $subjectsBySection = $assignments->groupBy('section_id')->map(function ($group) {
+        $subjectsBySection = $subAssignments->groupBy('section_id')->map(function ($group) {
             return $group->pluck('subject.name')->unique()->values();
         });
 
@@ -106,53 +109,5 @@ class ClassListController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
