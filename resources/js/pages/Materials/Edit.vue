@@ -12,6 +12,7 @@ const isDeleting = ref(false);
 interface Module {
     id: number;
     name: string;
+    section_id: number;
     year_level: { id: number; name: string };
     subject: { id: number; name: string };
 }
@@ -59,6 +60,19 @@ const selectedModuleId = ref<number | null>(props.material.module_id ?? null);
 const selectedYearLevelId = ref<number | null>(props.material.year_level_id ?? null);
 const selectedSubjectId = ref<number | null>(props.material.subject_id ?? null);
 const selectedSectionId = ref<number | null>(props.material.section_id ?? null);
+watch(selectedModuleId, (newModuleId) => {
+    const module = props.modules.find((m) => m.id === newModuleId);
+    if (module) {
+        selectedSectionId.value = module.section_id;
+    }
+});
+watch(selectedType, (newType) => {
+    form.type = newType;
+    selectedModuleId.value = null;
+    selectedYearLevelId.value = null;
+    selectedSubjectId.value = null;
+    selectedSectionId.value = null;
+});
 
 const selectedModule = computed(() => props.modules.find((m) => m.id === selectedModuleId.value));
 const filteredSections = computed(() => props.sections.filter((s) => s.year_level_id === selectedYearLevelId.value));

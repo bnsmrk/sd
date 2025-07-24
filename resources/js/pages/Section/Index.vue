@@ -85,7 +85,7 @@ const submitCreate = () => {
         onFinish: () => {
             setTimeout(() => {
                 isCreating.value = false;
-            }, 2000);
+            }, 800);
         },
     });
 };
@@ -100,7 +100,7 @@ const submitEdit = () => {
             onFinish: () => {
                 setTimeout(() => {
                     isUpdating.value = false;
-                }, 2000);
+                }, 800);
             },
         });
     }
@@ -117,7 +117,7 @@ const confirmDelete = () => {
             onFinish: () => {
                 setTimeout(() => {
                     isDeleting.value = false;
-                }, 2000);
+                }, 800);
             },
         });
     }
@@ -249,15 +249,6 @@ const sortedSections = computed(() => {
                 <h3 class="mb-4 text-xl font-bold text-pink-600">Add Section</h3>
                 <form @submit.prevent="submitCreate" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-pink-700">Section Name</label>
-                        <input
-                            v-model="createForm.name"
-                            type="text"
-                            class="w-full rounded-lg border-2 border-pink-200 px-3 py-2 text-pink-800 focus:border-yellow-400 focus:outline-none"
-                        />
-                        <div v-if="createForm.errors.name" class="text-sm text-red-600">{{ createForm.errors.name }}</div>
-                    </div>
-                    <div>
                         <label class="block text-sm font-semibold text-pink-700">Year Level</label>
                         <select
                             v-model="createForm.year_level_id"
@@ -268,6 +259,16 @@ const sortedSections = computed(() => {
                         </select>
                         <div v-if="createForm.errors.year_level_id" class="text-sm text-red-600">{{ createForm.errors.year_level_id }}</div>
                     </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-pink-700">Section Name</label>
+                        <input
+                            v-model="createForm.name"
+                            type="text"
+                            class="w-full rounded-lg border-2 border-pink-200 px-3 py-2 text-pink-800 focus:border-yellow-400 focus:outline-none"
+                        />
+                        <div v-if="createForm.errors.name" class="text-sm text-red-600">{{ createForm.errors.name }}</div>
+                    </div>
+
                     <div class="flex justify-end space-x-2 pt-2">
                         <button
                             type="button"
@@ -292,15 +293,6 @@ const sortedSections = computed(() => {
                 <h3 class="mb-4 text-xl font-bold text-pink-600">Edit Section</h3>
                 <form @submit.prevent="submitEdit" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-semibold text-pink-700">Section Name</label>
-                        <input
-                            v-model="editForm.name"
-                            type="text"
-                            class="w-full rounded-lg border-2 border-pink-200 px-3 py-2 text-pink-800 focus:border-yellow-400 focus:outline-none"
-                        />
-                        <div v-if="editForm.errors.name" class="text-sm text-red-600">{{ editForm.errors.name }}</div>
-                    </div>
-                    <div>
                         <label class="block text-sm font-semibold text-pink-700">Year Level</label>
                         <select
                             v-model="editForm.year_level_id"
@@ -311,6 +303,16 @@ const sortedSections = computed(() => {
                         </select>
                         <div v-if="editForm.errors.year_level_id" class="text-sm text-red-600">{{ editForm.errors.year_level_id }}</div>
                     </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-pink-700">Section Name</label>
+                        <input
+                            v-model="editForm.name"
+                            type="text"
+                            class="w-full rounded-lg border-2 border-pink-200 px-3 py-2 text-pink-800 focus:border-yellow-400 focus:outline-none"
+                        />
+                        <div v-if="editForm.errors.name" class="text-sm text-red-600">{{ editForm.errors.name }}</div>
+                    </div>
+
                     <div class="flex justify-end space-x-2 pt-2">
                         <button
                             type="button"

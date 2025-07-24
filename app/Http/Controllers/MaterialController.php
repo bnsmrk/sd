@@ -16,7 +16,7 @@ class MaterialController extends Controller
     private function getTeacherSubAssignments()
     {
         return TeacherSubAssignment::with(['section', 'subject'])
-            ->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
+            ->whereHas('teacherAssignment', fn($q) => $q->where('user_id', Auth::id()))
             ->get();
     }
 
@@ -52,7 +52,7 @@ class MaterialController extends Controller
             ->whereIn('subject_id', $assignments->pluck('subject_id'))
             ->get();
 
-        $subjectSectionMap = $assignments->map(fn ($a) => [
+        $subjectSectionMap = $assignments->map(fn($a) => [
             'section_id' => $a->section_id,
             'subject_id' => $a->subject_id,
         ]);
@@ -90,7 +90,7 @@ class MaterialController extends Controller
 
         if ($request->type === 'material') {
             $module = Module::findOrFail($request->module_id);
-            $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+            $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn($q) => $q->where('user_id', $user->id))
                 ->where('section_id', $module->section_id)
                 ->where('subject_id', $module->subject_id)
                 ->exists();
@@ -104,7 +104,7 @@ class MaterialController extends Controller
             $subject_id = $module->subject_id;
             $module_id = $module->id;
         } else {
-            $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+            $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn($q) => $q->where('user_id', $user->id))
                 ->where('section_id', $request->section_id)
                 ->where('subject_id', $request->subject_id)
                 ->exists();
@@ -182,7 +182,7 @@ class MaterialController extends Controller
 
         $user = Auth::user();
 
-        $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+        $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn($q) => $q->where('user_id', $user->id))
             ->where('section_id', $request->section_id)
             ->where('subject_id', $request->subject_id)
             ->exists();
@@ -220,7 +220,7 @@ class MaterialController extends Controller
     {
         $user = Auth::user();
 
-        $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $user->id))
+        $authorized = TeacherSubAssignment::whereHas('teacherAssignment', fn($q) => $q->where('user_id', $user->id))
             ->where('section_id', $material->section_id)
             ->where('subject_id', $material->subject_id)
             ->exists();

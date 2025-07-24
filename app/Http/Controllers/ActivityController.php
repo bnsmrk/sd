@@ -62,7 +62,7 @@ class ActivityController extends Controller
         $userId = Auth::id();
 
         $subAssignments = TeacherSubAssignment::with(['teacherAssignment.yearLevel', 'section', 'subject'])
-            ->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $userId))
+            ->whereHas('teacherAssignment', fn($q) => $q->where('user_id', $userId))
             ->get();
 
         $modules = Module::with(['yearLevel', 'section', 'subject'])
@@ -87,7 +87,7 @@ class ActivityController extends Controller
 
         $module = Module::findOrFail($data['module_id']);
 
-        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
+        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn($q) => $q->where('user_id', Auth::id()))
             ->where('section_id', $module->section_id)
             ->where('subject_id', $module->subject_id)
             ->exists();
@@ -121,7 +121,7 @@ class ActivityController extends Controller
         $userId = Auth::id();
 
         $subAssignments = TeacherSubAssignment::with(['teacherAssignment'])
-            ->whereHas('teacherAssignment', fn ($q) => $q->where('user_id', $userId))
+            ->whereHas('teacherAssignment', fn($q) => $q->where('user_id', $userId))
             ->get();
 
         $modules = Module::with(['yearLevel', 'section', 'subject'])
@@ -133,7 +133,7 @@ class ActivityController extends Controller
 
         $isAssigned = $subAssignments->contains(function ($a) use ($activityModule) {
             return $a->section_id === $activityModule->section_id &&
-                   $a->subject_id === $activityModule->subject_id;
+                $a->subject_id === $activityModule->subject_id;
         });
 
         if (! $isAssigned) {
@@ -160,7 +160,7 @@ class ActivityController extends Controller
 
         $module = Module::findOrFail($validated['module_id']);
 
-        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
+        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn($q) => $q->where('user_id', Auth::id()))
             ->where('section_id', $module->section_id)
             ->where('subject_id', $module->subject_id)
             ->exists();
@@ -186,7 +186,7 @@ class ActivityController extends Controller
     {
         $module = $activity->module;
 
-        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn ($q) => $q->where('user_id', Auth::id()))
+        $isAssigned = TeacherSubAssignment::whereHas('teacherAssignment', fn($q) => $q->where('user_id', Auth::id()))
             ->where('section_id', $module->section_id)
             ->where('subject_id', $module->subject_id)
             ->exists();

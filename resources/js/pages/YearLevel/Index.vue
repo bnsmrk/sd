@@ -63,7 +63,7 @@ const createYearLevel = () => {
         onFinish: () => {
             setTimeout(() => {
                 isCreating.value = false;
-            }, 2000);
+            }, 800);
         },
     });
 };
@@ -78,7 +78,7 @@ const updateYearLevel = () => {
             onFinish: () => {
                 setTimeout(() => {
                     isUpdating.value = false;
-                }, 2000);
+                }, 800);
             },
         });
     }
@@ -95,7 +95,7 @@ const deleteYearLevel = () => {
             onFinish: () => {
                 setTimeout(() => {
                     isDeleting.value = false;
-                }, 2000);
+                }, 800);
             },
         });
     }

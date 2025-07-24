@@ -12,6 +12,7 @@ const isDeleting = ref(false);
 interface Module {
     id: number;
     name: string;
+    section_id: number;
     year_level: { id: number; name: string };
     subject: { id: number; name: string };
 }
@@ -79,8 +80,7 @@ watch(selectedType, (newType) => {
 watch(selectedModuleId, (newModuleId) => {
     if (selectedType.value === 'material') {
         const module = props.modules.find((m) => m.id === newModuleId);
-        const sectionMatch = props.sections.find((s) => s.year_level_id === module?.year_level.id);
-        selectedSectionId.value = sectionMatch?.id ?? null;
+        selectedSectionId.value = module?.section_id ?? null;
     }
 });
 
@@ -192,7 +192,10 @@ function submitForm() {
                             class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Module</option>
-                            <option v-for="m in props.modules" :key="m.id" :value="m.id">{{ m.name }}</option>
+                            <option v-for="m in props.modules" :key="m.id" :value="m.id">
+                                {{ m.name }} - {{ m.subject.name }} -
+                                {{ props.sections.find((s) => s.id === m.section_id)?.name || 'Unknown Section' }}
+                            </option>
                         </select>
                     </div>
 
@@ -213,7 +216,7 @@ function submitForm() {
                             disabled
                             v-model="selectedSectionId"
                             :disabled="!selectedModuleId"
-                            class="w-full rounded border border-[#01006c] bg-white p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
+                            class="w-full rounded border border-[#01006c] bg-gray-100 p-2 text-sm focus:border-[#ffc60b] focus:outline-none"
                         >
                             <option :value="null" disabled>Select Section</option>
                             <option v-for="section in filteredSections" :key="section.id" :value="section.id">
