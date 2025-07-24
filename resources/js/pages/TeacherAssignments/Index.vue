@@ -67,7 +67,7 @@ function cancelDelete() {
     deleteId.value = null;
 }
 
-type SortableAssignmentKey = 'teacher' | 'year_level' | 'subject';
+type SortableAssignmentKey = 'teacher' | 'year_level';
 
 const sortKey = ref<SortableAssignmentKey>('teacher');
 const sortAsc = ref(true);
@@ -92,9 +92,6 @@ const sortedAssignments = computed(() => {
         } else if (sortKey.value === 'year_level') {
             aVal = a.year_level.name.toLowerCase();
             bVal = b.year_level.name.toLowerCase();
-        } else if (sortKey.value === 'subject') {
-            aVal = a.subject.name.toLowerCase();
-            bVal = b.subject.name.toLowerCase();
         }
 
         if (aVal < bVal) return sortAsc.value ? -1 : 1;
@@ -155,10 +152,6 @@ const sortedAssignments = computed(() => {
                                 Year Level
                                 <span v-if="sortKey === 'year_level'">{{ sortAsc ? '↑' : '↓' }}</span>
                             </th>
-                            <th @click="toggleSort('subject')" class="cursor-pointer px-4 py-3 text-left">
-                                Subject
-                                <span v-if="sortKey === 'subject'">{{ sortAsc ? '↑' : '↓' }}</span>
-                            </th>
                             <th class="px-4 py-3 text-left">Actions</th>
                         </tr>
                     </thead>
@@ -167,7 +160,6 @@ const sortedAssignments = computed(() => {
                         <tr v-for="a in sortedAssignments" :key="a.id" class="hover:bg-pink-50">
                             <td class="px-4 py-2 text-[#01006c]">{{ a.teacher.name }}</td>
                             <td class="px-4 py-2 text-[#01006c]">{{ a.year_level.name }}</td>
-                            <td class="px-4 py-2 text-[#01006c]">{{ a.subject.name }}</td>
                             <td class="px-4 py-2 text-center">
                                 <div class="flex items-center justify-center gap-2">
                                     <Link :href="`/teacher-assignments/${a.id}`" class="text-green-600 hover:text-green-800">

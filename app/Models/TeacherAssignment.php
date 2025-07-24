@@ -32,4 +32,12 @@ class TeacherAssignment extends Model
     public function subject() {
         return $this->belongsTo(Subject::class);
     }
+    public function subAssignments()
+    {
+        return $this->hasMany(TeacherSubAssignment::class);
+    }
+    public function teacherAssignment()
+    {
+        return $this->belongsTo(TeacherAssignment::class);
+    }
 }

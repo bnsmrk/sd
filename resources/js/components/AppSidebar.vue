@@ -159,7 +159,7 @@ const groupedNavItems: Record<string, NavItem[]> = {
         },
         {
             title: 'Teacher Assign',
-            href: '/teacher-assignments',
+            href: '/head-teacher-assignments',
             icon: UserCog,
         },
         {

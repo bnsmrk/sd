@@ -156,6 +156,8 @@ Route::middleware('role:admin,ict')->group(function () {
     Route::resource('subjects', SubjectController::class);
     Route::resource('enroll', EnrollStudentController::class);
     Route::resource('users', UserController::class);
+    Route::resource('teacher-assignments', TeacherAssignmentController::class);
+
 });
 
 Route::post('/head-assignments/assign-to-all', [HeadAssignmentController::class, 'assignToAll']);
@@ -163,9 +165,7 @@ Route::delete('/head-assignments/year-level/{yearLevelId}', [HeadAssignmentContr
 Route::resource('head-assignments', HeadAssignmentController::class);
 
 
-Route::middleware('role:admin,head')->group(function () {
-    Route::resource('teacher-assignments', TeacherAssignmentController::class);
-});
+
 
 Route::middleware('role:principal,head')->group(function () {
     Route::resource('proficiency-result', StudentsProficiencyResult::class);
