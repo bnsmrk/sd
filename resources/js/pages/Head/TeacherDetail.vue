@@ -10,14 +10,14 @@ const props = defineProps<{
 
 <template>
     <Head title="Teacher Details" />
-    <AppLayout :breadcrumbs="[{ title: 'Teacher Assignments', href: '/head-teacher-assignments' }, { title: 'Teacher Detail' }]">
+    <AppLayout :breadcrumbs="[{ title: 'Teacher Assignments', href: '/head-teacher-assignments' }]">
         <div class="min-h-screen space-y-6 bg-pink-50 p-6">
             <Link href="/head-teacher-assignments" class="inline-block rounded bg-pink-600 px-4 py-2 text-white hover:bg-pink-700">
                 ← Back to Teacher Assignments
             </Link>
 
             <h1 class="text-2xl font-bold text-indigo-800">{{ teacher.name }}'s Assignments</h1>
-            <p class="text-gray-600">📧 {{ teacher.email }}</p>
+            <p class="text-gray-600">{{ teacher.email }}</p>
 
             <div class="overflow-x-auto rounded bg-white p-4 shadow">
                 <table class="min-w-full table-auto border border-gray-300">

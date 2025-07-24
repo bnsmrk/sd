@@ -28,46 +28,73 @@ function removeAssignment(index: number) {
 }
 
 function submit() {
-    form.put(route('head-teacher-assignments.update', props.teacher.id));
+    form.put(route('head-teacher-assignments.update', props.teacher.id), {
+        preserveScroll: true,
+    });
 }
 </script>
 
 <template>
     <Head title="Edit Assignments" />
     <AppLayout :breadcrumbs="[{ title: 'Back', href: route('head-teacher-assignments.index') }]">
-        <div class="min-h-screen space-y-4 bg-pink-50 p-6">
-            <h1 class="text-2xl font-bold text-indigo-800">Edit Assignments for {{ teacher.name }}</h1>
+        <div class="min-h-screen bg-pink-50 px-6 py-8">
+            <h1 class="mb-6 text-3xl font-bold text-[#01006c]">Edit Assignments for {{ teacher.name }}</h1>
 
-            <form @submit.prevent="submit" class="space-y-4">
-                <div v-for="(a, index) in form.assignments" :key="index" class="flex flex-col gap-1 md:flex-row md:items-center md:gap-4">
+            <form @submit.prevent="submit" class="space-y-4 rounded-xl bg-white p-6 shadow">
+                <div
+                    v-for="(a, index) in form.assignments"
+                    :key="index"
+                    class="rounded border p-4 shadow-sm md:flex md:items-center md:gap-4"
+                >
                     <div class="w-full md:w-1/3">
-                        <select v-model="a.section_id" class="w-full rounded border p-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Section</label>
+                        <select v-model="a.section_id" class="w-full rounded border px-4 py-2">
                             <option :value="null" disabled>Select Section</option>
                             <option v-for="s in sections" :key="s.id" :value="s.id">{{ s.name }}</option>
                         </select>
-                        <p v-if="form.errors[`assignments.${index}.section_id`]" class="text-sm text-red-600">
-                            {{ form.errors[`assignments.${index}.section_id`] }}
-                        </p>
-                    </div>
-                    <div class="w-full md:w-1/3">
-                        <select v-model="a.subject_id" class="w-full rounded border p-2">
-                            <option :value="null" disabled>Select Subject</option>
-                            <option v-for="s in subjects" :key="s.id" :value="s.id">{{ s.name }}</option>
-                        </select>
-                        <p v-if="form.errors[`assignments.${index}.subject_id`]" class="text-sm text-red-600">
-                            {{ form.errors[`assignments.${index}.subject_id`] }}
+                        <p
+                            v-if="(form.errors as Record<string, string>)[`assignments.${index}.section_id`]"
+                            class="mt-1 text-sm text-red-600"
+                        >
+                            {{ (form.errors as Record<string, string>)[`assignments.${index}.section_id`] }}
                         </p>
                     </div>
 
-                    <button type="button" @click="removeAssignment(index)" class="text-red-600">Remove</button>
+                    <div class="w-full md:w-1/3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                        <select v-model="a.subject_id" class="w-full rounded border px-4 py-2">
+                            <option :value="null" disabled>Select Subject</option>
+                            <option v-for="s in subjects" :key="s.id" :value="s.id">{{ s.name }}</option>
+                        </select>
+                        <p
+                            v-if="(form.errors as Record<string, string>)[`assignments.${index}.subject_id`]"
+                            class="mt-1 text-sm text-red-600"
+                        >
+                            {{ (form.errors as Record<string, string>)[`assignments.${index}.subject_id`] }}
+                        </p>
+                    </div>
+
+                    <div class="mt-3 md:mt-0 md:w-auto">
+                        <button
+                            type="button"
+                            @click="removeAssignment(index)"
+                            class="text-red-600 hover:underline text-sm"
+                        >
+                            Remove
+                        </button>
+                    </div>
                 </div>
 
                 <p v-if="form.errors.assignments" class="text-sm text-red-600">
                     {{ form.errors.assignments }}
                 </p>
 
-                <div>
-                    <button type="submit" class="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700" :disabled="form.processing">
+                <div class="pt-4">
+                    <button
+                        type="submit"
+                        class="rounded bg-indigo-600 px-6 py-2 text-white hover:bg-indigo-700"
+                        :disabled="form.processing"
+                    >
                         Save Changes
                     </button>
                 </div>
